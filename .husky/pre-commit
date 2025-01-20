@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '🏗️👷 Styling and fixing your project before committing'
+
+# Format and fix all files
+npx lint-staged || 
+(
+    echo '🤢🤮 Failed to format and fix files 🤢🤮';
+    false;
+)
+
+echo '✅ Formatting complete. Running checks...'
+
+# Now run only checks (no modifications)
+npm run check-types ||
+(
+    echo '🤡❌ Failed Type check. ❌🤡
+            Are you seriously trying to write that? Make the changes required above.'
+    false;
+)
+
+# If everything passes... Now we can commit
+echo '🎉 All checks passed!'
