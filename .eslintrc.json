@@ -1,3 +1,44 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "airbnb-base", "prettier"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
+    "no-console": "warn",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-param-reassign": "off",
+    "import/no-cycle": "warn",
+    "no-debugger": "error",
+    "react/react-in-jsx-scope": "off",
+    "no-use-before-define": "off",
+    "consistent-return": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.dev.ts", "**/*.dev.js"],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          { "devDependencies": true }
+        ]
+      }
+    }
+  ],
+  "globals": {
+    "React": "readonly"
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  }
 }
