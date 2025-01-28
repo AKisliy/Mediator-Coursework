@@ -3,6 +3,7 @@
   "plugins": ["unused-imports"],
   "rules": {
     "import/extensions": "off",
+    "global-require": "off",
     "import/prefer-default-export": "off",
     "no-console": "warn",
     "no-unused-vars": "off",

@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
+import Header from '@/components/navigation/header';
+import Footer from '@/components/navigation/footer';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -24,11 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className={geistSans.className} suppressHydrationWarning>
+      <body className="bg-background text-foreground">
+        <main className="min-h-screen flex flex-col items-center">
+          <div className="flex-1 w-full flex flex-col gap-20 items-center">
+            <Header />
+            <BloggerQueryProvider>{children}</BloggerQueryProvider>
+            <Footer />
+          </div>
+        </main>
       </body>
     </html>
   );
