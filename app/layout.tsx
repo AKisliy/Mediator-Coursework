@@ -4,6 +4,7 @@ import './globals.css';
 import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
 import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
+import { RecommendationProvider } from '@/context/recommendations-provider';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
           <div className="flex-1 w-full flex flex-col gap-20 items-center">
-            <Header />
-            <BloggerQueryProvider>{children}</BloggerQueryProvider>
-            <Footer />
+            <RecommendationProvider>
+              <Header />
+              <BloggerQueryProvider>{children}</BloggerQueryProvider>
+              <Footer />
+            </RecommendationProvider>
           </div>
         </main>
       </body>

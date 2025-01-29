@@ -4,10 +4,10 @@ import '../../app/globals.css';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
+import RecommendationsUsage from './recommendation-usage';
 
 export default function Header() {
   const pathName = usePathname();
-  const isHomePage = pathName === '/home' || pathName === '/base';
 
   return (
     <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
@@ -20,6 +20,7 @@ export default function Header() {
           >
             Mediator
           </Link>
+          <RecommendationsUsage />
         </div>
         <div className="flex gap-5 items-center">
           <Button variant="outline" asChild>
