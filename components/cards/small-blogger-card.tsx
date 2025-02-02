@@ -10,9 +10,15 @@ import { Blogger } from '@/models/blogger';
 import { InstBlogger } from '@/models/inst-blogger';
 import { FaInstagram, FaTelegram } from 'react-icons/fa';
 
-export default function SmallBloggerCard({ blogger }: { blogger: Blogger }) {
+export default function SmallBloggerCard({
+  blogger,
+  onClick
+}: {
+  blogger: Blogger;
+  onClick: () => void;
+}) {
   return (
-    <Card key={blogger.id}>
+    <Card key={blogger.id} onClick={onClick}>
       <CardHeader>
         <div className="flex justify-between">
           <div className="flex items-center space-x-4">

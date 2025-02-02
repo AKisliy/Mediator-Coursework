@@ -13,7 +13,7 @@ export const generateMockBloggers = (query: string, k: number) => ({
         category: 'Мотивация',
         avg_post_reach: Math.floor(Math.random() * 1000000) + 10000,
         followers_count: Math.floor(Math.random() * 1000000) + 10000,
-        social_media: 'Telegram',
+        social_media: 'Instagram',
         channel_title: 'Biba and boba',
         description:
           'Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation',
