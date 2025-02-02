@@ -28,7 +28,7 @@ async function getReccomendtaionFromServer(
 ) {
   try {
     if (process.env.USE_MOCK_API === 'true') {
-      const result = generateMockBloggers(body.query);
+      const result = generateMockBloggers(body.query, body.k);
       TaskManager.completeTask(taskId, result);
       return;
     }
