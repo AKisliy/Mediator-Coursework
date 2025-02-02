@@ -22,7 +22,6 @@ export class Blogger {
     const bloggerObject = dataObject.metadata;
     Object.assign(this, bloggerObject ?? {});
     this.id = dataObject.id ?? uuidv4();
-    // this.id = uuidv4();
   }
 
   getProfileLink(): string | undefined {

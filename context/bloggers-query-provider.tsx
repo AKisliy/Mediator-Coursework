@@ -4,6 +4,7 @@ import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
 import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
+import { SearchResponseDTO } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
   query: string;
@@ -33,13 +34,13 @@ export const BloggerQueryProvider = ({
   const [taskId, setTaskId] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
 
-  useTaskPolling<{ recommendations: any; uuid: string }>({
+  useTaskPolling<SearchResponseDTO>({
     taskId,
-    onSuccess: data => {
+    onSuccess: (data: SearchResponseDTO) => {
       setBloggers(data.recommendations);
       setRequestId(data.uuid);
     },
-    onError: error => {
+    onError: (error: any) => {
       toast({
         title: 'Ошибка',
         description: error,

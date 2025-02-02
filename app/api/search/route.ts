@@ -5,7 +5,7 @@ import { generateMockBloggers } from '@/lib/mock/bloggers';
 import { withAuth } from '../withAuth';
 
 export const POST = withAuth(async (req: Request, userId: string) => {
-  const url = `${process.env.SERVER_API  }/search`;
+  const url = `${process.env.SERVER_API}/search`;
   const body = (await req.json()) as SearchRequestDTO;
 
   if (!body || !body.query) {
@@ -45,8 +45,6 @@ async function getReccomendtaionFromServer(
         user_id: userId
       })
     });
-
-    console.log('Got response');
 
     if (!response.ok) {
       TaskManager.failTask(taskId, response.statusText);
