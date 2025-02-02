@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 export async function getUserReccomendationsCount(): Promise<
   number | undefined
 > {
-  if (process.env.USE_MOCK_USER === 'true') {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
     const response = await prisma.user.findUnique({
       where: {
         id: MOCK_USER_ID
@@ -18,6 +18,6 @@ export async function getUserReccomendationsCount(): Promise<
     return response?.searches_count;
   }
   throw new Error(
-    'Auth is not configured yet. Either set USE_MOCK_USER=true, or implement auth'
+    'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
   );
 }

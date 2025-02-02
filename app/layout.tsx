@@ -5,6 +5,7 @@ import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
 import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
 import { RecommendationProvider } from '@/context/recommendations-provider';
+import { Toaster } from '@/components/ui/toaster';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -35,6 +36,7 @@ export default function RootLayout({
             <RecommendationProvider>
               <Header />
               <BloggerQueryProvider>{children}</BloggerQueryProvider>
+              <Toaster />
               <Footer />
             </RecommendationProvider>
           </div>

@@ -1,6 +1,8 @@
 'use client';
 
-import { generateMockBloggers } from '@/lib/mock/bloggers';
+import { useTaskPolling } from '@/hooks/use-task-polling';
+import { toast } from '@/hooks/use-toast';
+import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
 
 type BloggerQueryContextType = {
@@ -28,21 +30,47 @@ export const BloggerQueryProvider = ({
   const [bloggers, setBloggers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [bloggersCount, setBloggersCount] = useState(20);
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [requestId, setRequestId] = useState<string | null>(null);
 
-  const handleSearch = () => {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_API === 'true') handleSearchMock();
-    console.log(`Handling search for: ${query}`);
-  };
-
-  const handleSearchMock = () => {
-    setLoading(true);
-    setBloggers([]);
-
-    setTimeout(() => {
-      const results = generateMockBloggers(query);
-      setBloggers(results);
+  useTaskPolling<{ recommendations: any; uuid: string }>({
+    taskId,
+    onSuccess: data => {
+      setBloggers(data.recommendations);
+      setRequestId(data.uuid);
+    },
+    onError: error => {
+      toast({
+        title: 'Ошибка',
+        description: error,
+        variant: 'destructive'
+      });
+    },
+    onComplete: () => {
+      setTaskId(null);
       setLoading(false);
-    }, 1000);
+    }
+  });
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      const newTaskId = await SearchBloggerAPI.searchBloggers(
+        query,
+        bloggersCount
+      );
+      setTaskId(newTaskId);
+      toast({
+        title: 'Запрос успешно отправлен ✨',
+        description: 'Осталось немного подождать...'
+      });
+    } catch (e: any) {
+      toast({
+        title: 'Ошибка ☠️',
+        description: 'Произошла ошибка, пожалуйста, попробуйте снова',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
