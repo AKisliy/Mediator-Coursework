@@ -1,25 +1,20 @@
 import { Input } from '@/components/ui/input';
+import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { Users } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function RecommendationCountInput({
-  count,
-  setCount,
   countLimit
 }: {
-  count: number;
-  setCount: (x: number) => void;
   countLimit: number;
 }) {
-  const [inputValue, setInputValue] = useState(count.toString());
+  const { bloggersCount, setBloggersCount } = useBloggersQuery();
+
+  const [inputValue, setInputValue] = useState(bloggersCount.toString());
   const [isValid, setIsValid] = useState(true);
 
-  useEffect(() => {
-    setInputValue(count.toString());
-  }, [count]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
+    const { value } = e.target;
     setInputValue(value);
     const numValue = parseInt(value, 10);
     if (Number.isNaN(numValue)) {
@@ -31,7 +26,7 @@ export default function RecommendationCountInput({
     } else {
       setIsValid(false);
     }
-    setCount(numValue);
+    setBloggersCount(numValue);
   };
 
   return (

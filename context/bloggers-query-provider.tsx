@@ -1,5 +1,6 @@
 'use client';
 
+import { generateMockBloggers } from '@/lib/mock/bloggers';
 import React, { createContext, useContext, useState } from 'react';
 
 type BloggerQueryContextType = {
@@ -9,8 +10,9 @@ type BloggerQueryContextType = {
   setBloggers: (bl: any[]) => void;
   loading: boolean;
   setLoading: (l: boolean) => void;
-  error: string;
-  setError: (e: string) => void;
+  handleSearch: () => void;
+  bloggersCount: number;
+  setBloggersCount: (n: number) => void;
 };
 
 const BloggerQueryContext = createContext<BloggerQueryContextType | undefined>(
@@ -25,7 +27,23 @@ export const BloggerQueryProvider = ({
   const [query, setQuery] = useState('');
   const [bloggers, setBloggers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [bloggersCount, setBloggersCount] = useState(20);
+
+  const handleSearch = () => {
+    if (process.env.NEXT_PUBLIC_USE_MOCK_API === 'true') handleSearchMock();
+    console.log(`Handling search for: ${query}`);
+  };
+
+  const handleSearchMock = () => {
+    setLoading(true);
+    setBloggers([]);
+
+    setTimeout(() => {
+      const results = generateMockBloggers(query);
+      setBloggers(results);
+      setLoading(false);
+    }, 1000);
+  };
 
   return (
     <BloggerQueryContext.Provider
@@ -36,8 +54,9 @@ export const BloggerQueryProvider = ({
         setBloggers,
         loading,
         setLoading,
-        error,
-        setError
+        handleSearch,
+        bloggersCount,
+        setBloggersCount
       }}
     >
       {children}
