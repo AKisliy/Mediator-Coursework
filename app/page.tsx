@@ -1,15 +1,13 @@
 'use client';
 
-import ActionsToolBar from '@/components/search-main-block/actions-tool-bar';
 import MainBlockHeadline from '@/components/search-main-block/main-block-headline';
 import SearchBar from '@/components/search-main-block/search-bar';
-import SmallBloggerCard from '@/components/cards/small-blogger-card';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { Blogger } from '@/models/blogger/blogger';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import FullBloggerCard from '@/components/cards/full-blogger-card';
 import { useState } from 'react';
-import { getBloggerFromObject } from '@/models/blogger/utils';
+import BloggersGrid from '@/components/search-main-block/bloggers-grid';
 
 export default function BloggerSearch() {
   const { bloggers } = useBloggersQuery();
@@ -22,33 +20,7 @@ export default function BloggerSearch() {
         <SearchBar />
 
         {bloggers?.length > 0 && (
-          <>
-            <ActionsToolBar />
-            <motion.div
-              className="grid gap-6 md:grid-cols-2 auto-rows-fr"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <AnimatePresence>
-                {bloggers.map(blogger => {
-                  const bloggerEntity = getBloggerFromObject(blogger);
-                  return (
-                    <SmallBloggerCard
-                      key={bloggerEntity.id}
-                      blogger={bloggerEntity}
-                      onClick={() => {
-                        setSelectedBlogger(bloggerEntity);
-                      }}
-                    />
-                  );
-                })}
-              </AnimatePresence>
-            </motion.div>
-            <p className="text-center mt-4 text-muted-foreground">
-              Tap to open a card.
-            </p>
-          </>
+          <BloggersGrid setSelectedBlogger={setSelectedBlogger} />
         )}
 
         <AnimatePresence>
