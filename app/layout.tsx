@@ -6,6 +6,7 @@ import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
 import { RecommendationProvider } from '@/context/recommendations-provider';
 import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from 'next-themes';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,16 +32,23 @@ export default function RootLayout({
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
-          <div className="flex-1 w-full flex flex-col gap-20 items-center">
-            <RecommendationProvider>
-              <Header />
-              <BloggerQueryProvider>{children}</BloggerQueryProvider>
-              <Toaster />
-              <Footer />
-            </RecommendationProvider>
-          </div>
-        </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="min-h-screen flex flex-col items-center">
+            <div className="flex-1 w-full flex flex-col gap-20 items-center">
+              <RecommendationProvider>
+                <Header />
+                <BloggerQueryProvider>{children}</BloggerQueryProvider>
+                <Toaster />
+                <Footer />
+              </RecommendationProvider>
+            </div>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

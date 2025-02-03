@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import RecommendationsUsage from './recommendation-usage';
+import { ThemeSwitcher } from '../theme-switcher';
 
 export default function Header() {
   const pathName = usePathname();
@@ -32,6 +33,7 @@ export default function Header() {
               Связаться
             </a>
           </Button>
+          <ThemeSwitcher />
         </div>
       </div>
     </nav>
