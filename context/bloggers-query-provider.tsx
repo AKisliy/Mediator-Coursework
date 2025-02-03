@@ -17,6 +17,7 @@ type BloggerQueryContextType = {
   handleSearch: () => void;
   bloggersCount: number;
   setBloggersCount: (n: number) => void;
+  requestId: string | null;
 };
 
 const BloggerQueryContext = createContext<BloggerQueryContextType | undefined>(
@@ -86,7 +87,8 @@ export const BloggerQueryProvider = ({
         setLoading,
         handleSearch,
         bloggersCount,
-        setBloggersCount
+        setBloggersCount,
+        requestId
       }}
     >
       {children}

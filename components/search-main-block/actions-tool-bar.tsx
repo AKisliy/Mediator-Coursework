@@ -1,18 +1,27 @@
+import { sendFeedback } from '@/app/actions/feedback';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { Download, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export default function ActionsToolBar() {
+  const { requestId } = useBloggersQuery();
+
   const iconStyle =
-    'w-6 h-6 cursor-pointer transition-all duration-300 ease-in-out';
-  const containerStyle = 'hover:bg-gray-100 rounded-full p-2';
+    'w-16 h-16 cursor-pointer transition-all duration-300 ease-in-out';
 
   const sendFeedBack = async (score: number) => {
-    console.log(`Number: ${score}`);
+    if (!requestId)
+      throw new Error(
+        'Невозможно отправить обратную связь без текущего запроса'
+      );
+    const result = await sendFeedback(requestId, score);
+    console.log(result);
   };
 
   return (
@@ -20,40 +29,38 @@ export default function ActionsToolBar() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={containerStyle}>
-              <Download
-                className={iconStyle}
-                onClick={() => console.log('Download CSV')}
-              />
-            </div>
+            <Button
+              onClick={() => console.log('Download CSV')}
+              variant="ghost"
+              asChild
+            >
+              <Download className={iconStyle} />
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Download CSV</p>
+            <p>Загрузить CSV</p>
           </TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={containerStyle}>
-              <ThumbsUp className={iconStyle} onClick={() => sendFeedBack(1)} />
-            </div>
+            <Button onClick={() => sendFeedBack(1)} variant="ghost" asChild>
+              <ThumbsUp className="w-16 h-16" />
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Good Recommendations</p>
+            <p>Хорошие рекомендации 😃</p>
           </TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={containerStyle}>
-              <ThumbsDown
-                className={iconStyle}
-                onClick={() => sendFeedBack(0)}
-              />
-            </div>
+            <Button onClick={() => sendFeedBack(0)} variant="ghost" asChild>
+              <ThumbsDown className={iconStyle} />
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Bad Recommendations</p>
+            <p>Плохие рекомендации 😐</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
