@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { Blogger } from '@/models/blogger';
-import { InstBlogger } from '@/models/inst-blogger';
+import { Blogger } from '@/models/blogger/blogger';
+import { InstBlogger } from '@/models/blogger/inst-blogger';
+import { TelegramBlogger } from '@/models/blogger/telegram-blogger';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { InstBloggerCardContent } from './inst-blogger-card-content';
+import { TGBloggerCardContent } from './tg-blogger-card-content';
 
 export default function FullBloggerCard({
   blogger,
@@ -50,10 +52,10 @@ export default function FullBloggerCard({
             </div>
           </CardHeader>
           <CardContent>
-            {blogger instanceof InstBlogger ? (
-              <InstBloggerCardContent blogger={blogger} />
+            {blogger instanceof TelegramBlogger ? (
+              <TGBloggerCardContent blogger={blogger} />
             ) : (
-              <> </>
+              <InstBloggerCardContent blogger={blogger as InstBlogger} />
             )}
           </CardContent>
           <CardFooter>

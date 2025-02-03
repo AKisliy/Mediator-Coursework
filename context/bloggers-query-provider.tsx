@@ -4,13 +4,14 @@ import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
 import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
+import { BloggerResponseDTO } from '@/models/response/blogger-dto';
 import { SearchResponseDTO } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
   query: string;
   setQuery: (q: string) => void;
-  bloggers: any[];
-  setBloggers: (bl: any[]) => void;
+  bloggers: BloggerResponseDTO[];
+  setBloggers: (bl: BloggerResponseDTO[]) => void;
   loading: boolean;
   setLoading: (l: boolean) => void;
   handleSearch: () => void;
@@ -65,7 +66,7 @@ export const BloggerQueryProvider = ({
         title: 'Запрос успешно отправлен ✨',
         description: 'Осталось немного подождать...'
       });
-    } catch (e: any) {
+    } catch {
       toast({
         title: 'Ошибка ☠️',
         description: 'Произошла ошибка, пожалуйста, попробуйте снова',

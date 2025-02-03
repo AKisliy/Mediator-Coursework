@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Blogger } from '@/models/blogger';
-import { InstBlogger } from '@/models/inst-blogger';
+import { Blogger } from '@/models/blogger/blogger';
+import { InstBlogger } from '@/models/blogger/inst-blogger';
 import { FaInstagram, FaTelegram } from 'react-icons/fa';
 
 export default function SmallBloggerCard({

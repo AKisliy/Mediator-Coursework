@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { InstBlogger } from './inst-blogger';
+import { BloggerResponseDTO } from '../response/blogger-dto';
 
 export class Blogger {
   id: string;
@@ -18,7 +18,7 @@ export class Blogger {
 
   reason: string | undefined;
 
-  constructor(dataObject: any) {
+  constructor(dataObject: BloggerResponseDTO) {
     const bloggerObject = dataObject.metadata;
     Object.assign(this, bloggerObject ?? {});
     this.id = dataObject.id ?? uuidv4();
@@ -26,13 +26,5 @@ export class Blogger {
 
   getProfileLink(): string | undefined {
     return this.username;
-  }
-
-  static getBloggerFromObject(blogerObject: any) {
-    const blogger = blogerObject.metadata ?? {};
-    if (!blogerObject) throw new Error('От сервера получен пустой ответ');
-    if (blogger.social_media === 'Instagram')
-      return new InstBlogger(blogerObject);
-    return new Blogger(blogerObject);
   }
 }

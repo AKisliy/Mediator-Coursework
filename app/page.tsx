@@ -5,10 +5,11 @@ import MainBlockHeadline from '@/components/search-main-block/main-block-headlin
 import SearchBar from '@/components/search-main-block/search-bar';
 import SmallBloggerCard from '@/components/cards/small-blogger-card';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
-import { Blogger } from '@/models/blogger';
+import { Blogger } from '@/models/blogger/blogger';
 import { AnimatePresence } from 'framer-motion';
 import FullBloggerCard from '@/components/cards/full-blogger-card';
 import { useState } from 'react';
+import { getBloggerFromObject } from '@/models/blogger/utils';
 
 export default function BloggerSearch() {
   const { bloggers } = useBloggersQuery();
@@ -24,12 +25,15 @@ export default function BloggerSearch() {
             <ActionsToolBar />
             <div className="grid gap-6 md:grid-cols-2 auto-rows-fr">
               {bloggers.map(blogger => {
-                const bloggerEntity = Blogger.getBloggerFromObject(blogger);
+                const bloggerEntity = getBloggerFromObject(blogger);
+                console.log(bloggerEntity);
                 return (
                   <SmallBloggerCard
                     key={bloggerEntity.id}
                     blogger={bloggerEntity}
-                    onClick={() => setSelectedBlogger(bloggerEntity)}
+                    onClick={() => {
+                      setSelectedBlogger(bloggerEntity);
+                    }}
                   />
                 );
               })}

@@ -1,4 +1,4 @@
-import { InstBlogger } from '@/models/inst-blogger';
+import { InstBlogger } from '@/models/blogger/inst-blogger';
 
 export function InstBloggerCardContent({ blogger }: { blogger: InstBlogger }) {
   return (
