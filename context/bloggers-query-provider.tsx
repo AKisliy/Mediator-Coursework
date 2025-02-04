@@ -5,6 +5,7 @@ import { toast } from '@/hooks/use-toast';
 import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
 import { BloggerResponseDTO } from '@/models/response/blogger-dto';
+import { getReasonLocalStorageKey } from '@/lib/utils';
 import { SearchResponseDTO } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
@@ -57,6 +58,7 @@ export const BloggerQueryProvider = ({
 
   const handleSearch = async () => {
     try {
+      handleGridClearing();
       setLoading(true);
       const newTaskId = await SearchBloggerAPI.searchBloggers(
         query,
@@ -74,6 +76,15 @@ export const BloggerQueryProvider = ({
         variant: 'destructive'
       });
     }
+  };
+
+  const handleGridClearing = () => {
+    if (!requestId) return;
+    bloggers?.forEach(blogger => {
+      const reasonKey = getReasonLocalStorageKey(blogger.id, requestId);
+      localStorage.removeItem(reasonKey);
+    });
+    setBloggers([]);
   };
 
   return (

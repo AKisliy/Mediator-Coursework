@@ -8,6 +8,7 @@ import { TelegramBlogger } from '@/models/blogger/telegram-blogger';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { InstBloggerCardContent } from './inst-blogger-card-content';
 import { TGBloggerCardContent } from './tg-blogger-card-content';
+import ReasonButton from '../buttons/reason-button';
 
 export default function FullBloggerCard({
   blogger,
@@ -57,6 +58,7 @@ export default function FullBloggerCard({
             ) : (
               <InstBloggerCardContent blogger={blogger as InstBlogger} />
             )}
+            <ReasonButton bloggerId={blogger.id} />
           </CardContent>
           <CardFooter>
             <Button className="w-full mt-6" asChild>
@@ -65,7 +67,7 @@ export default function FullBloggerCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View Profile
+                Перейти к профилю
               </a>
             </Button>
           </CardFooter>
