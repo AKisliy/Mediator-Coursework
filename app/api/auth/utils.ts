@@ -8,7 +8,6 @@ import {
 import { getServerSession } from 'next-auth/next';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Use it in server contexts
 export function auth(
   ...args:
     | [GetServerSidePropsContext['req'], GetServerSidePropsContext['res']]

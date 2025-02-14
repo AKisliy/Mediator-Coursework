@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import RecommendationsUsage from './recommendation-usage';
 import { ThemeSwitcher } from '../theme-switcher';
+import UserProfileDropdown from './user-profile-dropdown';
 
 export default function Header() {
   return (
@@ -20,6 +21,7 @@ export default function Header() {
           <RecommendationsUsage />
         </div>
         <div className="flex gap-5 items-center">
+          <UserProfileDropdown />
           <Button variant="outline" asChild>
             <a
               href="https://t.me/collabguru"

@@ -2,7 +2,7 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 export default process.env.NODE_ENV === 'production' ||
-!process.env.NEXT_PUBLIC_DISABLE_AUTH
+process.env.NEXT_PUBLIC_DISABLE_AUTH !== 'true'
   ? withAuth({
       pages: {
         signIn: '/auth/login'

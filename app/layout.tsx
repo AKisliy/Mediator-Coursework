@@ -7,6 +7,7 @@ import Footer from '@/components/navigation/footer';
 import { RecommendationProvider } from '@/context/recommendations-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from 'next-themes';
+import AuthProvider from '@/context/auth-provider';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -30,26 +31,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
-      <body className="bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="min-h-screen flex flex-col items-center">
-            <div className="flex-1 w-full flex flex-col gap-20 items-center">
-              <RecommendationProvider>
-                <Header />
-                <BloggerQueryProvider>{children}</BloggerQueryProvider>
-                <Toaster />
-                <Footer />
-              </RecommendationProvider>
-            </div>
-          </main>
-        </ThemeProvider>
-      </body>
-    </html>
+    <AuthProvider>
+      <html lang="en" className={geistSans.className} suppressHydrationWarning>
+        <body className="bg-background text-foreground">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main className="min-h-screen flex flex-col items-center">
+              <div className="flex-1 w-full flex flex-col gap-20 items-center">
+                <RecommendationProvider>
+                  <Header />
+                  <BloggerQueryProvider>{children}</BloggerQueryProvider>
+                  <Toaster />
+                  <Footer />
+                </RecommendationProvider>
+              </div>
+            </main>
+          </ThemeProvider>
+        </body>
+      </html>
+    </AuthProvider>
   );
 }
