@@ -7,10 +7,11 @@ import {
 } from '@/components/ui/tooltip';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { Download, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { exportBloggersToCSV } from '@/lib/utils';
 import { Button } from '../ui/button';
 
 export default function ActionsToolBar() {
-  const { requestId } = useBloggersQuery();
+  const { requestId, bloggers } = useBloggersQuery();
 
   const iconStyle =
     'w-16 h-16 cursor-pointer transition-all duration-300 ease-in-out';
@@ -30,7 +31,7 @@ export default function ActionsToolBar() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              onClick={() => console.log('Download CSV')}
+              onClick={() => exportBloggersToCSV(bloggers)}
               variant="ghost"
               asChild
             >
