@@ -4,5 +4,7 @@ declare namespace NodeJS {
     PRISMA_DB_URL: string;
     PRISMA_DIRECT_URL: string;
     USE_MOCK_API: string;
+    BOT_TOKEN: string;
+    NEXT_PUBLIC_BOT_USERNAME: string;
   }
 }
