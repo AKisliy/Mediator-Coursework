@@ -16,10 +16,11 @@ model User {
   image          String?
   searches_count Int     @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  planId    Int      @default(4)
-  plan      Plan     @relation(fields: [planId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  planId    Int          @default(4)
+  plan      Plan         @relation(fields: [planId], references: [id])
+  searches  UserSearch[]
 }
 
 model Plan {
@@ -27,4 +28,37 @@ model Plan {
   name          String
   monthly_limit Int
   users         User[]
+}
+
+model UserSearch {
+  id               String            @id @db.Uuid
+  createdAt        DateTime          @default(now())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id])
+  bloggersInSearch BloggerInSearch[]
+}
+
+model BloggerInSearch {
+  bloggerId String
+  searchId  String @db.Uuid
+
+  userSearch UserSearch @relation(fields: [searchId], references: [id])
+  blogger    Blogger    @relation(fields: [bloggerId], references: [id])
+
+  @@id([bloggerId, searchId])
+}
+
+model Blogger {
+  id           String            @id
+  username     String
+  photo_link   String
+  followers    Int
+  niche        String
+  social_media SocialMedia
+  searches     BloggerInSearch[]
+}
+
+enum SocialMedia {
+  Telegram
+  Instagram
 }
