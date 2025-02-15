@@ -2,7 +2,7 @@ import { SearchRequestDTO } from '@/models/request/search-request';
 import { NextResponse } from 'next/server';
 import { TaskManager } from '@/lib/task-manager';
 import { generateMockBloggers } from '@/lib/mock/bloggers';
-import { withAuth } from '../withAuth';
+import { withAuth } from '../auth/utils';
 
 export const POST = withAuth(async (req: Request, userId: string) => {
   const url = `${process.env.SERVER_API}/search`;
