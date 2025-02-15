@@ -12,6 +12,9 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { History } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export default function UserProfileDropdown() {
   const { data: session, status } = useSession();
@@ -41,6 +44,16 @@ export default function UserProfileDropdown() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <Button
+              className="flex flex-row text-base px-4 gap-3 items-center"
+              asChild
+              variant="ghost"
+            >
+              <Link href="/history">
+                <History size={20} />
+                История запросов
+              </Link>
+            </Button>
             <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenu>
