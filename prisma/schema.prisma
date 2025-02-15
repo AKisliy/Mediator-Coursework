@@ -31,34 +31,27 @@ model Plan {
 }
 
 model UserSearch {
-  id               String            @id @db.Uuid
-  createdAt        DateTime          @default(now())
-  userId           String
-  user             User              @relation(fields: [userId], references: [id])
-  bloggersInSearch BloggerInSearch[]
-}
-
-model BloggerInSearch {
-  bloggerId String
-  searchId  String @db.Uuid
-
-  userSearch UserSearch @relation(fields: [searchId], references: [id])
-  blogger    Blogger    @relation(fields: [bloggerId], references: [id])
-
-  @@id([bloggerId, searchId])
+  id        String    @id @db.Uuid
+  createdAt DateTime  @default(now())
+  query     String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  bloggers  Blogger[]
 }
 
 model Blogger {
-  id           String            @id
+  id           String       @id
   username     String
   photo_link   String
   followers    Int
   niche        String
   social_media SocialMedia
-  searches     BloggerInSearch[]
+  searches     UserSearch[]
 }
 
 enum SocialMedia {
   Telegram
   Instagram
+
+  @@map("social_media")
 }
