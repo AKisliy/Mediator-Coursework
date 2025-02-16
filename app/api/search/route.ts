@@ -31,7 +31,6 @@ async function getReccomendtaionFromServer(
   try {
     if (process.env.USE_MOCK_API === 'true') {
       const result = generateMockBloggers(body.query, body.k);
-      await addSearchToHistory(result.uuid, body.query);
       TaskManager.completeTask(taskId, result);
       return;
     }
@@ -55,7 +54,7 @@ async function getReccomendtaionFromServer(
     }
 
     const res = (await response.json()) as SearchResponseDTO;
-    await addSearchToHistory(res.uuid, body.query);
+    await addSearchToHistory(res.uuid, body.query, res.recommendations);
     TaskManager.completeTask(taskId, res);
   } catch (e: any) {
     TaskManager.failTask(taskId, e.message);
