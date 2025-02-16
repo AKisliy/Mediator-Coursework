@@ -1,6 +1,10 @@
+import { SearchResponseDTO } from '@/models/response/search-response';
 import { v4 as uuidv4 } from 'uuid';
 
-export const generateMockBloggers = (query: string, k: number) => ({
+export const generateMockBloggers = (
+  query: string,
+  k: number
+): SearchResponseDTO => ({
   uuid: uuidv4(),
   recommendations: Array(k)
     .fill(null)

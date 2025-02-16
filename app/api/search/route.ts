@@ -2,6 +2,8 @@ import { SearchRequestDTO } from '@/models/request/search-request';
 import { NextResponse } from 'next/server';
 import { TaskManager } from '@/lib/task-manager';
 import { generateMockBloggers } from '@/lib/mock/bloggers';
+import { SearchResponseDTO } from '@/models/response/search-response';
+import { addSearchToHistory } from '@/app/actions/search-history';
 import { withAuth } from '../auth/utils';
 
 export const POST = withAuth(async (req: Request, userId: string) => {
@@ -29,6 +31,7 @@ async function getReccomendtaionFromServer(
   try {
     if (process.env.USE_MOCK_API === 'true') {
       const result = generateMockBloggers(body.query, body.k);
+      await addSearchToHistory(result.uuid, body.query);
       TaskManager.completeTask(taskId, result);
       return;
     }
@@ -51,7 +54,8 @@ async function getReccomendtaionFromServer(
       return;
     }
 
-    const res = await response.json();
+    const res = (await response.json()) as SearchResponseDTO;
+    await addSearchToHistory(res.uuid, body.query);
     TaskManager.completeTask(taskId, res);
   } catch (e: any) {
     TaskManager.failTask(taskId, e.message);

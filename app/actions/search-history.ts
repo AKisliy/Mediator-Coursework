@@ -22,3 +22,22 @@ export async function getUserHistory(): Promise<UserSearch[] | undefined> {
     'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
   );
 }
+
+export async function addSearchToHistory(
+  id: string,
+  query: string
+): Promise<UserSearch> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
+    await delay(5000);
+    return prisma.userSearch.create({
+      data: {
+        id,
+        query,
+        userId: MOCK_USER_ID
+      }
+    });
+  }
+  throw new Error(
+    'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
+  );
+}
