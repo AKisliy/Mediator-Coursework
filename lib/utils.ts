@@ -3,6 +3,8 @@ import { twMerge } from 'tailwind-merge';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import { BloggerResponseDTO } from '@/models/response/blogger-dto';
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -31,16 +33,12 @@ export function exportBloggersToCSV(bloggers: BloggerResponseDTO[]) {
 }
 
 export const formatTimestamp = (date: Date) => {
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const formattedDate = formatDistanceToNow(date, {
+    addSuffix: true,
+    locale: ru
+  });
 
-  if (diffDays === 0) return 'сегодня';
-  if (diffDays === 1) return 'вчера';
-  if (diffDays < 30) return `${diffDays} дней назад`;
-  if (diffDays < 60) return '1 месяц назад';
-  const diffMonths = Math.floor(diffDays / 30);
-  return `${diffMonths} месяцев назад`;
+  return formattedDate;
 };
 
 export const delay = (ms: number) =>

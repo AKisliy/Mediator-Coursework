@@ -28,30 +28,30 @@ export async function addSearchToHistory(
   id: string,
   query: string,
   bloggers: BloggerResponseDTO[]
-): Promise<[UserSearch, any]> {
+): Promise<UserSearch> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
     await delay(5000);
 
-    return prisma.$transaction([
-      prisma.userSearch.create({
-        data: {
-          id,
-          query,
-          userId: MOCK_USER_ID
+    return prisma.userSearch.create({
+      data: {
+        id,
+        query,
+        userId: MOCK_USER_ID,
+        bloggers: {
+          connectOrCreate: bloggers.map(blogger => ({
+            where: { id: blogger.id },
+            create: {
+              id: blogger.id,
+              username: blogger.metadata.username,
+              photo_link: blogger.metadata.image_link,
+              followers: blogger.metadata.followers_count,
+              social_media: blogger.metadata.social_media,
+              niche: blogger.metadata.category
+            }
+          }))
         }
-      }),
-      prisma.blogger.createMany({
-        data: bloggers.map(blogger => ({
-          id: blogger.id,
-          username: blogger.metadata.username,
-          photo_link: blogger.metadata.image_link,
-          followers: blogger.metadata.followers_count,
-          social_media: blogger.metadata.social_media,
-          niche: blogger.metadata.category
-        })),
-        skipDuplicates: true
-      })
-    ]);
+      }
+    });
   }
   throw new Error(
     'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
