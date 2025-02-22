@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db/prisma';
 import { MOCK_USER_ID } from '@/lib/mock/config';
 import { delay } from '@/lib/utils';
 import { BloggerResponseDTO } from '@/models/response/blogger-dto';
-import { UserSearch } from '@prisma/client';
+import { Blogger, UserSearch } from '@prisma/client';
 
 export async function getUserHistory(): Promise<UserSearch[] | undefined> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
@@ -43,10 +43,11 @@ export async function addSearchToHistory(
             create: {
               id: blogger.id,
               username: blogger.metadata.username,
-              photo_link: blogger.metadata.image_link,
-              followers: blogger.metadata.followers_count,
+              image_link: blogger.metadata.image_link,
+              followers_count: blogger.metadata.followers_count,
               social_media: blogger.metadata.social_media,
-              niche: blogger.metadata.category
+              category: blogger.metadata.category,
+              description: blogger.metadata.description
             }
           }))
         }
@@ -56,4 +57,21 @@ export async function addSearchToHistory(
   throw new Error(
     'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
   );
+}
+
+export async function getSearchWithBloggers(searchId: string): Promise<{
+  query: string;
+  createdAt: Date;
+  bloggers: Blogger[] | null;
+} | null> {
+  const res = await prisma.userSearch.findFirst({
+    where: {
+      id: searchId
+    },
+    include: {
+      bloggers: true
+    }
+  });
+  if (res?.bloggers) res.bloggers = res?.bloggers as Blogger[];
+  return res;
 }

@@ -40,13 +40,14 @@ model UserSearch {
 }
 
 model Blogger {
-  id           String       @id
-  username     String
-  photo_link   String
-  followers    Int
-  niche        String
-  social_media SocialMedia
-  searches     UserSearch[]
+  id              String       @id
+  username        String
+  image_link      String
+  followers_count Int
+  description     String
+  category        String
+  social_media    SocialMedia
+  searches        UserSearch[]
 }
 
 enum SocialMedia {

@@ -19,8 +19,7 @@ export const generateMockBloggers = (
         followers_count: Math.floor(Math.random() * 1000000) + 10000,
         social_media: 'Telegram',
         channel_title: 'Biba and boba',
-        description:
-          'Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation. Cool channel about motivation',
+        description: 'Cool channel about motivation',
         reason: `This blogger aligns well with your query "${query}" due to their expertise in ${['technology', 'fashion', 'food', 'travel', 'fitness'][Math.floor(Math.random() * 5)]}.`,
         citation_metrics: {
           Reposts: 0,
