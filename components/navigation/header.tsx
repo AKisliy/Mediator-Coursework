@@ -13,7 +13,7 @@ export default function Header() {
       <div className="w-full max-w-6xl flex justify-between items-center p-3 px-5 text-sm">
         <div className="flex gap-5 items-center font-semibold">
           <Link
-            href="\home"
+            href="/"
             className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#EC4899] transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             Mediator

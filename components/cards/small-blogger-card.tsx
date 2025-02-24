@@ -6,15 +6,16 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Blogger } from '@/models/blogger/blogger';
-import { InstBlogger } from '@/models/blogger/inst-blogger';
+import { BloggerEntity } from '@/models/blogger/blogger';
+import { InstBloggerEntity } from '@/models/blogger/inst-blogger';
+import { PlainBlogger } from '@/models/blogger/plain-blogger';
 import { FaInstagram, FaTelegram } from 'react-icons/fa';
 
 export default function SmallBloggerCard({
   blogger,
   onClick
 }: {
-  blogger: Blogger;
+  blogger: BloggerEntity | PlainBlogger;
   onClick: () => void;
 }) {
   return (
@@ -33,7 +34,7 @@ export default function SmallBloggerCard({
               <CardDescription>{blogger.category ?? ''}</CardDescription>
             </div>
           </div>
-          {blogger instanceof InstBlogger ? (
+          {blogger instanceof InstBloggerEntity ? (
             <FaInstagram size={30} />
           ) : (
             <FaTelegram size={30} />

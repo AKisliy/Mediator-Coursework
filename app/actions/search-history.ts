@@ -3,21 +3,29 @@
 import { prisma } from '@/lib/db/prisma';
 import { MOCK_USER_ID } from '@/lib/mock/config';
 import { delay } from '@/lib/utils';
+import { BloggerEntity } from '@/models/blogger/blogger';
+import { getBloggerFromDB } from '@/models/blogger/utils';
 import { BloggerResponseDTO } from '@/models/response/blogger-dto';
-import { Blogger, UserSearch } from '@prisma/client';
+import { UserSearch } from '@prisma/client';
 
-export async function getUserHistory(): Promise<UserSearch[] | undefined> {
+export async function getUserHistory(
+  offset: number = 0,
+  count: number = 20
+): Promise<UserSearch[] | undefined> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
     await delay(5000);
-    const response = await prisma.user.findUnique({
+
+    const response = await prisma.userSearch.findMany({
       where: {
-        id: MOCK_USER_ID
+        userId: MOCK_USER_ID
       },
-      select: {
-        searches: true
+      skip: offset,
+      take: count,
+      orderBy: {
+        createdAt: 'desc'
       }
     });
-    return response?.searches;
+    return response;
   }
   throw new Error(
     'Auth is not configured yet. Either set NEXT_PUBLIC_USE_MOCK_USER=true, or implement auth'
@@ -60,11 +68,11 @@ export async function addSearchToHistory(
 }
 
 export async function getSearchWithBloggers(searchId: string): Promise<{
-  query: string;
-  createdAt: Date;
-  bloggers: Blogger[] | null;
+  query: string | undefined;
+  createdAt: Date | undefined;
+  bloggers: BloggerEntity[] | undefined;
 } | null> {
-  const res = await prisma.userSearch.findFirst({
+  const response = await prisma.userSearch.findFirst({
     where: {
       id: searchId
     },
@@ -72,6 +80,14 @@ export async function getSearchWithBloggers(searchId: string): Promise<{
       bloggers: true
     }
   });
-  if (res?.bloggers) res.bloggers = res?.bloggers as Blogger[];
-  return res;
+  const result = {
+    query: response?.query ?? 'Unknown',
+    createdAt: response?.createdAt,
+    bloggers: response?.bloggers?.map(blogger => getBloggerFromDB(blogger))
+  };
+  return result;
+}
+
+export async function loadMoreSearchEntries(offset: number) {
+  return getUserHistory(offset, 10);
 }

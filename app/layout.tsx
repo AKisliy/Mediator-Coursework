@@ -22,7 +22,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'Mediator',
-  description: 'Find your perfect influencer'
+  description: 'Find your perfect influencer with AI ✨'
 };
 
 export default function RootLayout({

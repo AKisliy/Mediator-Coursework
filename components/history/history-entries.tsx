@@ -1,14 +1,24 @@
-import { getUserHistory } from '@/app/actions/search-history';
-import { formatTimestamp } from '@/lib/utils';
-import { Clock } from 'lucide-react';
-import Link from 'next/link';
-import { Skeleton } from '../ui/skeleton';
+'use client';
 
-export default async function HistoryEntries() {
-  const searchHistory = await getUserHistory();
+import { useState } from 'react';
+import Link from 'next/link';
+import { Clock } from 'lucide-react';
+import { formatTimestamp } from '@/lib/utils';
+import { UserSearch } from '@prisma/client';
+import LoadMoreButton from './load-more-button';
+
+interface HistoryEntriesProps {
+  initialEntries: UserSearch[];
+}
+
+export default function HistoryEntries({
+  initialEntries
+}: HistoryEntriesProps) {
+  const [entries, setEntries] = useState<UserSearch[]>(initialEntries);
+
   return (
-    <div className="grid gap-4">
-      {searchHistory?.map(entry => (
+    <div className="space-y-4">
+      {entries?.map(entry => (
         <Link
           key={entry.id}
           href={`/history/${entry.id}`}
@@ -25,16 +35,10 @@ export default async function HistoryEntries() {
           </div>
         </Link>
       ))}
-    </div>
-  );
-}
-
-export function HistoryEntriesFallback() {
-  return (
-    <div className="grid gap-4">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Skeleton className="h-12 rounded-xl" key={i} />
-      ))}
+      <LoadMoreButton
+        initialCount={entries?.length ?? 0}
+        onLoadMore={newEntries => setEntries(prev => [...prev, ...newEntries])}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import { Blogger } from './blogger';
+import { BloggerEntity } from './blogger';
 
-export class InstBlogger extends Blogger {
+export class InstBloggerEntity extends BloggerEntity {
   publications_count: number;
 
   following_count: number;
@@ -10,9 +10,6 @@ export class InstBlogger extends Blogger {
     const metadata = object.metadata || {};
     this.publications_count = metadata.publications_count || 0;
     this.following_count = metadata.following_count || 0;
-  }
-
-  getProfileLink(): string {
-    return `https://www.instagram.com/${this.username}`;
+    this.profile_link = `https://www.instagram.com/${this.username}`;
   }
 }

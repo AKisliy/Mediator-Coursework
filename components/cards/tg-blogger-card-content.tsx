@@ -1,10 +1,10 @@
-import { TelegramBlogger } from '@/models/blogger/telegram-blogger';
+import { TelegramBloggerEntity } from '@/models/blogger/telegram-blogger';
 import MetricCardField from './metric-card-field';
 
 export function TGBloggerCardContent({
   blogger
 }: {
-  blogger: TelegramBlogger;
+  blogger: TelegramBloggerEntity;
 }) {
   return (
     <div className="space-y-4">
@@ -22,7 +22,9 @@ export function TGBloggerCardContent({
       </p>
       {Object.entries(blogger.statistics)
         .filter(([_, value]) => typeof value === 'object' && value.value)
-        .map(([key, value]) => <MetricCardField metric={value} key={key} />)}
+        .map(([key, value]) => (
+          <MetricCardField metric={value} key={key} />
+        ))}
     </div>
   );
 }

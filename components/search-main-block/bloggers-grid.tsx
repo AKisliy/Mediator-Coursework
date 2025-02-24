@@ -1,19 +1,29 @@
+'use client';
+
 import { AnimatePresence, motion } from 'framer-motion';
-import { useBloggersQuery } from '@/context/bloggers-query-provider';
-import { getBloggerFromObject } from '@/models/blogger/utils';
-import { Blogger } from '@/models/blogger/blogger';
+import { BloggerEntity } from '@/models/blogger/blogger';
+import { useState } from 'react';
+import { PlainBlogger } from '@/models/blogger/plain-blogger';
+import { BloggersGridConfig } from '@/models/bloggers-grid-config';
+import FullBloggerCard from '../cards/full-blogger-card';
 import SmallBloggerCard from '../cards/small-blogger-card';
-import ActionsToolBar from './actions-tool-bar';
 
 export default function BloggersGrid({
-  setSelectedBlogger
+  bloggers,
+  upperChild,
+  config
 }: {
-  setSelectedBlogger: (b: Blogger) => void;
+  bloggers: BloggerEntity[] | PlainBlogger[];
+  upperChild?: React.ReactNode;
+  config?: BloggersGridConfig;
 }) {
-  const { bloggers } = useBloggersQuery();
+  const [selectedBlogger, setSelectedBlogger] = useState<
+    BloggerEntity | PlainBlogger | null
+  >(null);
+
   return (
     <>
-      <ActionsToolBar />
+      {upperChild}
       <motion.div
         className="grid gap-6 md:grid-cols-2 auto-rows-fr"
         initial={{ opacity: 0 }}
@@ -21,23 +31,29 @@ export default function BloggersGrid({
         transition={{ duration: 0.5 }}
       >
         <AnimatePresence>
-          {bloggers.map(blogger => {
-            const bloggerEntity = getBloggerFromObject(blogger);
-            return (
-              <SmallBloggerCard
-                key={bloggerEntity.id}
-                blogger={bloggerEntity}
-                onClick={() => {
-                  setSelectedBlogger(bloggerEntity);
-                }}
-              />
-            );
-          })}
+          {bloggers.map(blogger => (
+            <SmallBloggerCard
+              key={blogger.id}
+              blogger={blogger}
+              onClick={() => {
+                setSelectedBlogger(blogger);
+              }}
+            />
+          ))}
         </AnimatePresence>
       </motion.div>
-      <p className="text-center mt-4 text-muted-foreground">
-        Tap to open a card.
+      <p className="text-center mt-7 text-muted-foreground">
+        Нажмите на карточку, чтобы открыть 👆
       </p>
+      <AnimatePresence>
+        {selectedBlogger && (
+          <FullBloggerCard
+            blogger={selectedBlogger}
+            onClose={() => setSelectedBlogger(null)}
+            config={config}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

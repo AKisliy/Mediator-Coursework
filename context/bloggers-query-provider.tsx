@@ -6,13 +6,15 @@ import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
 import { BloggerResponseDTO } from '@/models/response/blogger-dto';
 import { getReasonLocalStorageKey } from '@/lib/utils';
+import { BloggerEntity } from '@/models/blogger/blogger';
+import { getBloggerFromMetadata } from '@/models/blogger/utils';
 import { SearchResponseDTO } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
   query: string;
   setQuery: (q: string) => void;
-  bloggers: BloggerResponseDTO[];
-  setBloggers: (bl: BloggerResponseDTO[]) => void;
+  bloggers: BloggerEntity[];
+  setBloggers: (bl: BloggerEntity[]) => void;
   loading: boolean;
   setLoading: (l: boolean) => void;
   handleSearch: () => void;
@@ -40,7 +42,7 @@ export const BloggerQueryProvider = ({
   useTaskPolling<SearchResponseDTO>({
     taskId,
     onSuccess: (data: SearchResponseDTO) => {
-      setBloggers(data.recommendations);
+      handleBloggersFromResponse(data.recommendations);
       setRequestId(data.uuid);
     },
     onError: (error: any) => {
@@ -85,6 +87,13 @@ export const BloggerQueryProvider = ({
       localStorage.removeItem(reasonKey);
     });
     setBloggers([]);
+  };
+
+  const handleBloggersFromResponse = (bloggersDto: BloggerResponseDTO[]) => {
+    const bloggersEntities = bloggersDto.map(blogger =>
+      getBloggerFromMetadata(blogger)
+    );
+    setBloggers(bloggersEntities);
   };
 
   return (

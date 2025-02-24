@@ -2,9 +2,9 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
-import { BloggerResponseDTO } from '@/models/response/blogger-dto';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { BloggerEntity } from '@/models/blogger/blogger';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,11 +18,11 @@ export function getReasonLocalStorageKey(
   return `reason-${bloggerId}-${requestId}`;
 }
 
-export function exportBloggersToCSV(bloggers: BloggerResponseDTO[]) {
+export function exportBloggersToCSV(bloggers: BloggerEntity[]) {
   if (!bloggers.length) return;
 
   bloggers.map(blogger =>
-    Object.entries(blogger.metadata).forEach(([key, value]) => {
+    Object.entries(blogger).forEach(([key, value]) => {
       (blogger as any)[key] = value;
     })
   );
@@ -32,7 +32,8 @@ export function exportBloggersToCSV(bloggers: BloggerResponseDTO[]) {
   saveAs(blob, 'bloggers.csv');
 }
 
-export const formatTimestamp = (date: Date) => {
+export const formatTimestamp = (date?: Date) => {
+  if (!date) return 'Unknown date';
   const formattedDate = formatDistanceToNow(date, {
     addSuffix: true,
     locale: ru

@@ -1,10 +1,9 @@
 import { Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import HistoryEntries, {
-  HistoryEntriesFallback
-} from '@/components/history/history-entries';
 import { Suspense } from 'react';
+import HistoryEntriesWrapper from '@/components/history/wrapper';
+import { HistoryEntriesFallback } from '@/components/history/fallback';
 
 export default async function SearchHistory() {
   return (
@@ -18,7 +17,7 @@ export default async function SearchHistory() {
           <Input className="pl-9" placeholder="Искать запросы..." />
         </div>
         <Suspense fallback={<HistoryEntriesFallback />}>
-          <HistoryEntries />
+          <HistoryEntriesWrapper />
         </Suspense>
       </CardContent>
     </Card>

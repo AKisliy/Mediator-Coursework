@@ -2,9 +2,11 @@ import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { Blogger } from '@/models/blogger/blogger';
-import { InstBlogger } from '@/models/blogger/inst-blogger';
-import { TelegramBlogger } from '@/models/blogger/telegram-blogger';
+import { BloggerEntity } from '@/models/blogger/blogger';
+import { InstBloggerEntity } from '@/models/blogger/inst-blogger';
+import { TelegramBloggerEntity } from '@/models/blogger/telegram-blogger';
+import { PlainBlogger } from '@/models/blogger/plain-blogger';
+import { BloggersGridConfig } from '@/models/bloggers-grid-config';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { InstBloggerCardContent } from './inst-blogger-card-content';
 import { TGBloggerCardContent } from './tg-blogger-card-content';
@@ -12,10 +14,12 @@ import ReasonButton from '../buttons/reason-button';
 
 export default function FullBloggerCard({
   blogger,
-  onClose
+  onClose,
+  config
 }: {
-  blogger: Blogger;
+  blogger: BloggerEntity | PlainBlogger;
   onClose: () => void;
+  config?: BloggersGridConfig;
 }) {
   return (
     <motion.div
@@ -53,17 +57,21 @@ export default function FullBloggerCard({
             </div>
           </CardHeader>
           <CardContent>
-            {blogger instanceof TelegramBlogger ? (
-              <TGBloggerCardContent blogger={blogger} />
+            {blogger.social_media === 'Telegram' ? (
+              <TGBloggerCardContent
+                blogger={blogger as TelegramBloggerEntity}
+              />
             ) : (
-              <InstBloggerCardContent blogger={blogger as InstBlogger} />
+              <InstBloggerCardContent blogger={blogger as InstBloggerEntity} />
             )}
-            <ReasonButton bloggerId={blogger.id} />
+            {(!config || config.needReasonButton !== false) && (
+              <ReasonButton bloggerId={blogger.id} />
+            )}
           </CardContent>
           <CardFooter>
             <Button className="w-full mt-6" asChild>
               <a
-                href={blogger.getProfileLink()}
+                href={blogger.profile_link}
                 target="_blank"
                 rel="noopener noreferrer"
               >
