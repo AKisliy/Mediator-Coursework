@@ -20,7 +20,7 @@ export default function SmallBloggerCard({
   return (
     <Card key={blogger.id} onClick={onClick}>
       <CardHeader>
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-2">
           <div className="flex items-center space-x-4">
             <Avatar>
               <AvatarImage src={blogger.image_link} />

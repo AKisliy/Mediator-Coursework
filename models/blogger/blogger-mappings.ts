@@ -15,7 +15,9 @@ export const FIELD_MAPPINGS = {
     id: 'id',
     username: 'username',
     category: 'category',
-    social_media: 'social_media'
+    social_media: 'social_media',
+    channel_title: 'channel_title',
+    avg_post_reach: 'avg_post_reach'
   }
 } as const;
 

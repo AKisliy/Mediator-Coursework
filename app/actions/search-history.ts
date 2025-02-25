@@ -79,10 +79,11 @@ export async function getSearchWithBloggers(searchId: string): Promise<{
       bloggers: true
     }
   });
+  const bloggers = transformBloggersFromDb(response?.bloggers || []);
   const result = {
     query: response?.query ?? 'Unknown',
     createdAt: response?.createdAt,
-    bloggers: transformBloggersFromDb(response?.bloggers || [])
+    bloggers
   };
   return result;
 }

@@ -14,7 +14,7 @@ export default async function HistoryEntryPage({
   return (
     <div className="flex flex-col gap-20 min-w-5xl p-5">
       <PageWithGridContainer>
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col">
           <div className="flex flex-col flex-grow gap-4">
             <div className="text-base text-gray-300">Ваш запрос:</div>
             <div className="text-3xl">{search?.query}</div>

@@ -2,7 +2,10 @@ import { SearchRequestDTO } from '@/models/request/search-request';
 import { NextResponse } from 'next/server';
 import { TaskManager } from '@/lib/task-manager';
 import { generateMockBloggers } from '@/lib/mock/bloggers';
-import { SearchResponseDTO } from '@/models/response/search-response';
+import {
+  SearchResponse,
+  SearchResponseDTO
+} from '@/models/response/search-response';
 import { transformRecommendations } from '@/models/blogger/blogger-mappings';
 import { addSearchToHistory } from '@/app/actions/search-history';
 import { withAuth } from '../auth/utils';
@@ -31,7 +34,12 @@ async function getReccomendtaionFromServer(
 ) {
   try {
     if (process.env.USE_MOCK_API === 'true') {
-      const result = generateMockBloggers(body.query, body.k);
+      const response = generateMockBloggers(body.query, body.k);
+      const bloggers = transformRecommendations(response.recommendations);
+      const result: SearchResponse = {
+        uuid: response.uuid,
+        recommendations: bloggers
+      };
       // await addSearchToHistory(result.uuid, body.query, result.recommendations);
       TaskManager.completeTask(taskId, result);
       return;

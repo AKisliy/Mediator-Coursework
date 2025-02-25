@@ -8,7 +8,7 @@ export function TelegramBloggerCardContent({
   return (
     <div className="space-y-4">
       <p className="text-lg">
-        <strong>{blogger.channel_title.toLocaleString() ?? ''}</strong>
+        <strong>{blogger?.channel_title?.toLocaleString() ?? ''}</strong>
       </p>
 
       <p className="text-base">
