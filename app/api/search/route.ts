@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { TaskManager } from '@/lib/task-manager';
 import { generateMockBloggers } from '@/lib/mock/bloggers';
 import { SearchResponseDTO } from '@/models/response/search-response';
+import { transformRecommendations } from '@/models/blogger/blogger-mappings';
 import { addSearchToHistory } from '@/app/actions/search-history';
 import { withAuth } from '../auth/utils';
 
@@ -55,7 +56,8 @@ async function getReccomendtaionFromServer(
     }
 
     const res = (await response.json()) as SearchResponseDTO;
-    await addSearchToHistory(res.uuid, body.query, res.recommendations);
+    const parsedBloggers = transformRecommendations(res.recommendations);
+    await addSearchToHistory(res.uuid, body.query, parsedBloggers);
     TaskManager.completeTask(taskId, res);
   } catch (e: any) {
     TaskManager.failTask(taskId, e.message);

@@ -1,23 +1,23 @@
 import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
-import { BloggerEntity } from '@/models/blogger/blogger';
-import { InstBloggerEntity } from '@/models/blogger/inst-blogger';
-import { TelegramBloggerEntity } from '@/models/blogger/telegram-blogger';
-import { PlainBlogger } from '@/models/blogger/plain-blogger';
-import { BloggersGridConfig } from '@/models/bloggers-grid-config';
+import { BloggersGridConfig } from '@/types/bloggers-grid-config';
+import { Blogger } from '@/types/blogger';
+import { isInstBlogger, isTelegramBlogger } from '@/types/type-guards';
+
+import ReasonButton from '../buttons/reason-button';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { InstBloggerCardContent } from './inst-blogger-card-content';
-import { TGBloggerCardContent } from './tg-blogger-card-content';
-import ReasonButton from '../buttons/reason-button';
+import { TelegramBloggerCardContent } from './tg-blogger-card-content';
 
 export default function FullBloggerCard({
   blogger,
   onClose,
   config
 }: {
-  blogger: BloggerEntity | PlainBlogger;
+  blogger: Blogger;
   onClose: () => void;
   config?: BloggersGridConfig;
 }) {
@@ -57,12 +57,11 @@ export default function FullBloggerCard({
             </div>
           </CardHeader>
           <CardContent>
-            {blogger.social_media === 'Telegram' ? (
-              <TGBloggerCardContent
-                blogger={blogger as TelegramBloggerEntity}
-              />
-            ) : (
-              <InstBloggerCardContent blogger={blogger as InstBloggerEntity} />
+            {isTelegramBlogger(blogger) && (
+              <TelegramBloggerCardContent blogger={blogger} />
+            )}
+            {isInstBlogger(blogger) && (
+              <InstBloggerCardContent blogger={blogger} />
             )}
             {(!config || config.needReasonButton !== false) && (
               <ReasonButton bloggerId={blogger.id} />

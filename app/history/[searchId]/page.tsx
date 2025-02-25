@@ -3,8 +3,6 @@ import PageWithGridContainer from '@/components/container/page-with-grid-contain
 import BloggersGrid from '@/components/search-main-block/bloggers-grid';
 import { Separator } from '@/components/ui/separator';
 import { formatTimestamp } from '@/lib/utils';
-import { PlainBlogger } from '@/models/blogger/plain-blogger';
-import { toPlainObject } from '@/models/blogger/utils';
 import { Clock } from 'lucide-react';
 
 export default async function HistoryEntryPage({
@@ -13,9 +11,6 @@ export default async function HistoryEntryPage({
   params: { searchId: string };
 }) {
   const search = await getSearchWithBloggers(params.searchId);
-  const plainBloggers =
-    search?.bloggers?.map(blogger => toPlainObject(blogger) as PlainBlogger) ||
-    [];
   return (
     <div className="flex flex-col gap-20 min-w-5xl p-5">
       <PageWithGridContainer>
@@ -31,7 +26,7 @@ export default async function HistoryEntryPage({
           <Separator className="my-6" />
           <div className="text-xl text-gray-300 mb-4">🚀 Результат:</div>
           <BloggersGrid
-            bloggers={plainBloggers}
+            bloggers={search?.bloggers ?? []}
             config={{ needReasonButton: false }}
           />
         </div>

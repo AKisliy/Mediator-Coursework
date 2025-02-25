@@ -1,10 +1,9 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { BloggerEntity } from '@/models/blogger/blogger';
 import { useState } from 'react';
-import { PlainBlogger } from '@/models/blogger/plain-blogger';
-import { BloggersGridConfig } from '@/models/bloggers-grid-config';
+import { BloggersGridConfig } from '@/types/bloggers-grid-config';
+import { Blogger } from '@/types/blogger';
 import FullBloggerCard from '../cards/full-blogger-card';
 import SmallBloggerCard from '../cards/small-blogger-card';
 
@@ -13,13 +12,11 @@ export default function BloggersGrid({
   upperChild,
   config
 }: {
-  bloggers: BloggerEntity[] | PlainBlogger[];
+  bloggers: Blogger[];
   upperChild?: React.ReactNode;
   config?: BloggersGridConfig;
 }) {
-  const [selectedBlogger, setSelectedBlogger] = useState<
-    BloggerEntity | PlainBlogger | null
-  >(null);
+  const [selectedBlogger, setSelectedBlogger] = useState<Blogger | null>(null);
 
   return (
     <>

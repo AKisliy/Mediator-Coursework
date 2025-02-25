@@ -4,17 +4,15 @@ import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
 import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
-import { BloggerResponseDTO } from '@/models/response/blogger-dto';
+import { Blogger } from '@/types/blogger';
 import { getReasonLocalStorageKey } from '@/lib/utils';
-import { BloggerEntity } from '@/models/blogger/blogger';
-import { getBloggerFromMetadata } from '@/models/blogger/utils';
-import { SearchResponseDTO } from '../models/response/search-response';
+import { SearchResponse } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
   query: string;
   setQuery: (q: string) => void;
-  bloggers: BloggerEntity[];
-  setBloggers: (bl: BloggerEntity[]) => void;
+  bloggers: Blogger[];
+  setBloggers: (bl: Blogger[]) => void;
   loading: boolean;
   setLoading: (l: boolean) => void;
   handleSearch: () => void;
@@ -33,16 +31,16 @@ export const BloggerQueryProvider = ({
   children: React.ReactNode;
 }) => {
   const [query, setQuery] = useState('');
-  const [bloggers, setBloggers] = useState<any[]>([]);
+  const [bloggers, setBloggers] = useState<Blogger[]>([]);
   const [loading, setLoading] = useState(false);
   const [bloggersCount, setBloggersCount] = useState(20);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
 
-  useTaskPolling<SearchResponseDTO>({
+  useTaskPolling<SearchResponse>({
     taskId,
-    onSuccess: (data: SearchResponseDTO) => {
-      handleBloggersFromResponse(data.recommendations);
+    onSuccess: (data: SearchResponse) => {
+      setBloggers(data.recommendations);
       setRequestId(data.uuid);
     },
     onError: (error: any) => {
@@ -87,13 +85,6 @@ export const BloggerQueryProvider = ({
       localStorage.removeItem(reasonKey);
     });
     setBloggers([]);
-  };
-
-  const handleBloggersFromResponse = (bloggersDto: BloggerResponseDTO[]) => {
-    const bloggersEntities = bloggersDto.map(blogger =>
-      getBloggerFromMetadata(blogger)
-    );
-    setBloggers(bloggersEntities);
   };
 
   return (

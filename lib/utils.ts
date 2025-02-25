@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { BloggerEntity } from '@/models/blogger/blogger';
+import { Blogger } from '@/types/blogger';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,7 +18,7 @@ export function getReasonLocalStorageKey(
   return `reason-${bloggerId}-${requestId}`;
 }
 
-export function exportBloggersToCSV(bloggers: BloggerEntity[]) {
+export function exportBloggersToCSV(bloggers: Blogger[]) {
   if (!bloggers.length) return;
 
   bloggers.map(blogger =>

@@ -3,9 +3,8 @@
 import { prisma } from '@/lib/db/prisma';
 import { MOCK_USER_ID } from '@/lib/mock/config';
 import { delay } from '@/lib/utils';
-import { BloggerEntity } from '@/models/blogger/blogger';
-import { getBloggerFromDB } from '@/models/blogger/utils';
-import { BloggerResponseDTO } from '@/models/response/blogger-dto';
+import { transformBloggersFromDb } from '@/models/blogger/blogger-mappings';
+import { Blogger } from '@/types/blogger';
 import { UserSearch } from '@prisma/client';
 
 export async function getUserHistory(
@@ -35,7 +34,7 @@ export async function getUserHistory(
 export async function addSearchToHistory(
   id: string,
   query: string,
-  bloggers: BloggerResponseDTO[]
+  bloggers: Blogger[]
 ): Promise<UserSearch> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') {
     await delay(5000);
@@ -50,12 +49,12 @@ export async function addSearchToHistory(
             where: { id: blogger.id },
             create: {
               id: blogger.id,
-              username: blogger.metadata.username,
-              image_link: blogger.metadata.image_link,
-              followers_count: blogger.metadata.followers_count,
-              social_media: blogger.metadata.social_media,
-              category: blogger.metadata.category,
-              description: blogger.metadata.description
+              username: blogger.username,
+              image_link: blogger.image_link,
+              followers_count: blogger.followers_count,
+              social_media: blogger.social_media,
+              category: blogger.category,
+              description: blogger.description
             }
           }))
         }
@@ -68,9 +67,9 @@ export async function addSearchToHistory(
 }
 
 export async function getSearchWithBloggers(searchId: string): Promise<{
-  query: string | undefined;
-  createdAt: Date | undefined;
-  bloggers: BloggerEntity[] | undefined;
+  query?: string;
+  createdAt?: Date;
+  bloggers?: Blogger[];
 } | null> {
   const response = await prisma.userSearch.findFirst({
     where: {
@@ -83,7 +82,7 @@ export async function getSearchWithBloggers(searchId: string): Promise<{
   const result = {
     query: response?.query ?? 'Unknown',
     createdAt: response?.createdAt,
-    bloggers: response?.bloggers?.map(blogger => getBloggerFromDB(blogger))
+    bloggers: transformBloggersFromDb(response?.bloggers || [])
   };
   return result;
 }

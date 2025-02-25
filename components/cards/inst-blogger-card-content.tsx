@@ -1,10 +1,6 @@
-import { InstBloggerEntity } from '@/models/blogger/inst-blogger';
+import { InstBlogger } from '@/types/blogger';
 
-export function InstBloggerCardContent({
-  blogger
-}: {
-  blogger: InstBloggerEntity;
-}) {
+export function InstBloggerCardContent({ blogger }: { blogger: InstBlogger }) {
   return (
     <div className="space-y-4">
       <p className="text-base">{blogger?.description?.toLocaleString()}</p>

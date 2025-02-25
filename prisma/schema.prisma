@@ -42,10 +42,10 @@ model UserSearch {
 model Blogger {
   id              String       @id
   username        String
-  image_link      String
+  image_link      String?
   followers_count Int
-  description     String
-  category        String
+  description     String?
+  category        String?
   social_media    SocialMedia
   searches        UserSearch[]
 }
