@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRecommendation } from '@/context/recommendations-provider';
-import { Button } from '../../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
-import { Progress } from '../../ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '../ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Progress } from '../ui/progress';
 
 type RecommendationsUsageProps = {
   initialCount: number;
@@ -12,37 +12,44 @@ type RecommendationsUsageProps = {
   initialPlan: string;
 };
 
-export default function RecommendationsUsage({
-  initialCount,
-  initialLimit,
-  initialPlan
-}: RecommendationsUsageProps) {
-  const {
-    setRecommendationCount,
-    setRecommendationLimit,
-    setPlanName,
-    recommendationCount,
-    recommendationLimit,
-    planName
-  } = useRecommendation();
+export default function RecommendationsUsage() {
+  // const {
+  //   setRecommendationCount,
+  //   setRecommendationLimit,
+  //   setPlanName,
+  //   recommendationCount,
+  //   recommendationLimit,
+  //   planName
+  // } = useRecommendation();
 
-  useEffect(() => {
-    if (initialCount !== recommendationCount) {
-      setRecommendationCount(initialCount);
-      setRecommendationLimit(initialLimit);
-      setPlanName(initialPlan);
-    }
-  }, [
-    initialCount,
-    initialLimit,
-    initialPlan,
-    recommendationCount,
-    setPlanName,
-    setRecommendationCount,
-    setRecommendationLimit
-  ]);
+  // useEffect(() => {
+  //   if (initialCount !== recommendationCount) {
+  //     setRecommendationCount(initialCount);
+  //     setRecommendationLimit(initialLimit);
+  //     setPlanName(initialPlan);
+  //   }
+  // }, [
+  //   initialCount,
+  //   initialLimit,
+  //   initialPlan,
+  //   recommendationCount,
+  //   setPlanName,
+  //   setRecommendationCount,
+  //   setRecommendationLimit
+  // ]);
+
+  const { recommendationCount, recommendationLimit, planName, isLoading } =
+    useRecommendation();
 
   const percentage = ((recommendationCount * 1.0) / recommendationLimit) * 100;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-16">
+        <Skeleton className="w-60 h-10" />
+      </div>
+    );
+  }
 
   return (
     <Popover>

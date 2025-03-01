@@ -11,6 +11,7 @@ type RecommendationContextType = {
   setRecommendationLimit: (limit: number) => void;
   recommendationLimit: number;
   planName: string;
+  isLoading: boolean;
 };
 
 const RecommendationContext = createContext<
@@ -22,16 +23,19 @@ export const RecommendationProvider: React.FC<{
 }> = ({ children }) => {
   const [recommendationCount, setRecommendationCount] = useState(0);
   const [recommendationLimit, setRecommendationLimit] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [planName, setPlanName] = useState('');
 
   useEffect(() => {
     const fetchRecommendationCount = async () => {
       try {
+        setIsLoading(true);
         const usages = await getUserReccomendationsCount();
         const plan = await getUserPlan();
         setRecommendationCount(usages ?? 0);
         setRecommendationLimit(plan?.monthly_limit ?? 0);
         setPlanName(plan?.name ?? 'Unknown');
+        setIsLoading(false);
       } catch (error) {
         console.error('Ошибка при загрузке recommendationCount:', error);
       }
@@ -48,7 +52,8 @@ export const RecommendationProvider: React.FC<{
         recommendationLimit,
         planName,
         setPlanName,
-        setRecommendationLimit
+        setRecommendationLimit,
+        isLoading
       }}
     >
       {children}
