@@ -1,11 +1,11 @@
-'use client';
-
 import '../../app/globals.css';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import RecommendationsUsage from './recommendation-usage';
+import { Suspense } from 'react';
 import { ThemeSwitcher } from '../theme-switcher';
 import UserProfileDropdown from './user-profile-dropdown';
+import { RecommendationUsageWrapper } from './recommendation-usage/wrapper';
+import RecommendationFallback from './recommendation-usage/fallback';
 
 export default function Header() {
   return (
@@ -18,7 +18,9 @@ export default function Header() {
           >
             Mediator
           </Link>
-          <RecommendationsUsage />
+          <Suspense fallback={<RecommendationFallback />}>
+            <RecommendationUsageWrapper />
+          </Suspense>
         </div>
         <div className="flex gap-5 items-center">
           <UserProfileDropdown />

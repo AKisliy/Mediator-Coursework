@@ -7,6 +7,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 type RecommendationContextType = {
   recommendationCount: number;
   setRecommendationCount: (n: number) => void;
+  setPlanName: (planName: string) => void;
+  setRecommendationLimit: (limit: number) => void;
   recommendationLimit: number;
   planName: string;
 };
@@ -44,7 +46,9 @@ export const RecommendationProvider: React.FC<{
         recommendationCount,
         setRecommendationCount,
         recommendationLimit,
-        planName
+        planName,
+        setPlanName,
+        setRecommendationLimit
       }}
     >
       {children}

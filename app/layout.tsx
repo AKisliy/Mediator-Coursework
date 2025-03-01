@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
 import Header from '@/components/navigation/header';
 import Footer from '@/components/navigation/footer';
 import { RecommendationProvider } from '@/context/recommendations-provider';
@@ -44,7 +43,7 @@ export default function RootLayout({
               <div className="flex-1 w-full flex flex-col gap-20 items-center">
                 <RecommendationProvider>
                   <Header />
-                  <BloggerQueryProvider>{children}</BloggerQueryProvider>
+                  {children}
                   <Toaster />
                   <Footer />
                 </RecommendationProvider>

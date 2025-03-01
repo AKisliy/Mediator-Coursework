@@ -1,13 +1,48 @@
+'use client';
+
+import { useEffect } from 'react';
 import { useRecommendation } from '@/context/recommendations-provider';
-import { Button } from '../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Progress } from '../ui/progress';
+import { Button } from '../../ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { Progress } from '../../ui/progress';
 
-export default function RecommendationsUsage() {
-  const { recommendationCount, recommendationLimit, planName } =
-    useRecommendation();
+type RecommendationsUsageProps = {
+  initialCount: number;
+  initialLimit: number;
+  initialPlan: string;
+};
 
-  const percentage = (recommendationCount / recommendationLimit) * 100;
+export default function RecommendationsUsage({
+  initialCount,
+  initialLimit,
+  initialPlan
+}: RecommendationsUsageProps) {
+  const {
+    setRecommendationCount,
+    setRecommendationLimit,
+    setPlanName,
+    recommendationCount,
+    recommendationLimit,
+    planName
+  } = useRecommendation();
+
+  useEffect(() => {
+    if (initialCount !== recommendationCount) {
+      setRecommendationCount(initialCount);
+      setRecommendationLimit(initialLimit);
+      setPlanName(initialPlan);
+    }
+  }, [
+    initialCount,
+    initialLimit,
+    initialPlan,
+    recommendationCount,
+    setPlanName,
+    setRecommendationCount,
+    setRecommendationLimit
+  ]);
+
+  const percentage = ((recommendationCount * 1.0) / recommendationLimit) * 100;
 
   return (
     <Popover>
