@@ -3,7 +3,7 @@
 import { MOCK_USERNAME } from '@/lib/mock/config';
 
 export async function sendFeedback(requestId: string, givenScore: number) {
-  const url = `${process.env.SERVER_API  }/feedback`;
+  const url = `${process.env.SERVER_API}/feedback`;
 
   const response = await fetch(url, {
     method: 'POST',

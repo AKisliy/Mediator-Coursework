@@ -6,38 +6,7 @@ import { Button } from '../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
 
-type RecommendationsUsageProps = {
-  initialCount: number;
-  initialLimit: number;
-  initialPlan: string;
-};
-
 export default function RecommendationsUsage() {
-  // const {
-  //   setRecommendationCount,
-  //   setRecommendationLimit,
-  //   setPlanName,
-  //   recommendationCount,
-  //   recommendationLimit,
-  //   planName
-  // } = useRecommendation();
-
-  // useEffect(() => {
-  //   if (initialCount !== recommendationCount) {
-  //     setRecommendationCount(initialCount);
-  //     setRecommendationLimit(initialLimit);
-  //     setPlanName(initialPlan);
-  //   }
-  // }, [
-  //   initialCount,
-  //   initialLimit,
-  //   initialPlan,
-  //   recommendationCount,
-  //   setPlanName,
-  //   setRecommendationCount,
-  //   setRecommendationLimit
-  // ]);
-
   const { recommendationCount, recommendationLimit, planName, isLoading } =
     useRecommendation();
 

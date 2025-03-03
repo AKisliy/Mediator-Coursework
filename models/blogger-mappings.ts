@@ -1,7 +1,7 @@
 import { Blogger } from '@/types/blogger';
 import { isInstBlogger, isTelegramBlogger } from '@/types/type-guards';
 import { Blogger as PrismaBlogger } from '@prisma/client';
-import { BloggerResponseDTO } from '../response/blogger-dto';
+import { BloggerResponseDTO } from './response/blogger-dto';
 
 export const FIELD_MAPPINGS = {
   blogger: {

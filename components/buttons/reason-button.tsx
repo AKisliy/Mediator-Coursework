@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { getReason } from '@/app/actions/reason';
+import { getReason } from '@/app/actions/reason.action';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { getReasonLocalStorageKey } from '@/lib/utils';
 import { TypewriterText } from '../typewriter-text';

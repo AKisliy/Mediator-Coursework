@@ -1,4 +1,4 @@
-import { sendFeedback } from '@/app/actions/feedback';
+import { sendFeedback } from '@/app/actions/feedback.action';
 import {
   Tooltip,
   TooltipContent,

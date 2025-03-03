@@ -6,8 +6,8 @@ import {
   SearchResponse,
   SearchResponseDTO
 } from '@/models/response/search-response';
-import { transformRecommendations } from '@/models/blogger/blogger-mappings';
-import { addSearchToHistory } from '@/app/actions/search-history';
+import { transformRecommendations } from '@/models/blogger-mappings';
+import { addSearchToHistory } from '@/app/actions/search-history.action';
 import { withAuth } from '../auth/utils';
 
 export const POST = withAuth(async (req: Request, userId: string) => {

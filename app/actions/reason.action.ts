@@ -4,7 +4,7 @@ import { getReasonMock } from '@/lib/mock/reason';
 
 export async function getReason(id: string, question: string) {
   if (process.env.USE_MOCK_API === 'true') return getReasonMock();
-  const url = `${process.env.SERVER_API  }/reason`;
+  const url = `${process.env.SERVER_API}/reason`;
   const response = await fetch(url, {
     method: 'POST',
     headers: {

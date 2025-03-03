@@ -1,0 +1,85 @@
+'use server';
+
+import { prisma } from '@/lib/db/prisma';
+import { delay } from '@/lib/utils';
+import { transformBloggersFromDb } from '@/models/blogger-mappings';
+import { Blogger } from '@/types/blogger';
+import { UserSearch } from '@prisma/client';
+import { verifySessionAndGetId } from '../api/auth/utils';
+
+export async function getUserHistory(
+  offset: number = 0,
+  count: number = 20
+): Promise<UserSearch[] | undefined> {
+  const userId = await verifySessionAndGetId();
+  await delay(5000);
+
+  const response = await prisma.userSearch.findMany({
+    where: {
+      userId
+    },
+    skip: offset,
+    take: count,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  return response;
+}
+
+export async function addSearchToHistory(
+  id: string,
+  query: string,
+  bloggers: Blogger[]
+): Promise<UserSearch> {
+  const userId = await verifySessionAndGetId();
+  await delay(5000);
+
+  return prisma.userSearch.create({
+    data: {
+      id,
+      query,
+      userId,
+      bloggers: {
+        connectOrCreate: bloggers.map(blogger => ({
+          where: { id: blogger.id },
+          create: {
+            id: blogger.id,
+            username: blogger.username,
+            image_link: blogger.image_link,
+            followers_count: blogger.followers_count,
+            social_media: blogger.social_media,
+            category: blogger.category,
+            description: blogger.description
+          }
+        }))
+      }
+    }
+  });
+}
+
+export async function getSearchWithBloggers(searchId: string): Promise<{
+  query?: string;
+  createdAt?: Date;
+  bloggers?: Blogger[];
+} | null> {
+  const response = await prisma.userSearch.findFirst({
+    where: {
+      id: searchId
+    },
+    include: {
+      bloggers: true
+    }
+  });
+  const bloggers = transformBloggersFromDb(response?.bloggers || []);
+  const result = {
+    query: response?.query ?? 'Unknown',
+    createdAt: response?.createdAt,
+    bloggers
+  };
+  return result;
+}
+
+export async function loadMoreSearchEntries(offset: number) {
+  return getUserHistory(offset, 10);
+}

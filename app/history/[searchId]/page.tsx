@@ -1,4 +1,4 @@
-import { getSearchWithBloggers } from '@/app/actions/search-history';
+import { getSearchWithBloggers } from '@/app/actions/search-history.action';
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import BloggersGrid from '@/components/search-main-block/bloggers-grid';
 import { Separator } from '@/components/ui/separator';
