@@ -6,5 +6,6 @@ declare namespace NodeJS {
     USE_MOCK_API: string;
     BOT_TOKEN: string;
     NEXT_PUBLIC_BOT_USERNAME: string;
+    REDIS_URL: string;
   }
 }

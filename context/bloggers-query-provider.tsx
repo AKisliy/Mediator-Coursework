@@ -2,10 +2,10 @@
 
 import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
-import { SearchBloggerAPI } from '@/lib/api-access/search';
 import React, { createContext, useContext, useState } from 'react';
 import { Blogger } from '@/types/blogger';
 import { getReasonLocalStorageKey } from '@/lib/utils';
+import { startSearchTask } from '@/app/actions/search.action';
 import { SearchResponse } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
@@ -60,11 +60,9 @@ export const BloggerQueryProvider = ({
     try {
       handleGridClearing();
       setLoading(true);
-      const newTaskId = await SearchBloggerAPI.searchBloggers(
-        query,
-        bloggersCount
-      );
-      setTaskId(newTaskId);
+      const searchJob = await startSearchTask(query, bloggersCount);
+      if (!searchJob.jobId) throw new Error('Не удалось отправить запрос');
+      setTaskId(searchJob.jobId);
       toast({
         title: 'Запрос успешно отправлен ✨',
         description: 'Осталось немного подождать...'

@@ -1,3 +1,4 @@
+import { getTaskStatus } from '@/app/actions/task.action';
 import { useEffect, useState } from 'react';
 
 interface UseTaskPollingProps<T> {
@@ -24,16 +25,17 @@ export function useTaskPolling<T>({
     setIsPolling(true);
 
     const pollInterval = setInterval(async () => {
-      const response = await fetch(`/api/task/${taskId}`);
-      if (response.status !== 202) {
+      const response = await getTaskStatus<T>(taskId);
+      if (response.status !== 'pending') {
         try {
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error);
+          if (response.status === 'error') {
+            throw new Error('Task failed');
           }
-          const responseData = await response.json();
-          setData(responseData);
-          onSuccess?.(responseData);
+          if (response.data === null) {
+            throw new Error('Task data is empty');
+          }
+          setData(response.data);
+          onSuccess?.(response.data);
         } catch (err) {
           const errorMessage =
             err instanceof Error ? err.message : 'Unknown error occurred';
