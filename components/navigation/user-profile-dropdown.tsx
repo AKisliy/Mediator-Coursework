@@ -9,12 +9,30 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ReloadIcon } from '@radix-ui/react-icons';
-
+import { IoPerson } from 'react-icons/io5';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { History } from 'lucide-react';
+import { History, Settings } from 'lucide-react';
 import { Button } from '../ui/button';
+
+const dropDownLinks = [
+  {
+    title: 'Профиль',
+    icon: IoPerson,
+    href: '/profile'
+  },
+  {
+    title: 'История запросов',
+    icon: History,
+    href: '/history'
+  },
+  {
+    title: 'Настройки',
+    icon: Settings,
+    href: '/settings'
+  }
+];
 
 export default function UserProfileDropdown() {
   const { data: session, status } = useSession();
@@ -43,18 +61,21 @@ export default function UserProfileDropdown() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <Button
-              className="flex flex-row text-base px-4 gap-3 items-center"
-              asChild
-              variant="ghost"
-            >
-              <Link href="/history">
-                <History size={20} />
-                История запросов
-              </Link>
-            </Button>
-            <DropdownMenuSeparator />
+            {dropDownLinks.map((value, idx) => (
+              <div key={idx}>
+                <DropdownMenuSeparator />
+                <Button
+                  className="flex flex-row text-base px-4 gap-3 items-center justify-start"
+                  asChild
+                  variant="ghost"
+                >
+                  <Link href={value.href}>
+                    <value.icon size={20} />
+                    {value.title}
+                  </Link>
+                </Button>
+              </div>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       )}
