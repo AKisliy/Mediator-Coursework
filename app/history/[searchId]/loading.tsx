@@ -1,4 +1,4 @@
-import BloggersGridSkeleton from '@/components/bloggers-grid-skeleton';
+import BloggersGridSkeleton from '@/components/bloggers-grid/bloggers-grid-skeleton';
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';

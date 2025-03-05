@@ -13,8 +13,8 @@ export async function getTaskStatus<T>(
 
   if (result) {
     const data = JSON.parse(result);
-    if (data.status === 'error') {
-      return { status: 'error', data };
+    if (data.error) {
+      return { status: 'error', data: data.error };
     }
     return { status: 'success', data };
   }

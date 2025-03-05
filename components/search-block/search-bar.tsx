@@ -4,12 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Search } from 'lucide-react';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { useRecommendation } from '@/context/recommendations-provider';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import RecommendationCountInput from './recommendation-count';
+import FiltersDialogButton from './filters-dialog-button';
 
 export default function SearchBar() {
   const { setQuery, handleSearch, query, loading, bloggersCount } =
     useBloggersQuery();
+
+  const [isFiltersUsed, setIsFiltersUsed] = useState(false);
+
   const { recommendationCount } = useRecommendation();
 
   return (
@@ -23,6 +28,10 @@ export default function SearchBar() {
           className="flex-grow"
         />
 
+        <FiltersDialogButton
+          setIsFiltersUsed={setIsFiltersUsed}
+          isFiltersUsed={isFiltersUsed}
+        />
         <Button
           onClick={handleSearch}
           disabled={

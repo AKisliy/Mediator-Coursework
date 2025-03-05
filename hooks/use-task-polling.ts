@@ -29,7 +29,7 @@ export function useTaskPolling<T>({
       if (response.status !== 'pending') {
         try {
           if (response.status === 'error') {
-            throw new Error('Task failed');
+            throw new Error(response?.data?.toString());
           }
           if (response.data === null) {
             throw new Error('Task data is empty');

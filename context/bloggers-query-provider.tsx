@@ -6,6 +6,8 @@ import React, { createContext, useContext, useState } from 'react';
 import { Blogger } from '@/types/blogger';
 import { getReasonLocalStorageKey } from '@/lib/utils';
 import { startSearchTask } from '@/app/actions/search.action';
+import { FilterValue } from '@/types/search-filters';
+import { defaultFilters } from '@/lib/filters';
 import { SearchResponse } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
@@ -19,6 +21,8 @@ type BloggerQueryContextType = {
   bloggersCount: number;
   setBloggersCount: (n: number) => void;
   requestId: string | null;
+  filters: FilterValue[];
+  setFilters: (f: FilterValue[]) => void;
 };
 
 const BloggerQueryContext = createContext<BloggerQueryContextType | undefined>(
@@ -36,6 +40,7 @@ export const BloggerQueryProvider = ({
   const [bloggersCount, setBloggersCount] = useState(20);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterValue[]>(defaultFilters);
 
   useTaskPolling<SearchResponse>({
     taskId,
@@ -45,7 +50,7 @@ export const BloggerQueryProvider = ({
     },
     onError: (error: any) => {
       toast({
-        title: 'Ошибка',
+        title: 'Ошибка ☠️',
         description: error,
         variant: 'destructive'
       });
@@ -60,7 +65,7 @@ export const BloggerQueryProvider = ({
     try {
       handleGridClearing();
       setLoading(true);
-      const searchJob = await startSearchTask(query, bloggersCount);
+      const searchJob = await startSearchTask(query, filters, bloggersCount);
       if (!searchJob.jobId) throw new Error('Не удалось отправить запрос');
       setTaskId(searchJob.jobId);
       toast({
@@ -97,7 +102,9 @@ export const BloggerQueryProvider = ({
         handleSearch,
         bloggersCount,
         setBloggersCount,
-        requestId
+        requestId,
+        filters,
+        setFilters
       }}
     >
       {children}

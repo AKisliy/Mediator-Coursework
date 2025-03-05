@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Blogger } from '@/types/blogger';
+import { FilterValue } from '@/types/search-filters';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,3 +47,26 @@ export const delay = (ms: number) =>
   new Promise(resolve => {
     setTimeout(resolve, ms);
   });
+
+function intlFormat(num: number) {
+  return new Intl.NumberFormat().format(Math.round(num * 10) / 10);
+}
+
+export function getFriendlyNumberWithLetter(num: number) {
+  if (num >= 1000000) return `${intlFormat(num / 1000000)}M`;
+  if (num >= 1000) return `${intlFormat(num / 1000)}k`;
+  return intlFormat(num);
+}
+
+export function getFriendlyNumberInThousands(num: number) {
+  if (num >= 1000) return intlFormat(num / 1000);
+  return intlFormat(num);
+}
+
+export function enrichQueryWithFilters(query: string, filters: FilterValue[]) {
+  return filters.reduce((acc, filter) => {
+    if (filter.value[0] === filter.min && filter.value[1] === filter.max)
+      return acc;
+    return `${acc} ${filter.name}: от ${filter.value[0]} до ${filter.value[1]}`;
+  }, query);
+}

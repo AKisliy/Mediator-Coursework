@@ -6,8 +6,10 @@ import {
 } from '@/models/response/search-response';
 import { addSearchToHistory } from '@/app/actions/search-history.action';
 import { redisConnection } from '@/lib/redis';
+import { FilterValue } from '@/types/search-filters';
 import { generateMockBloggers } from '../mock/bloggers';
 import { defaultQueueConfig } from './config';
+import { enrichQueryWithFilters } from '../utils';
 
 const queueName = 'recommendations';
 
@@ -15,6 +17,7 @@ interface QueueInterface {
   query: string;
   k: number;
   user_id: string;
+  filters: FilterValue[];
 }
 
 export const processSearchQueue = new Queue<QueueInterface>(queueName, {
@@ -26,7 +29,7 @@ export const searchWorker = new Worker<QueueInterface, SearchResponse>(
   queueName,
   async job => {
     console.log(`Обрабатываем задачу ${job.id}`);
-    const { query, k } = job.data;
+    const { query, k, filters, user_id } = job.data;
     const url = `${process.env.SERVER_API}/search`;
 
     try {
@@ -41,13 +44,18 @@ export const searchWorker = new Worker<QueueInterface, SearchResponse>(
         return result;
       }
 
+      const body = {
+        user_id,
+        k,
+        query: enrichQueryWithFilters(query, filters)
+      };
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(job.data)
+        body: JSON.stringify(body)
       });
 
       if (!response.ok) {

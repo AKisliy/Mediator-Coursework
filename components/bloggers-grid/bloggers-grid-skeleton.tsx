@@ -1,4 +1,4 @@
-import SmallBloggerCardSkeleton from './cards/small-blogger-card-skeleton';
+import SmallBloggerCardSkeleton from '../cards/small-blogger-card-skeleton';
 
 export default function BloggersGridSkeleton() {
   return (
