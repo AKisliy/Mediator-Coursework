@@ -1,4 +1,4 @@
-import { getVerificationTokenByEmail } from '@/app/actions/auth.action';
+import { getVerificationTokenByEmail } from '@/data/token';
 import { Blogger } from '@/types/blogger';
 import { FilterValue } from '@/types/search-filters';
 import { clsx, type ClassValue } from 'clsx';

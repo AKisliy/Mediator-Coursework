@@ -1,8 +1,6 @@
-'use server';
-
+import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { Plan } from '@prisma/client';
-import { verifySessionAndGetId } from '../api/auth/utils';
 
 export async function getUserPlan(): Promise<Plan | undefined> {
   const userId = await verifySessionAndGetId();

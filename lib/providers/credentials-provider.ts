@@ -1,4 +1,4 @@
-import { getUserByEmail } from '@/app/actions/user.action';
+import { getUserByEmail } from '@/data/user';
 import { LoginSchema } from '@/schemas';
 import bcrypt from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { loadMoreSearchEntries } from '@/app/actions/search-history.action';
+import { loadMoreSearchEntries } from '@/data/history';
 import { UserSearch } from '@prisma/client';
+import { Plus } from 'lucide-react';
+import { useState, useTransition } from 'react';
 
 interface LoadMoreButtonProps {
   initialCount: number;

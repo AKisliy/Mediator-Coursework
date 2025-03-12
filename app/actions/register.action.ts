@@ -1,5 +1,6 @@
 'use server';
 
+import { getUserByEmail } from '@/data/user';
 import { prisma } from '@/lib/db/prisma';
 import { sendVerificationEmail } from '@/lib/mail';
 import { nodemailerConfig } from '@/lib/providers/email-provider';
@@ -24,11 +25,7 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const userExists = await prisma.user.findFirst({
-      where: {
-        email
-      }
-    });
+    const userExists = await getUserByEmail(email);
 
     if (userExists) {
       return { error: 'Email already is in use. Please try another one.' };

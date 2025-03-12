@@ -1,15 +1,15 @@
-import { Job, Queue, Worker } from 'bullmq';
+import { addSearchToHistory } from '@/data/history';
+import { redisConnection } from '@/lib/redis';
 import { transformRecommendations } from '@/models/blogger-mappings';
 import {
   SearchResponse,
   SearchResponseDTO
 } from '@/models/response/search-response';
-import { addSearchToHistory } from '@/app/actions/search-history.action';
-import { redisConnection } from '@/lib/redis';
 import { FilterValue } from '@/types/search-filters';
+import { Job, Queue, Worker } from 'bullmq';
 import { generateMockBloggers } from '../mock/bloggers';
-import { defaultQueueConfig } from './config';
 import { enrichQueryWithFilters } from '../utils';
+import { defaultQueueConfig } from './config';
 
 const queueName = 'recommendations';
 

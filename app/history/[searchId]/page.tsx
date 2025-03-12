@@ -1,7 +1,7 @@
-import { getSearchWithBloggers } from '@/app/actions/search-history.action';
-import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import BloggersGrid from '@/components/bloggers-grid/bloggers-grid';
+import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import { Separator } from '@/components/ui/separator';
+import { getSearchWithBloggers } from '@/data/history';
 import { formatTimestamp } from '@/lib/utils';
 import { Clock } from 'lucide-react';
 

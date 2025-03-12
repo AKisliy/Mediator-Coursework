@@ -1,11 +1,12 @@
 'use server';
 
 import { signIn } from '@/auth';
+import { getVerificationTokenByToken } from '@/data/token';
+import { getUserByEmail } from '@/data/user';
 import { prisma } from '@/lib/db/prisma';
 import { LoginSchema } from '@/schemas';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
-import { getUserByEmail } from './user.action';
 
 export async function authenticate(prevState: any, formData: FormData) {
   try {
@@ -29,34 +30,6 @@ export async function authenticate(prevState: any, formData: FormData) {
     };
   }
 }
-
-export const getVerificationTokenByEmail = async (email: string) => {
-  try {
-    const verificationToken = await prisma.verificationToken.findFirst({
-      where: {
-        identifier: email
-      }
-    });
-
-    return verificationToken;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const getVerificationTokenByToken = async (token: string) => {
-  try {
-    const verificationToken = await prisma.verificationToken.findFirst({
-      where: {
-        token
-      }
-    });
-
-    return verificationToken;
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export const proceedVerification = async (token: string) => {
   const existingToken = await getVerificationTokenByToken(token);

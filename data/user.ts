@@ -1,8 +1,6 @@
-'use server';
-
+import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { User } from '@prisma/client';
-import { verifySessionAndGetId } from '../api/auth/utils';
 
 export async function getUserReccomendationsCount(): Promise<
   number | undefined
