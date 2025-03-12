@@ -26,8 +26,22 @@ export const {
     },
     async session({ session }: { session: Session }) {
       if (session && session.user) session.user.id = session?.user?.email;
+      console.log(session);
       return session;
+    },
+    async jwt({ token }) {
+      if (!token.sub) return token;
+      const existingUser = await getUserById(token.sub);
+
+      if (!existingUser) return token;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+
+      return token;
     }
+  },
+  session: {
+    strategy: 'jwt'
   },
   adapter: PrismaAdapter(prisma),
   pages: {
