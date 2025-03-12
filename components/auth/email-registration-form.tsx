@@ -29,7 +29,7 @@ export default function EmailRegistrationForm({
           <FormItem>
             <FormLabel>Email</FormLabel>
             <FormControl>
-              <Input {...field} placeholder="johndoe@email.com" type="email" />
+              <Input {...field} placeholder="ilove@mediator.ru" type="email" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -40,7 +40,7 @@ export default function EmailRegistrationForm({
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>Имя</FormLabel>
             <FormControl>
               <Input {...field} placeholder="John Doe" />
             </FormControl>
@@ -53,7 +53,7 @@ export default function EmailRegistrationForm({
         name="password"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Пароль</FormLabel>
             <FormControl>
               <Input {...field} placeholder="******" type="password" />
             </FormControl>
@@ -66,7 +66,7 @@ export default function EmailRegistrationForm({
         name="passwordConfirmation"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Confirm Password</FormLabel>
+            <FormLabel>Подтверждение пароля</FormLabel>
             <FormControl>
               <Input {...field} placeholder="******" type="password" />
             </FormControl>

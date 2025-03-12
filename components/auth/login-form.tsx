@@ -28,7 +28,6 @@ export function LoginForm() {
   });
 
   const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
-    console.log('Submiting');
     setIsLoading(true);
     login(data).then(res => {
       if (res.error) {

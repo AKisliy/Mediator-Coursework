@@ -29,7 +29,7 @@ export default function EmailLoginForm({
           <FormItem>
             <FormLabel>Email</FormLabel>
             <FormControl>
-              <Input {...field} placeholder="johndoe@email.com" type="email" />
+              <Input {...field} placeholder="ilove@mediator.ru" type="email" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -40,7 +40,7 @@ export default function EmailLoginForm({
         name="password"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Пароль</FormLabel>
             <FormControl>
               <Input {...field} placeholder="******" type="password" />
             </FormControl>
@@ -49,7 +49,7 @@ export default function EmailLoginForm({
         )}
       />
       <Button type="submit" className="w-full" aria-disabled={loading}>
-        Login
+        Войти
       </Button>
     </>
   );
