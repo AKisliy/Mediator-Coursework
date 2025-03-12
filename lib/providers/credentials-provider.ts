@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';
 
 export const credentialsProvider = Credentials({
+  id: 'credentials',
+  name: 'Credentials',
   async authorize(credentials) {
     const validatedCredentials = LoginSchema.safeParse(credentials);
 

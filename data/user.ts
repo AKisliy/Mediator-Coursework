@@ -1,3 +1,5 @@
+'use server';
+
 import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { User } from '@prisma/client';

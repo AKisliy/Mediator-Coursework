@@ -30,7 +30,7 @@ export function LoginForm() {
   const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
     setIsLoading(true);
     login(data).then(res => {
-      if (res.error) {
+      if (res && res.error) {
         toast({
           title: 'Ошибка ☠️',
           description: res.error,
@@ -38,10 +38,10 @@ export function LoginForm() {
         });
         setIsLoading(false);
       }
-      if (res.success) {
+      if (res && res.success) {
         toast({
-          title: 'Успех!',
-          description: 'Ссылка с подтверждением отправлена на почту'
+          title: 'Успех!✨',
+          description: 'Вы успешно зашли в приложение'
         });
         setIsLoading(false);
       }

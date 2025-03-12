@@ -1,12 +1,15 @@
 import { getVerificationTokenByEmail } from '@/data/token';
 import { Blogger } from '@/types/blogger';
 import { FilterValue } from '@/types/search-filters';
+import { botttsNeutral } from '@dicebear/collection';
+import { createAvatar } from '@dicebear/core';
 import { clsx, type ClassValue } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import { twMerge } from 'tailwind-merge';
+import { generateUsername } from 'unique-username-generator';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from './db/prisma';
 
@@ -104,3 +107,16 @@ export const generateVerificationToken = async (email: string) => {
 
   return verificationToken;
 };
+
+export function generateUniqueUsername(): string {
+  const username = generateUsername('', 2);
+  return username;
+}
+
+export function generateAvatar(name: string): string {
+  const avatar = createAvatar(botttsNeutral, {
+    seed: name
+  });
+
+  return avatar.toDataUri();
+}

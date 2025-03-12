@@ -4,7 +4,15 @@ import { signIn } from '@/auth';
 import { getVerificationTokenByToken } from '@/data/token';
 import { getUserByEmail } from '@/data/user';
 import { prisma } from '@/lib/db/prisma';
-import { LoginSchema } from '@/schemas';
+import { sendVerificationEmail } from '@/lib/mail';
+import { nodemailerConfig } from '@/lib/providers/email-provider';
+import {
+  generateAvatar,
+  generateUniqueUsername,
+  generateVerificationToken
+} from '@/lib/utils';
+import { LoginSchema, RegisterSchema } from '@/schemas';
+import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 
@@ -88,13 +96,16 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
     return { error: 'User does not exist' };
   }
 
+  console.log('Authorizing user');
+
   try {
     await signIn('credentials', {
       email: userExists.email,
       password,
       redirectTo: '/'
     });
-  } catch (error) {
+    console.log('User authenticated');
+  } catch (error: any) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
@@ -103,7 +114,73 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
           return { error: 'Please confirm yours email address' };
       }
     }
+    throw error;
   }
 
   return { success: 'User logged in successfully' };
+};
+
+export const register = async (data: z.infer<typeof RegisterSchema>) => {
+  try {
+    const validatedData = RegisterSchema.parse(data);
+
+    if (!validatedData) {
+      return { error: 'Invalid input data' };
+    }
+
+    const { email, name, password, passwordConfirmation } = validatedData;
+
+    if (password !== passwordConfirmation) {
+      return { error: 'Passwords do not match' };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const userExists = await getUserByEmail(email);
+
+    if (userExists) {
+      return { error: 'Email already is in use. Please try another one.' };
+    }
+
+    const lowerCaseEmail = email.toLowerCase();
+    const username = generateUniqueUsername();
+    const avatartUri = generateAvatar(name);
+
+    await prisma.user.create({
+      data: {
+        email: lowerCaseEmail,
+        name,
+        username,
+        password: hashedPassword,
+        image: avatartUri
+      }
+    });
+
+    // Generate a verification token
+    const verificationToken = await generateVerificationToken(email);
+
+    await sendVerificationEmail(
+      email,
+      verificationToken.token,
+      'http://localhost:3000',
+      nodemailerConfig
+    );
+
+    return { success: 'Email Verification was sent' };
+  } catch (error) {
+    // Handle the error, specifically check for a 503 error
+    console.error('Database error:', error);
+
+    if ((error as { code: string }).code === 'ETIMEDOUT') {
+      return {
+        error: 'Unable to connect to the database. Please try again later.'
+      };
+    }
+    if ((error as { code: string }).code === '503') {
+      return {
+        error: 'Service temporarily unavailable. Please try again later.'
+      };
+    }
+    return { error: 'An unexpected error occurred. Please try again later.' };
+  }
 };

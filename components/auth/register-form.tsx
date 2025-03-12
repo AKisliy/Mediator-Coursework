@@ -1,7 +1,5 @@
 'use client';
 
-import { register } from '@/app/actions/register.action';
-
 import { toast } from '@/hooks/use-toast';
 import { RegisterSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +7,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { register } from '@/app/actions/auth.action';
 import { Form } from '../ui/form';
 import CardWrapper from './card-wrapper';
 import EmailRegistrationForm from './email-registration-form';
