@@ -1,5 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import NextAuth, { Session } from 'next-auth';
+import NextAuth from 'next-auth';
 import { authOptions } from './auth.config';
 import { getUserById } from './data/user';
 import { prisma } from './lib/db/prisma';
@@ -24,10 +24,16 @@ export const {
 
       return true;
     },
-    async session({ session }: { session: Session }) {
-      if (session && session.user) session.user.id = session?.user?.email;
-      console.log(session);
-      return session;
+    async session({ session, token }) {
+      // if (session && session.user) session.user.id = session?.user?.email;
+      // console.log(session);
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub
+        }
+      };
     },
     async jwt({ token }) {
       if (!token.sub) return token;
