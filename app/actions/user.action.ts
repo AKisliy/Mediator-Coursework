@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/db/prisma';
+import { User } from '@prisma/client';
 import { verifySessionAndGetId } from '../api/auth/utils';
 
 export async function getUserReccomendationsCount(): Promise<
@@ -16,4 +17,20 @@ export async function getUserReccomendationsCount(): Promise<
     }
   });
   return response?.searches_count;
+}
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+  return prisma.user.findFirst({
+    where: {
+      email
+    }
+  });
+}
+
+export async function getUserById(id: string): Promise<User | null> {
+  return prisma.user.findFirst({
+    where: {
+      id
+    }
+  });
 }

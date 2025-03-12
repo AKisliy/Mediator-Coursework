@@ -24,7 +24,8 @@
     "react/react-in-jsx-scope": "off",
     "no-use-before-define": "off",
     "consistent-return": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "import/order": ["warn"]
   },
   "overrides": [
     {

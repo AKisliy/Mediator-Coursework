@@ -1,7 +1,8 @@
 'use client';
 
-import { useRecommendation } from '@/context/recommendations-provider';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRecommendation } from '@/context/recommendations-provider';
+import { usePathname } from 'next/navigation';
 import { Button } from '../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
@@ -11,6 +12,10 @@ export default function RecommendationsUsage() {
     useRecommendation();
 
   const percentage = ((recommendationCount * 1.0) / recommendationLimit) * 100;
+  const path = usePathname();
+  const isAuth = path.startsWith('/auth') || path.startsWith('/api/auth');
+
+  if (isAuth) return null;
 
   if (isLoading) {
     return (

@@ -1,0 +1,56 @@
+'use client';
+
+import { LoginSchema } from '@/schemas';
+import { UseFormReturn } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '../ui/button';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '../ui/form';
+import { Input } from '../ui/input';
+
+export default function EmailLoginForm({
+  form,
+  loading
+}: {
+  form: UseFormReturn<z.infer<typeof LoginSchema>>;
+  loading: boolean;
+}) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="johndoe@email.com" type="email" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="password"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <FormControl>
+              <Input {...field} placeholder="******" type="password" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <Button type="submit" className="w-full" aria-disabled={loading}>
+        Login
+      </Button>
+    </>
+  );
+}

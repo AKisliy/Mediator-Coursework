@@ -9,18 +9,65 @@ datasource db {
   directUrl = env("PRISMA_DIRECT_URL")
 }
 
-model User {
-  id             String  @id
-  username       String
-  name           String
-  image          String?
-  searches_count Int     @default(0)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  planId    Int          @default(4)
-  plan      Plan         @relation(fields: [planId], references: [id])
-  searches  UserSearch[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  username       String?
+  email          String?   @unique
+  password       String?
+  searches_count Int       @default(0)
+  emailVerified  DateTime? @map("email_verified")
+  image          String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  sessions  Session[]
+
+  planId   Int          @default(1)
+  plan     Plan         @relation(fields: [planId], references: [id])
+  searches UserSearch[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 model Plan {
@@ -28,6 +75,8 @@ model Plan {
   name          String
   monthly_limit Int
   users         User[]
+
+  @@map("plans")
 }
 
 model UserSearch {
@@ -37,6 +86,8 @@ model UserSearch {
   userId    String
   user      User      @relation(fields: [userId], references: [id])
   bloggers  Blogger[]
+
+  @@map("user_searches")
 }
 
 model Blogger {
@@ -48,6 +99,8 @@ model Blogger {
   category        String?
   social_media    SocialMedia
   searches        UserSearch[]
+
+  @@map("bloggers")
 }
 
 enum SocialMedia {

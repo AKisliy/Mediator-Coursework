@@ -1,5 +1,6 @@
 'use client';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,13 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { IoPerson } from 'react-icons/io5';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { History, Settings } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { IoPerson } from 'react-icons/io5';
 import { Button } from '../ui/button';
 
 const dropDownLinks = [
@@ -42,6 +43,12 @@ export default function UserProfileDropdown() {
     if (status === 'loading') return;
     setIsLoading(false);
   }, [status]);
+
+  const pathName = usePathname();
+  const isAuth =
+    pathName.startsWith('/auth') || pathName.startsWith('/api/auth');
+
+  if (isAuth) return null;
 
   return (
     <>

@@ -1,21 +1,6 @@
-import { authOptions } from '@/auth';
+import { auth } from '@/auth';
 import { MOCK_USER_ID } from '@/lib/mock/config';
-import {
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse
-} from 'next';
-import { getServerSession } from 'next-auth/next';
 import { NextRequest, NextResponse } from 'next/server';
-
-export function auth(
-  ...args:
-    | [GetServerSidePropsContext['req'], GetServerSidePropsContext['res']]
-    | [NextApiRequest, NextApiResponse]
-    | []
-) {
-  return getServerSession(...args, authOptions);
-}
 
 export function withAuth(
   handler: (req: NextRequest, userId: string) => Promise<NextResponse>

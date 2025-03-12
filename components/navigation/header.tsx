@@ -1,9 +1,9 @@
-import '../../app/globals.css';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import '../../app/globals.css';
 import { ThemeSwitcher } from '../theme-switcher';
-import UserProfileDropdown from './user-profile-dropdown';
 import RecommendationsUsage from './recommendation-usage';
+import UserProfileDropdown from './user-profile-dropdown';
 
 export default function Header() {
   return (

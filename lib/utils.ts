@@ -1,11 +1,14 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
-import { formatDistanceToNow } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { getVerificationTokenByEmail } from '@/app/actions/auth.action';
 import { Blogger } from '@/types/blogger';
 import { FilterValue } from '@/types/search-filters';
+import { clsx, type ClassValue } from 'clsx';
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { saveAs } from 'file-saver';
+import Papa from 'papaparse';
+import { twMerge } from 'tailwind-merge';
+import { v4 as uuidv4 } from 'uuid';
+import { prisma } from './db/prisma';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -70,3 +73,34 @@ export function enrichQueryWithFilters(query: string, filters: FilterValue[]) {
     return `${acc} ${filter.name}: от ${filter.value[0]} до ${filter.value[1]}`;
   }, query);
 }
+
+export const generateVerificationToken = async (email: string) => {
+  // Generate a random token
+  const token = uuidv4();
+  const expires = new Date().getTime() + 1000 * 60 * 60 * 1; // 1 hours
+
+  // Check if a token already exists for the user
+  const existingToken = await getVerificationTokenByEmail(email);
+
+  if (existingToken) {
+    await prisma.verificationToken.delete({
+      where: {
+        identifier_token: {
+          identifier: existingToken.identifier,
+          token: existingToken.token
+        }
+      }
+    });
+  }
+
+  // Create a new verification token
+  const verificationToken = await prisma.verificationToken.create({
+    data: {
+      identifier: email,
+      token,
+      expires: new Date(expires)
+    }
+  });
+
+  return verificationToken;
+};
