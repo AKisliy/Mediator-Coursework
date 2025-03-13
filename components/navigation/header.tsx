@@ -11,7 +11,7 @@ import UserProfileDropdown from './user-profile-dropdown';
 export default function Header() {
   const pathName = usePathname();
 
-  const isAuthPath = pathName.includes('/auth');
+  const isAuthPath = pathName.startsWith('/auth');
 
   return (
     <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">

@@ -10,9 +10,10 @@ export default auth(async req => {
   const { nextUrl } = req;
 
   const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
-  const isApiRoute = nextUrl.pathname.includes('/api');
+  const isApiRoute = nextUrl.pathname.startsWith('/api');
   const isAuthRoute =
-    nextUrl.pathname.includes('/auth') && nextUrl.pathname !== '/auth/signout';
+    nextUrl.pathname.startsWith('/auth') &&
+    nextUrl.pathname !== '/auth/signout';
 
   if (isApiRoute) return NextResponse.next();
 
