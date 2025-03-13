@@ -52,7 +52,7 @@ export const {
   adapter: PrismaAdapter(prisma),
   pages: {
     signIn: '/auth/login',
-    signOut: '/auth/signout',
+    // signOut: '/auth/signout',
     error: '/auth/error'
   },
   ...authOptions

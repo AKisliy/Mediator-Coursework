@@ -1,40 +1,35 @@
+import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
+import { authOptions } from './auth.config';
+import { privateRoutes } from './routes';
 
-// export default process.env.NODE_ENV === 'production' ||
-// process.env.NEXT_PUBLIC_DISABLE_AUTH !== 'true'
-//   ? auth((req: NextApiRequest) => {})
-//   : function middleware() {
-//       return NextResponse.next();
-//     };
+const { auth } = NextAuth(authOptions);
+
+export default auth(async req => {
+  const isLoggedIn = !!req.auth;
+  const { nextUrl } = req;
+
+  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
+  const isApiRoute = nextUrl.pathname.includes('/api');
+  const isAuthRoute =
+    nextUrl.pathname.includes('/auth') && nextUrl.pathname !== '/auth/signout';
+
+  if (isApiRoute) return NextResponse.next();
+
+  if (isLoggedIn && isAuthRoute) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  if (!isLoggedIn && isPrivateRoute) {
+    return NextResponse.redirect(new URL('/auth/login', req.url));
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|welcome).*)']
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)'
+  ]
 };
-
-const authRoutes = ['/auth/login', '/auth'];
-
-// export default process.env.NODE_ENV === 'production' ||
-// process.env.NEXT_PUBLIC_DISABLE_AUTH !== 'true'
-//   ? auth(req => {
-//       const isLoggedIn = !!req.auth;
-//       const isAuthRoute = authRoutes.includes(req.nextUrl.pathname);
-//       const isApiAuthRouter = req.nextUrl.pathname.startsWith('/api/auth');
-
-//       if (isApiAuthRouter) {
-//         return;
-//       }
-
-//       if (isAuthRoute) {
-//         if (isLoggedIn) {
-//           return Response.redirect(new URL('/dashboard', req.nextUrl));
-//         }
-//         return;
-//       }
-
-//       if (!isLoggedIn && !isAuthRoute) {
-//         return Response.redirect(new URL('/auth/login', req.nextUrl));
-//       }
-//     })
-export default function middleware() {
-  return NextResponse.next();
-}

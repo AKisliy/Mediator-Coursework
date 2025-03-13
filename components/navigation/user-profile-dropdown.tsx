@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { History, Settings } from 'lucide-react';
+import { DoorOpen, History, Settings } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -32,6 +32,11 @@ const dropDownLinks = [
     title: 'Настройки',
     icon: Settings,
     href: '/settings'
+  },
+  {
+    title: 'Выйти',
+    icon: DoorOpen,
+    href: '/auth/signout'
   }
 ];
 
