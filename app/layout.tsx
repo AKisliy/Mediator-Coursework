@@ -1,12 +1,13 @@
+import { auth } from '@/auth';
+import Footer from '@/components/navigation/footer';
+import Header from '@/components/navigation/header';
+import { Toaster } from '@/components/ui/toaster';
+import AuthProvider from '@/context/auth-provider';
+import { RecommendationProvider } from '@/context/recommendations-provider';
 import type { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
 import localFont from 'next/font/local';
 import './globals.css';
-import Header from '@/components/navigation/header';
-import Footer from '@/components/navigation/footer';
-import { RecommendationProvider } from '@/context/recommendations-provider';
-import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from 'next-themes';
-import AuthProvider from '@/context/auth-provider';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -24,13 +25,14 @@ export const metadata: Metadata = {
   description: 'Find your perfect influencer with AI ✨'
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
-    <AuthProvider>
+    <AuthProvider session={session}>
       <html lang="en" className={geistSans.className} suppressHydrationWarning>
         <body className="bg-background text-foreground">
           <ThemeProvider

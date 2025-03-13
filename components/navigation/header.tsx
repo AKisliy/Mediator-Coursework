@@ -1,11 +1,18 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import '../../app/globals.css';
 import { ThemeSwitcher } from '../theme-switcher';
 import RecommendationsUsage from './recommendation-usage';
 import UserProfileDropdown from './user-profile-dropdown';
 
 export default function Header() {
+  const pathName = usePathname();
+
+  const isAuthPath = pathName.includes('/auth');
+
   return (
     <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
       <div className="w-full max-w-6xl flex justify-between items-center p-3 px-5 text-sm">
@@ -16,10 +23,10 @@ export default function Header() {
           >
             Mediator
           </Link>
-          <RecommendationsUsage />
+          {!isAuthPath && <RecommendationsUsage />}
         </div>
         <div className="flex gap-5 items-center">
-          <UserProfileDropdown />
+          {!isAuthPath && <UserProfileDropdown />}
           <Button variant="outline" asChild>
             <a
               href="https://t.me/collabguru"
