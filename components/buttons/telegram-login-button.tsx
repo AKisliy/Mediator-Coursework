@@ -3,11 +3,7 @@
 import { LoginButton, TelegramAuthData } from '@telegram-auth/react';
 import { signIn } from 'next-auth/react';
 
-export default function TelegramLoginButton({
-  botUsername
-}: {
-  botUsername: string;
-}) {
+export default function TelegramLoginButton() {
   const handleSignIn = async (data: TelegramAuthData) => {
     try {
       await signIn('telegram-login', { callbackUrl: '/' }, data as any);
@@ -18,7 +14,7 @@ export default function TelegramLoginButton({
 
   return (
     <LoginButton
-      botUsername={botUsername}
+      botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME}
       onAuthCallback={data => {
         handleSignIn(data);
       }}

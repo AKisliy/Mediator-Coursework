@@ -6,18 +6,22 @@ export const telegramProvider = CredentialsProvider({
   id: 'telegram-login',
   name: 'Telegram Login',
   credentials: {},
-  async authorize(credentials, req) {
+  async authorize(_, req) {
+    const url = new URL(req.url);
+    const params = url.searchParams;
+    const res: Record<string, string | number> = {};
+    params.forEach((value, key) => {
+      res[key] = value;
+    });
     const validator = new AuthDataValidator({
       botToken: `${process.env.BOT_TOKEN}`
     });
-    // debugger;
-    const data = objectToAuthDataMap(credentials);
+    const data = objectToAuthDataMap(res);
     const user = await validator.validate(data);
 
     if (user.id && user.first_name) {
       const returned = {
         id: user.id.toString(),
-        email: user.id.toString(),
         name: [user.first_name, user.last_name || ''].join(' '),
         image: user.photo_url,
         username: user.username

@@ -12,8 +12,7 @@ export async function createUserOrUpdate(user: TelegramUserData) {
       id: user.id.toString(),
       name: user.first_name,
       username: user.username ?? 'unknown',
-      image: user.photo_url,
-      planId: 0 // should create logic in database instead of hardcoding here
+      image: user.photo_url
     },
     update: {
       name: user.first_name,
