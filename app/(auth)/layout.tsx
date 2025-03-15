@@ -10,7 +10,7 @@ export default function AuthLayout({
   return (
     <div className="flex-1 w-full flex flex-col items-center">
       <Header />
-      <div className="flex flex-1 flex-col w-full items-center justify-center">
+      <div className="flex flex-1 flex-col w-full items-center justify-center py-10 px-6 md:px-0">
         {children}
       </div>
       <Footer />

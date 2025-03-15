@@ -24,12 +24,12 @@ export default function CardWrapper({
     >
       <Card>
         <CardHeader className="text-center pb-0 pt-8">
-          <CardTitle className="text-2xl">{title}</CardTitle>
+          <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
           <CardDescription className="text-balance text-muted-foreground">
             {description}
           </CardDescription>
         </CardHeader>
-        <CardContent>{children}</CardContent>
+        <CardContent className="text-sm md:text-base">{children}</CardContent>
       </Card>
     </div>
   );

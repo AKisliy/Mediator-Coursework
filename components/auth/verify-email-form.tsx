@@ -1,6 +1,7 @@
 'use client';
 
 import { proceedVerification } from '@/app/actions/auth.action';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -15,6 +16,11 @@ const VerifyEmailForm = () => {
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+
+  const { theme } = useTheme();
+
+  const foregroundColor =
+    theme === 'dark' || theme === 'system' ? '#ffffff' : '#000000';
 
   const onSubmit = useCallback(() => {
     if (success || error) {
@@ -53,7 +59,7 @@ const VerifyEmailForm = () => {
     >
       <div className="flex flex-col items-center">
         <div className="flex flex-col min-h-64 items-center w-full justify-center">
-          {!success && !error && <BeatLoader color="white" />}
+          {!success && !error && <BeatLoader color={foregroundColor} />}
           <FormSuccess message={success} />
           {!success && <FormError message={error} />}
         </div>

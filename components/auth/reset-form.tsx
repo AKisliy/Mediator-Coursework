@@ -76,7 +76,7 @@ export function ResetForm() {
         className="mb-4"
       >
         <Form {...form}>
-          <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="p-4 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <FormField
                 control={form.control}
