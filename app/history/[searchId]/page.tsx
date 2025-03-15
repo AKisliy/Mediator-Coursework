@@ -2,7 +2,7 @@ import BloggersGrid from '@/components/bloggers-grid/bloggers-grid';
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import { Separator } from '@/components/ui/separator';
 import { getSearchWithBloggers } from '@/data/history';
-import { formatTimestamp } from '@/lib/utils';
+import { formatTimestampToNow } from '@/lib/utils';
 import { Clock } from 'lucide-react';
 
 export default async function HistoryEntryPage({
@@ -20,7 +20,7 @@ export default async function HistoryEntryPage({
             <div className="text-3xl">{search?.query}</div>
             <div className="flex flex-row gap-1 items-center text-sm text-gray-300">
               <Clock className="size-4" />
-              {formatTimestamp(search?.createdAt)}
+              {formatTimestampToNow(search?.createdAt)}
             </div>
           </div>
           <Separator className="my-6" />

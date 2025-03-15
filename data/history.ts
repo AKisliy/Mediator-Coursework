@@ -1,3 +1,5 @@
+'use server';
+
 import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { delay } from '@/lib/utils';
@@ -80,4 +82,17 @@ export async function getSearchWithBloggers(searchId: string): Promise<{
 
 export async function loadMoreSearchEntries(offset: number) {
   return getUserHistory(offset, 10);
+}
+
+export async function getUserLastSearch(): Promise<UserSearch | null> {
+  const userId = await verifySessionAndGetId();
+  const lastSearch = await prisma.userSearch.findFirst({
+    where: {
+      userId
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  return lastSearch;
 }

@@ -58,7 +58,7 @@ export default function RegisterForm() {
         <Form {...form}>
           <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              <EmailRegistrationForm form={form} loading={loading} />
+              <EmailRegistrationForm form={form} isLoading={loading} />
               <ProvidersSection />
               <div className="text-center text-sm">
                 Уже есть аккаунт?{' '}

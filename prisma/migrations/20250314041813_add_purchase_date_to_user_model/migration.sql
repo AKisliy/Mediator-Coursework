@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "user_searches" ADD COLUMN     "planPurchase" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

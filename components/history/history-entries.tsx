@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Clock } from 'lucide-react';
-import { formatTimestamp } from '@/lib/utils';
+import { formatTimestampToNow } from '@/lib/utils';
 import { UserSearch } from '@prisma/client';
+import { Clock } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 import LoadMoreButton from './load-more-button';
 
 interface HistoryEntriesProps {
@@ -29,7 +29,7 @@ export default function HistoryEntries({
               <h3 className="font-medium">{entry.query}</h3>
               <div className="flex items-center gap-1 text-xs text-muted-foreground ml-auto">
                 <Clock className="h-3 w-3" />
-                {formatTimestamp(entry.createdAt)}
+                {formatTimestampToNow(entry.createdAt)}
               </div>
             </div>
           </div>

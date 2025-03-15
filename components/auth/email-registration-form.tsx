@@ -3,7 +3,6 @@
 import { RegisterSchema } from '@/schemas';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../ui/button';
 import {
   FormControl,
   FormField,
@@ -12,13 +11,15 @@ import {
   FormMessage
 } from '../ui/form';
 import { Input } from '../ui/input';
+import PasswordField from './fields/password-field';
+import SubmitButton from './submit-button';
 
 export default function EmailRegistrationForm({
   form,
-  loading
+  isLoading
 }: {
   form: UseFormReturn<z.infer<typeof RegisterSchema>>;
-  loading: boolean;
+  isLoading: boolean;
 }) {
   return (
     <>
@@ -48,35 +49,13 @@ export default function EmailRegistrationForm({
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Пароль</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="******" type="password" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+      <PasswordField form={form} includeForgotPassword={false} />
+      <PasswordField
+        form={form}
+        includeForgotPassword={false}
+        passwordFieldName="passwordConfirmation"
       />
-      <FormField
-        control={form.control}
-        name="passwordConfirmation"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Подтверждение пароля</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="******" type="password" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <Button type="submit" className="w-full" aria-disabled={loading}>
-        Login
-      </Button>
+      <SubmitButton buttonText="Зарегистрироваться" isLoading={isLoading} />
     </>
   );
 }

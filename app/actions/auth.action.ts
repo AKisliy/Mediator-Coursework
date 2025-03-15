@@ -1,17 +1,23 @@
 'use server';
 
 import { signIn } from '@/auth';
+import { getPasswordResetTokenByToken } from '@/data/reset-token';
 import { getVerificationTokenByToken } from '@/data/token';
 import { getUserByEmail } from '@/data/user';
 import { prisma } from '@/lib/db/prisma';
-import { sendVerificationEmail } from '@/lib/mail';
+import { sendResetPasswordEmail, sendVerificationEmail } from '@/lib/mail';
 import { nodemailerConfig } from '@/lib/providers/email-provider';
 import {
-  generateAvatar,
-  generateUniqueUsername,
+  generatePasswordResetToken,
   generateVerificationToken
-} from '@/lib/utils';
-import { LoginSchema, RegisterSchema } from '@/schemas';
+} from '@/lib/tokens';
+import { generateAvatar, generateUniqueUsername } from '@/lib/utils';
+import {
+  LoginSchema,
+  NewPasswordSchema,
+  RegisterSchema,
+  ResetSchema
+} from '@/schemas';
 import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
@@ -183,4 +189,74 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
     }
     return { error: 'An unexpected error occurred. Please try again later.' };
   }
+};
+
+export const resetPassword = async (data: z.infer<typeof ResetSchema>) => {
+  const validatedData = ResetSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    return { error: 'Неверный email' };
+  }
+
+  const { email } = validatedData.data;
+
+  const existingUser = await getUserByEmail(email);
+
+  if (!existingUser) return { success: 'Ссылка отправлена на почту' };
+
+  const token = await generatePasswordResetToken(email);
+  await sendResetPasswordEmail(
+    token.identifier,
+    token.token,
+    'http://localhost:3000',
+    nodemailerConfig
+  );
+
+  return { success: 'Ссылка отправлена на почту' };
+};
+
+export const setNewPassword = async (
+  data: z.infer<typeof NewPasswordSchema>,
+  token: string | null
+) => {
+  if (!token) return { error: 'Токен не найден' };
+  console.log(token);
+
+  const validatedData = NewPasswordSchema.safeParse(data);
+  if (!validatedData.success) return { error: 'Некорректно заполнены поля' };
+
+  const existingToken = await getPasswordResetTokenByToken(token);
+  if (!existingToken) return { error: 'Токен не существует' };
+
+  const hasExpired = new Date(existingToken.expires) < new Date();
+  if (hasExpired) return { error: 'Действие токена закончилось' };
+
+  const userEmail = existingToken.identifier;
+  const existingUser = await getUserByEmail(userEmail);
+  if (!existingUser) return { error: 'Пользователь с email не найден' };
+
+  const { password } = validatedData.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await prisma.user.update({
+    where: {
+      id: existingUser.id
+    },
+    data: {
+      password: hashedPassword
+    }
+  });
+
+  console.log('user updated');
+
+  await prisma.passwordResetToken.delete({
+    where: {
+      identifier_token: {
+        identifier: existingToken.identifier,
+        token: existingToken.token
+      }
+    }
+  });
+
+  return { success: 'Пароль успешно обновлен' };
 };

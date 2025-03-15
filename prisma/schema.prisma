@@ -49,10 +49,11 @@ model User {
   emailVerified  DateTime? @map("email_verified")
   image          String?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  accounts  Account[]
-  sessions  Session[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  accounts     Account[]
+  sessions     Session[]
+  planPurchase DateTime  @default(now())
 
   planId   Int          @default(1)
   plan     Plan         @relation(fields: [planId], references: [id])
@@ -68,6 +69,15 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("password_reset_tokens")
 }
 
 model Plan {

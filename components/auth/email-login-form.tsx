@@ -3,7 +3,6 @@
 import { LoginSchema } from '@/schemas';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../ui/button';
 import {
   FormControl,
   FormField,
@@ -12,6 +11,8 @@ import {
   FormMessage
 } from '../ui/form';
 import { Input } from '../ui/input';
+import PasswordField from './fields/password-field';
+import SubmitButton from './submit-button';
 
 export default function EmailLoginForm({
   form,
@@ -35,22 +36,8 @@ export default function EmailLoginForm({
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Пароль</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="******" type="password" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <Button type="submit" className="w-full" aria-disabled={loading}>
-        Войти
-      </Button>
+      <PasswordField form={form} includeForgotPassword />
+      <SubmitButton buttonText="Войти" isLoading={loading} />
     </>
   );
 }

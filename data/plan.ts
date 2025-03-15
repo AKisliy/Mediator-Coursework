@@ -16,3 +16,17 @@ export async function getUserPlan(): Promise<Plan | undefined> {
   });
   return response?.plan;
 }
+
+export async function getUserPlanWithPurchaseDate() {
+  const userId = await verifySessionAndGetId();
+  const response = await prisma.user.findUnique({
+    where: {
+      id: userId
+    },
+    select: {
+      plan: true,
+      planPurchase: true
+    }
+  });
+  return response;
+}
