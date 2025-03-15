@@ -1,9 +1,9 @@
-import { Search } from 'lucide-react';
+import { HistoryEntriesFallback } from '@/components/history/fallback';
+import HistoryEntriesWrapper from '@/components/history/wrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 import { Suspense } from 'react';
-import HistoryEntriesWrapper from '@/components/history/wrapper';
-import { HistoryEntriesFallback } from '@/components/history/fallback';
 
 export default async function SearchHistory() {
   return (

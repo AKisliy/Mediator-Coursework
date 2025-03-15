@@ -1,9 +1,6 @@
 import { auth } from '@/auth';
-import Footer from '@/components/navigation/footer';
-import Header from '@/components/navigation/header';
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/context/auth-provider';
-import { RecommendationProvider } from '@/context/recommendations-provider';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import localFont from 'next/font/local';
@@ -43,13 +40,9 @@ export default async function RootLayout({
           >
             <main className="min-h-screen flex flex-col items-center">
               <div className="flex-1 w-full flex flex-col gap-20 items-center">
-                <RecommendationProvider>
-                  <Header />
-                  {children}
-                  <Toaster />
-                  <Footer />
-                </RecommendationProvider>
+                {children}
               </div>
+              <Toaster />
             </main>
           </ThemeProvider>
         </body>

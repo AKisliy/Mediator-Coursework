@@ -1,9 +1,9 @@
 'use client';
 
-import MainBlockHeadline from '@/components/main-block-headline';
-import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
+import MainBlockHeadline from '@/components/main-block-headline';
 import BloggerSearch from '@/components/search-block/blogger-search';
+import { BloggerQueryProvider } from '@/context/bloggers-query-provider';
 
 export default function MainPage() {
   return (
