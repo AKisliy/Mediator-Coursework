@@ -1,14 +1,16 @@
 'use client';
 
-import { authenticate, setNewPassword } from '@/app/actions/auth.action';
-import { toast } from '@/hooks/use-toast';
-import { NewPasswordSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { authenticate, setNewPassword } from '@/app/actions/auth.action';
+import { toast } from '@/hooks/use-toast';
+import { NewPasswordSchema } from '@/schemas';
+
 import { Form } from '../ui/form';
 import CardWrapper from './card-wrapper';
 import PasswordField from './fields/password-field';
@@ -73,6 +75,7 @@ export function NewPasswordForm() {
               <SubmitButton
                 buttonText="Изменить пароль"
                 isLoading={isLoading}
+                isDisabled={isLoading}
               />
             </div>
           </form>

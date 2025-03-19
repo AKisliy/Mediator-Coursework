@@ -8,5 +8,14 @@ module.exports = {
   useTabs: false,
   singleQuote: true,
   bracketSpacing: true,
-  plugins: ['prettier-plugin-organize-imports']
+  plugins: ['@trivago/prettier-plugin-sort-imports'],
+  importOrder: [
+    '^@/(.*)$',
+    '^@core/(.*)$',
+    '^@server/(.*)$',
+    '^@ui/(.*)$',
+    '^[./]'
+  ],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true
 };

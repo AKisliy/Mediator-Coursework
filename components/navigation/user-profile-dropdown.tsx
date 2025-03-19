@@ -1,5 +1,13 @@
 'use client';
 
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { DoorOpen, History, Settings } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { IoPerson } from 'react-icons/io5';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -8,13 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { DoorOpen, History, Settings } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { IoPerson } from 'react-icons/io5';
+
 import { Button } from '../ui/button';
 
 const dropDownLinks = [
@@ -66,8 +68,11 @@ export default function UserProfileDropdown() {
                 <AvatarImage
                   src={session?.user?.image ?? '/default.webp'}
                   alt="@shadcn"
+                  key={session?.user.image}
                 />
-                <AvatarFallback>{session?.user?.name}</AvatarFallback>
+                <AvatarFallback>
+                  {session?.user?.name.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
             </div>
           </DropdownMenuTrigger>

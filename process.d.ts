@@ -13,5 +13,8 @@ declare namespace NodeJS {
     EMAIL_SERVER_PASSWORD: string;
     EMAIL_SERVER_PORT: number;
     HIGHEST_TIER_PLAN_ID: number;
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+    NEXT_PUBLIC_SUPABASE_URL: string;
+    SUPABASE_SERVICE_ROLE_KEY: string;
   }
 }

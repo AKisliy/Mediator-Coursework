@@ -1,5 +1,6 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
+
 import { authOptions } from './auth.config';
 import { getUserById } from './data/user';
 import { prisma } from './lib/db/prisma';
@@ -42,6 +43,8 @@ export const {
       if (!existingUser) return token;
       token.name = existingUser.name;
       token.email = existingUser.email;
+      // Note, that `session` can be any arbitrary object, remember to validate it!
+      token.picture = existingUser.image;
 
       return token;
     }

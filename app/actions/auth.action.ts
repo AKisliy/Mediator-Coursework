@@ -1,5 +1,9 @@
 'use server';
 
+import bcrypt from 'bcryptjs';
+import { AuthError } from 'next-auth';
+import { z } from 'zod';
+
 import { signIn } from '@/auth';
 import { getPasswordResetTokenByToken } from '@/data/reset-token';
 import { getVerificationTokenByToken } from '@/data/token';
@@ -18,9 +22,6 @@ import {
   RegisterSchema,
   ResetSchema
 } from '@/schemas';
-import bcrypt from 'bcryptjs';
-import { AuthError } from 'next-auth';
-import { z } from 'zod';
 
 export async function authenticate(prevState: any, formData: FormData) {
   try {
@@ -49,19 +50,19 @@ export const proceedVerification = async (token: string) => {
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
-    return { error: 'Invalid token' };
+    return { error: 'Токен не найден.' };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Token has expired' };
+    return { error: 'Недействительный токен' };
   }
 
   const existingUser = await getUserByEmail(existingToken.identifier);
 
   if (!existingUser) {
-    return { error: 'User not found' };
+    return { error: 'Пользователь с вашим email не найден' };
   }
 
   await prisma.user.update({
@@ -83,14 +84,14 @@ export const proceedVerification = async (token: string) => {
     }
   });
 
-  return { success: 'Email verified' };
+  return { success: 'Почта подтверждена ✅' };
 };
 
 export const login = async (data: z.infer<typeof LoginSchema>) => {
   const validatedData = LoginSchema.parse(data);
 
   if (!validatedData) {
-    return { error: 'Invalid input data' };
+    return { error: 'Введены некорректные данные' };
   }
 
   const { email, password } = validatedData;
@@ -99,10 +100,8 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
 
   // If the user does not exist, return an error
   if (!userExists || !userExists.email || !userExists.password) {
-    return { error: 'User does not exist' };
+    return { error: 'Пользователя с таким аккаунтом не существует' };
   }
-
-  console.log('Authorizing user');
 
   try {
     await signIn('credentials', {
@@ -110,20 +109,19 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
       password,
       redirectTo: '/'
     });
-    console.log('User authenticated');
   } catch (error: any) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: 'Invalid credentials' };
+          return { error: 'Указаны неверные данные' };
         default:
-          return { error: 'Please confirm yours email address' };
+          return { error: 'Пожалуйста, подтвердите свой email' };
       }
     }
     throw error;
   }
 
-  return { success: 'User logged in successfully' };
+  return { success: 'Успешный вход' };
 };
 
 export const register = async (data: z.infer<typeof RegisterSchema>) => {
@@ -131,21 +129,17 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
     const validatedData = RegisterSchema.parse(data);
 
     if (!validatedData) {
-      return { error: 'Invalid input data' };
+      return { error: 'Неверный формат входных данных' };
     }
 
-    const { email, name, password, passwordConfirmation } = validatedData;
-
-    if (password !== passwordConfirmation) {
-      return { error: 'Passwords do not match' };
-    }
+    const { email, name, password } = validatedData;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const userExists = await getUserByEmail(email);
 
     if (userExists) {
-      return { error: 'Email already is in use. Please try another one.' };
+      return { error: 'Пользователь с таким email уже существует' };
     }
 
     const lowerCaseEmail = email.toLowerCase();
@@ -162,7 +156,6 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
       }
     });
 
-    // Generate a verification token
     const verificationToken = await generateVerificationToken(email);
 
     await sendVerificationEmail(
@@ -172,22 +165,21 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
       nodemailerConfig
     );
 
-    return { success: 'Email Verification was sent' };
+    return { success: 'Письмо для подтверждения отправлено на почту' };
   } catch (error) {
-    // Handle the error, specifically check for a 503 error
     console.error('Database error:', error);
 
     if ((error as { code: string }).code === 'ETIMEDOUT') {
       return {
-        error: 'Unable to connect to the database. Please try again later.'
+        error: 'Не удается подключиться к базе данных. Повторите позже'
       };
     }
     if ((error as { code: string }).code === '503') {
       return {
-        error: 'Service temporarily unavailable. Please try again later.'
+        error: 'Сервис временно недоступен. Повторите попытку позже.'
       };
     }
-    return { error: 'An unexpected error occurred. Please try again later.' };
+    return { error: 'Произошла непредвиденная ошибка. Попробуйте позднее.' };
   }
 };
 
@@ -246,8 +238,6 @@ export const setNewPassword = async (
       password: hashedPassword
     }
   });
-
-  console.log('user updated');
 
   await prisma.passwordResetToken.delete({
     where: {

@@ -1,21 +1,34 @@
 'use client';
 
 import { Loader2 } from 'lucide-react';
-import { Button } from '../ui/button';
 
-interface SubmitButtonProps {
+import { cn } from '@/lib/utils';
+
+import { Button, ButtonProps } from '../ui/button';
+
+interface SubmitButtonProps extends ButtonProps {
   isLoading: boolean;
   buttonText: string;
   loadingText?: string;
+  className?: string;
+  isDisabled: boolean;
 }
 
 export default function SubmitButton({
   isLoading,
   buttonText,
-  loadingText
+  loadingText,
+  className,
+  variant,
+  isDisabled
 }: SubmitButtonProps) {
   return (
-    <Button type="submit" className="w-full" disabled={isLoading}>
+    <Button
+      type="submit"
+      className={cn('w-full', className)}
+      disabled={isDisabled}
+      variant={variant}
+    >
       {!isLoading ? (
         buttonText
       ) : (

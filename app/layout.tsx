@@ -1,19 +1,16 @@
-import { auth } from '@/auth';
-import { Toaster } from '@/components/ui/toaster';
-import AuthProvider from '@/context/auth-provider';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import localFont from 'next/font/local';
+
+import { auth } from '@/auth';
+import { Toaster } from '@/components/ui/toaster';
+import AuthProvider from '@/context/auth-provider';
+
 import './globals.css';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
-  weight: '100 900'
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
   weight: '100 900'
 });
 
@@ -42,8 +39,8 @@ export default async function RootLayout({
               <div className="flex-1 w-full flex flex-col gap-20 items-center">
                 {children}
               </div>
-              <Toaster />
             </main>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

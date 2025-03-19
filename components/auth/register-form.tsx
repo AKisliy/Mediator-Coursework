@@ -1,13 +1,14 @@
 'use client';
 
-import { toast } from '@/hooks/use-toast';
-import { RegisterSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { register } from '@/app/actions/auth.action';
+import { toast } from '@/hooks/use-toast';
+import { RegisterSchema } from '@/schemas';
+
 import { Form } from '../ui/form';
 import CardWrapper from './card-wrapper';
 import EmailRegistrationForm from './email-registration-form';
@@ -28,6 +29,7 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
+    console.log('Registering');
     setLoading(true);
     register(data).then(res => {
       if (res.error) {
@@ -40,7 +42,7 @@ export default function RegisterForm() {
       }
       if (res.success) {
         toast({
-          title: 'Успех!',
+          title: 'Успех! 📩',
           description: 'Ссылка с подтверждением отправлена на почту'
         });
         setLoading(false);

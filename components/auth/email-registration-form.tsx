@@ -1,8 +1,10 @@
 'use client';
 
-import { RegisterSchema } from '@/schemas';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
+
+import { RegisterSchema } from '@/schemas';
+
 import {
   FormControl,
   FormField,
@@ -49,13 +51,13 @@ export default function EmailRegistrationForm({
           </FormItem>
         )}
       />
-      <PasswordField form={form} includeForgotPassword={false} />
-      <PasswordField
-        form={form}
-        includeForgotPassword={false}
-        passwordFieldName="passwordConfirmation"
+      <PasswordField form={form} />
+      <PasswordField form={form} passwordFieldName="passwordConfirmation" />
+      <SubmitButton
+        buttonText="Зарегистрироваться"
+        isLoading={isLoading}
+        isDisabled={isLoading}
       />
-      <SubmitButton buttonText="Зарегистрироваться" isLoading={isLoading} />
     </>
   );
 }

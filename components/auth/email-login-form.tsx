@@ -1,8 +1,10 @@
 'use client';
 
-import { LoginSchema } from '@/schemas';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
+
+import { LoginSchema } from '@/schemas';
+
 import {
   FormControl,
   FormField,
@@ -37,7 +39,11 @@ export default function EmailLoginForm({
         )}
       />
       <PasswordField form={form} includeForgotPassword />
-      <SubmitButton buttonText="Войти" isLoading={loading} />
+      <SubmitButton
+        buttonText="Войти"
+        isLoading={loading}
+        isDisabled={loading}
+      />
     </>
   );
 }
