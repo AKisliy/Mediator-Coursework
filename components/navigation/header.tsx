@@ -1,10 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
+
 import '../../app/globals.css';
 import { ThemeSwitcher } from '../theme-switcher';
+import { SidebarTrigger } from '../ui/sidebar';
 import RecommendationsUsage from './recommendation-usage';
 import UserProfileDropdown from './user-profile-dropdown';
 
@@ -25,7 +28,7 @@ export default function Header() {
           </Link>
           {!isAuthPath && <RecommendationsUsage />}
         </div>
-        <div className="flex gap-5 items-center">
+        <div className="md:flex gap-5 items-center hidden">
           {!isAuthPath && <UserProfileDropdown />}
           <Button variant="outline" asChild>
             <a
@@ -37,6 +40,9 @@ export default function Header() {
             </a>
           </Button>
           <ThemeSwitcher />
+        </div>
+        <div className="block md:hidden">
+          <SidebarTrigger />
         </div>
       </div>
     </nav>

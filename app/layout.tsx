@@ -3,6 +3,7 @@ import { ThemeProvider } from 'next-themes';
 import localFont from 'next/font/local';
 
 import { auth } from '@/auth';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/context/auth-provider';
 
@@ -29,19 +30,19 @@ export default async function RootLayout({
     <AuthProvider session={session}>
       <html lang="en" className={geistSans.className} suppressHydrationWarning>
         <body className="bg-background text-foreground">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <main className="min-h-screen flex flex-col items-center">
-              <div className="flex-1 w-full flex flex-col gap-20 items-center">
+          <SidebarProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <main className="min-h-screen w-full items-center">
                 {children}
-              </div>
-            </main>
-            <Toaster />
-          </ThemeProvider>
+              </main>
+              <Toaster />
+            </ThemeProvider>
+          </SidebarProvider>
         </body>
       </html>
     </AuthProvider>

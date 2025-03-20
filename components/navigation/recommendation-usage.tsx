@@ -1,8 +1,10 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRecommendation } from '@/context/recommendations-provider';
-import { usePathname } from 'next/navigation';
+
 import { Button } from '../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
@@ -34,7 +36,7 @@ export default function RecommendationsUsage() {
           ) : (
             <div className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full" />
           )}
-          Доступно рекомендаций: {recommendationCount}
+          Рекомендаций: {recommendationCount}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
