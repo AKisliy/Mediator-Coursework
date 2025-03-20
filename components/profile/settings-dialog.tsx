@@ -12,6 +12,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import {
   PreferencesFormSchemaValues,
   ProfileSettingsSchemaValues,
@@ -23,6 +24,16 @@ import PreferencesTabContent from '../settings/preferences-tab-content';
 import ProfileTabContent from '../settings/profile-tab-content';
 import SecurityTabContent from '../settings/security-tab-content';
 import UnsavedAlertDialog from '../settings/unsaved-alert';
+import { Button } from '../ui/button';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle
+} from '../ui/drawer';
 
 interface SettingsDialogProps {
   onClose: () => void;
@@ -83,32 +94,55 @@ export default function SettingsDialog({
     );
   };
 
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  if (isDesktop)
+    return (
+      <>
+        <Dialog open={isSettingsOpen} onOpenChange={handleOpenChange}>
+          <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+            <DialogHeader>
+              <DialogTitle>Настройки</DialogTitle>
+            </DialogHeader>
+
+            <Tabs defaultValue="profile" className="mt-4">
+              <TabsList className="grid grid-cols-3 mb-4">
+                <TabsTrigger value="profile">Профиль</TabsTrigger>
+                <TabsTrigger value="security">Безопасность</TabsTrigger>
+                <TabsTrigger value="preferences">Предпочтения</TabsTrigger>
+              </TabsList>
+              <ProfileTabContent form={profileForm} />
+              <PreferencesTabContent form={preferencesForm} />
+              <SecurityTabContent />
+            </Tabs>
+          </DialogContent>
+        </Dialog>
+
+        <UnsavedAlertDialog
+          onAction={onAlertAction}
+          showUnsavedWarning={showUnsavedWarning}
+          setShowUnsavedWarning={setShowUnsavedWarning}
+        />
+      </>
+    );
+
   return (
-    <>
-      <Dialog open={isSettingsOpen} onOpenChange={handleOpenChange}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
-          <DialogHeader>
-            <DialogTitle>Настройки</DialogTitle>
-          </DialogHeader>
-
-          <Tabs defaultValue="profile" className="mt-4">
-            <TabsList className="grid grid-cols-3 mb-4">
-              <TabsTrigger value="profile">Профиль</TabsTrigger>
-              <TabsTrigger value="security">Безопасность</TabsTrigger>
-              <TabsTrigger value="preferences">Предпочтения</TabsTrigger>
-            </TabsList>
-            <ProfileTabContent form={profileForm} />
-            <PreferencesTabContent form={preferencesForm} />
-            <SecurityTabContent />
-          </Tabs>
-        </DialogContent>
-      </Dialog>
-
-      <UnsavedAlertDialog
-        onAction={onAlertAction}
-        showUnsavedWarning={showUnsavedWarning}
-        setShowUnsavedWarning={setShowUnsavedWarning}
-      />
-    </>
+    <Drawer open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+      {/* <DrawerTrigger asChild>
+        <Button variant="outline">Edit Profile</Button>
+      </DrawerTrigger> */}
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Edit profile</DrawerTitle>
+          <DrawerDescription>
+            Make changes to your profile here. Click save when you@apos;re done.
+          </DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
