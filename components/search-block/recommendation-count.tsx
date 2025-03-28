@@ -1,7 +1,8 @@
-import { Input } from '@/components/ui/input';
-import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { Users } from 'lucide-react';
 import { useState } from 'react';
+
+import { Input } from '@/components/ui/input';
+import { useBloggersQuery } from '@/context/bloggers-query-provider';
 
 export default function RecommendationCountInput({
   countLimit
@@ -36,11 +37,11 @@ export default function RecommendationCountInput({
         type="number"
         value={inputValue}
         onChange={handleInputChange}
-        className={`w-[100px] ${isValid ? '' : 'border-red-500'}`}
+        className={`w-12 md:w-[100px] ${isValid ? '' : 'border-red-500'}`}
         min="1"
         max={countLimit}
       />
-      <span className="text-sm text-gray-500">блогеров</span>
+      {/* <span className="text-sm text-gray-500">блогеров</span> */}
     </div>
   );
 }

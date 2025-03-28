@@ -22,7 +22,7 @@ export default function RecommendationsUsage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-16">
-        <Skeleton className="w-60 h-10" />
+        <Skeleton className="w-32 h-10" />
       </div>
     );
   }

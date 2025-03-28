@@ -1,13 +1,15 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
 import { Loader2, Search } from 'lucide-react';
+import { useState } from 'react';
+
+import { Input } from '@/components/ui/input';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { useRecommendation } from '@/context/recommendations-provider';
-import { useState } from 'react';
+
 import { Button } from '../ui/button';
-import RecommendationCountInput from './recommendation-count';
 import FiltersDialogButton from './filters-dialog-button';
+import RecommendationCountInput from './recommendation-count';
 
 export default function SearchBar() {
   const { setQuery, handleSearch, query, loading, bloggersCount } =
@@ -25,7 +27,7 @@ export default function SearchBar() {
           placeholder="Ищу блогеров в тематике эзотерики с аудиторией от 3k подписчиков."
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className="flex-grow"
+          className="flex-grow placeholder:text-sm md:placeholder:text-base"
         />
 
         <FiltersDialogButton
@@ -42,13 +44,13 @@ export default function SearchBar() {
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Ищем...
+              <Loader2 className="md:mr-2 h-4 w-4 animate-spin" />
+              <span className="hidden md:block">Ищем...</span>
             </>
           ) : (
             <>
-              <Search className="mr-2 h-4 w-4" />
-              Найти
+              <Search className="md:mr-2 h-4 w-4" />
+              <span className="hidden md:block">Найти</span>
             </>
           )}
         </Button>

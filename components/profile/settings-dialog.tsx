@@ -127,9 +127,6 @@ export default function SettingsDialog({
 
   return (
     <Drawer open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-      {/* <DrawerTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DrawerTrigger> */}
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Edit profile</DrawerTitle>

@@ -22,7 +22,7 @@ export default function Header() {
         <div className="flex gap-5 items-center font-semibold">
           <Link
             href="/"
-            className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#EC4899] transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#EC4899] transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             Mediator
           </Link>
@@ -41,6 +41,7 @@ export default function Header() {
           </Button>
           <ThemeSwitcher />
         </div>
+
         <div className="block md:hidden">
           <SidebarTrigger />
         </div>
