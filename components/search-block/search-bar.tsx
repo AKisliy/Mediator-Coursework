@@ -31,8 +31,8 @@ export default function SearchBar() {
         />
 
         <FiltersDialogButton
-          setIsFiltersUsed={setIsFiltersUsed}
-          isFiltersUsed={isFiltersUsed}
+          setIsFiltersApplied={setIsFiltersUsed}
+          isFiltersApplied={isFiltersUsed}
         />
         <Button
           onClick={handleSearch}

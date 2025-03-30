@@ -25,24 +25,26 @@ import {
   DrawerTrigger
 } from '../ui/drawer';
 import { RangeFilter } from '../ui/range-filter';
+import FilterSavingDialogButton from './filter-saving-button';
+import SavedFiltersDropdown from './saved-filters';
 
 interface FilterPopoverProps {
-  setIsFiltersUsed: (isUsed: boolean) => void;
-  isFiltersUsed: boolean;
+  setIsFiltersApplied: (isUsed: boolean) => void;
+  isFiltersApplied: boolean;
 }
 
 export default function FiltersDialogButton({
-  setIsFiltersUsed,
-  isFiltersUsed
+  setIsFiltersApplied,
+  isFiltersApplied
 }: FilterPopoverProps) {
   const { filters, setFilters } = useBloggersQuery();
 
-  const [isSaved, setIsSaved] = useState(isFiltersUsed);
+  const [isApplied, setIsApplied] = useState(isFiltersApplied);
   const [localFilters, setLocalFilters] = useState(filters);
 
-  const handleFiltersSave = () => {
-    setIsSaved(true);
-    setIsFiltersUsed(true);
+  const handleFiltersApply = () => {
+    setIsApplied(true);
+    setIsFiltersApplied(true);
     setFilters(localFilters);
   };
 
@@ -52,12 +54,18 @@ export default function FiltersDialogButton({
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <FilterDialogTrigger isFiltersUsed={isFiltersUsed} />
+          <FilterDialogTrigger isFiltersApplied={isFiltersApplied} />
         </DialogTrigger>
         <DialogContent className="h-3/5 overflow-y-scroll">
-          <DialogHeader className="p-3">
-            <DialogTitle>Фильтры</DialogTitle>
-            <DialogDescription>Настройте параметры поиска</DialogDescription>
+          <DialogHeader className="p-3 flex flex-row justify-between">
+            <div className="flex flex-col gap-2">
+              <DialogTitle>Фильтры</DialogTitle>
+              <DialogDescription>Настройте параметры поиска</DialogDescription>
+            </div>
+            <div className="flex flex-row gap-2">
+              <FilterSavingDialogButton filters={filters} />
+              <SavedFiltersDropdown />
+            </div>
           </DialogHeader>
           <div className="p-3 space-y-3">
             {filters.map((value, idx) => (
@@ -75,7 +83,7 @@ export default function FiltersDialogButton({
                     newFilters[idx].value = [min, max];
                     return newFilters;
                   });
-                  setIsSaved(false);
+                  setIsApplied(false);
                 }}
                 measure={value.measure}
                 formatValue={value.valueFormatter}
@@ -83,8 +91,8 @@ export default function FiltersDialogButton({
             ))}
           </div>
           <DialogFooter className="sticky -bottom-6 w-full h-full backdrop-blur-sm bg-black/80 p-4">
-            <Button onClick={handleFiltersSave} className="w-1/3">
-              {isSaved ? 'Применено ✅' : 'Применить'}
+            <Button onClick={handleFiltersApply} className="w-1/3">
+              {isApplied ? 'Применено ✅' : 'Применить'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -94,7 +102,7 @@ export default function FiltersDialogButton({
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <FilterDialogTrigger isFiltersUsed={isFiltersUsed} />
+        <FilterDialogTrigger isFiltersApplied={isFiltersApplied} />
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
@@ -117,7 +125,7 @@ export default function FiltersDialogButton({
                   newFilters[idx].value = [min, max];
                   return newFilters;
                 });
-                setIsSaved(false);
+                setIsApplied(false);
               }}
               measure={value.measure}
               formatValue={value.valueFormatter}
@@ -136,8 +144,8 @@ export default function FiltersDialogButton({
 
 const FilterDialogTrigger = forwardRef<
   HTMLButtonElement,
-  ButtonProps & { isFiltersUsed: boolean }
->(({ isFiltersUsed, ...props }, ref) => (
+  ButtonProps & { isFiltersApplied: boolean }
+>(({ isFiltersApplied, ...props }, ref) => (
   <Button
     ref={ref}
     {...props}
@@ -146,7 +154,7 @@ const FilterDialogTrigger = forwardRef<
     className="relative flex-grow px-3"
   >
     <SlidersHorizontal className="h-5 w-5" />
-    {isFiltersUsed && (
+    {isFiltersApplied && (
       <Check className="absolute top-1 right-1 h-1 w-1 text-green-500" />
     )}
   </Button>

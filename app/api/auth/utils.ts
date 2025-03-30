@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server';
+
 import { auth } from '@/auth';
 import { MOCK_USER_ID } from '@/lib/mock/config';
-import { NextRequest, NextResponse } from 'next/server';
 
 export function withAuth(
   handler: (req: NextRequest, userId: string) => Promise<NextResponse>

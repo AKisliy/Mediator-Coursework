@@ -2,6 +2,7 @@
 
 import { Prisma, User } from '@prisma/client';
 
+import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { UserFilterSet, UserFilterValue } from '@/types/search-filters';
 
@@ -53,10 +54,10 @@ export async function saveUserFilter(
 }
 
 export async function getUserSavedFilters(): Promise<UserFilterSet[]> {
-  // const id = await verifySessionAndGetId();
+  const id = await verifySessionAndGetId();
   const filterSets = await prisma.userFilter.findMany({
     where: {
-      userId: '1'
+      userId: id
     }
   });
 

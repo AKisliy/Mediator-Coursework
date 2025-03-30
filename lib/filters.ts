@@ -2,6 +2,7 @@ import { FilterValue } from '@/types/search-filters';
 
 export const defaultFilters: FilterValue[] = [
   {
+    id: 'subscribers',
     min: 0,
     max: 10_000_000,
     name: 'Количество подписчиков',
@@ -12,6 +13,7 @@ export const defaultFilters: FilterValue[] = [
     stringTemplate: 'от %s до %s'
   },
   {
+    id: 'err',
     min: 0,
     max: 100,
     name: 'ERR',
@@ -21,6 +23,7 @@ export const defaultFilters: FilterValue[] = [
     measure: '%'
   },
   {
+    id: 'er',
     min: 0,
     max: 100,
     name: 'ER',
@@ -30,6 +33,7 @@ export const defaultFilters: FilterValue[] = [
     measure: '%'
   },
   {
+    id: 'avg_post_coverage',
     min: 0,
     max: 1_000_000,
     name: 'Средний охват поста',
@@ -39,6 +43,7 @@ export const defaultFilters: FilterValue[] = [
     measure: 'подписчиков'
   },
   {
+    id: 'avg_post_likes',
     min: 0,
     max: 1_000_000,
     name: 'Средний прирост подписчиков в месяц',
@@ -48,6 +53,7 @@ export const defaultFilters: FilterValue[] = [
     measure: 'подписчиков'
   },
   {
+    id: 'avg_post_comments',
     min: 0,
     max: 1_000_000,
     name: 'Средний охват рекламного поста',
