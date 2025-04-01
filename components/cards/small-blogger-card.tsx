@@ -1,3 +1,5 @@
+import { FaInstagram, FaTelegram } from 'react-icons/fa';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Card,
@@ -8,7 +10,6 @@ import {
 } from '@/components/ui/card';
 import { Blogger } from '@/types/blogger';
 import { isInstBlogger, isTelegramBlogger } from '@/types/type-guards';
-import { FaInstagram, FaTelegram } from 'react-icons/fa';
 
 export default function SmallBloggerCard({
   blogger,
@@ -18,7 +19,7 @@ export default function SmallBloggerCard({
   onClick: () => void;
 }) {
   return (
-    <Card key={blogger.id} onClick={onClick}>
+    <Card key={blogger.id} onClick={onClick} className="cursor-pointer">
       <CardHeader>
         <div className="flex justify-between gap-2">
           <div className="flex items-center space-x-4">
@@ -40,7 +41,9 @@ export default function SmallBloggerCard({
       <CardContent>
         <p className="text-sm text-muted-foreground mb-2">
           <strong>Подписчики:</strong>{' '}
-          {blogger?.followers_count?.toLocaleString()}
+          {blogger?.followers_count?.toLocaleString('ru-RU', {
+            useGrouping: true
+          })}
         </p>
       </CardContent>
     </Card>
