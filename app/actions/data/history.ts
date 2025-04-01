@@ -1,6 +1,7 @@
 'use server';
 
 import { UserSearch } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
@@ -36,7 +37,7 @@ export async function addSearchToHistory(
   const userId = await verifySessionAndGetId();
   await delay(5000);
 
-  return prisma.userSearch.create({
+  const newSearch = prisma.userSearch.create({
     data: {
       id,
       query,
@@ -57,6 +58,10 @@ export async function addSearchToHistory(
       }
     }
   });
+
+  revalidatePath('/history');
+  revalidatePath('/profile');
+  return newSearch;
 }
 
 export async function getSearchWithBloggers(searchId: string): Promise<{
