@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { v4 } from 'uuid';
 
-import { saveUserFilter } from '@/data/user';
+import { saveUserFilter } from '@/app/actions/data/user';
 import { toast } from '@/hooks/use-toast';
 import { FilterValue, UserFilterValue } from '@/types/search-filters';
 

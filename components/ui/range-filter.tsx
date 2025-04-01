@@ -1,14 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+
 import { cn } from '@/lib/utils';
-import { Slider } from './slider';
+
 import { Label } from './label';
+import { Slider } from './slider';
 
 interface RangeFilterProps {
   filterName: string;
   min: number;
   max: number;
+  value: [number, number];
   defaultValue: [number, number];
   step?: number;
   measure?: string;
@@ -21,6 +24,7 @@ export function RangeFilter({
   filterName,
   min,
   max,
+  value,
   defaultValue,
   step = 1,
   measure,
@@ -28,10 +32,9 @@ export function RangeFilter({
   minStepsBetweenThumbs = 10_000,
   formatValue
 }: RangeFilterProps) {
-  const [localValues, setLocalValues] = useState(defaultValue);
+  const displayValues = value || defaultValue || [min, max];
 
   const handleValueChange = (newValues: any) => {
-    setLocalValues(newValues);
     onChange?.(newValues);
   };
 
@@ -41,7 +44,7 @@ export function RangeFilter({
         {filterName}
       </Label>
       <Slider
-        defaultValue={defaultValue}
+        value={displayValues}
         minStepsBetweenThumbs={minStepsBetweenThumbs}
         max={max}
         min={min}
@@ -51,15 +54,15 @@ export function RangeFilter({
       />
       <div className="flex gap-2 flex-wrap">
         <ol className="flex items-center w-full gap-3">
-          {localValues.map((_, index) => (
+          {displayValues.map((_, index) => (
             <li
               key={index}
               className="flex items-center text-sm justify-between w-full border px-3 h-10 rounded-md"
             >
               <span>
                 {formatValue
-                  ? formatValue(localValues[index])
-                  : localValues[index]}
+                  ? formatValue(displayValues[index])
+                  : displayValues[index]}
               </span>
               <span>{measure}</span>
             </li>

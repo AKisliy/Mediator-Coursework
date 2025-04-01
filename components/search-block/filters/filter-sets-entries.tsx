@@ -1,56 +1,46 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { getUserSavedFilters } from '@/app/actions/user.actions';
-import { Button } from '@/components/ui/button';
 import {
-  DropdownMenuGroup,
-  DropdownMenuItem
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
 } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
 import { UserFilterSet } from '@/types/search-filters';
 
-export default function FilterSetEntriesDropdownGroup() {
-  const [filters, setFilters] = useState<UserFilterSet[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchSavedFilters = async () => {
-      const savedFilters = await getUserSavedFilters();
-      setFilters(savedFilters);
-      setIsLoading(false);
-    };
-    fetchSavedFilters();
-  }, []);
+interface FilterSetEntriesDropdownGroupProps {
+  filters: UserFilterSet[];
+  position: string;
+  setPosition: (value: string) => void;
+}
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 p-1">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton className="h-9 rounded-lg" key={i} />
-        ))}
-      </div>
-    );
-  }
-
+export default function FilterSetEntriesDropdownGroup({
+  filters,
+  position,
+  setPosition
+}: FilterSetEntriesDropdownGroupProps) {
   return (
-    <DropdownMenuGroup>
-      {!isLoading && (!filters || filters.length === 0) && (
-        <DropdownMenuItem>
-          <span className="text-muted-foreground">
-            У вас нет сохраненных фильтров
-          </span>
-        </DropdownMenuItem>
-      )}
-      {filters &&
-        filters.map(fiter => (
-          <DropdownMenuItem key={fiter.name}>
-            <Button className="w-full text-left justify-start" variant="ghost">
-              <span>{fiter.name}</span>
-            </Button>
+    <>
+      <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+        {(!filters || filters.length === 0) && (
+          <DropdownMenuItem>
+            <span className="text-muted-foreground">
+              У вас нет сохраненных фильтров
+            </span>
           </DropdownMenuItem>
-        ))}
-    </DropdownMenuGroup>
+        )}
+        {filters && (
+          <>
+            <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
+            {filters.map(filter => (
+              <DropdownMenuRadioItem key={filter.name} value={filter.name}>
+                {filter.name}
+              </DropdownMenuRadioItem>
+            ))}
+          </>
+        )}
+      </DropdownMenuRadioGroup>
+    </>
   );
 }

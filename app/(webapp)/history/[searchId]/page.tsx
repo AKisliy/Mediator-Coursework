@@ -1,9 +1,10 @@
+import { Clock } from 'lucide-react';
+
+import { getSearchWithBloggers } from '@/app/actions/data/history';
 import BloggersGrid from '@/components/bloggers-grid/bloggers-grid';
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import { Separator } from '@/components/ui/separator';
-import { getSearchWithBloggers } from '@/data/history';
 import { formatTimestampToNow } from '@/lib/utils';
-import { Clock } from 'lucide-react';
 
 export default async function HistoryEntryPage({
   params

@@ -1,8 +1,9 @@
 import { Check, SlidersHorizontal } from 'lucide-react';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { UserFilterSet } from '@/types/search-filters';
 
 import { Button, ButtonProps } from '../ui/button';
 import {
@@ -26,21 +27,58 @@ import {
 } from '../ui/drawer';
 import { RangeFilter } from '../ui/range-filter';
 import FilterSavingDialogButton from './filter-saving-button';
-import SavedFiltersDropdown from './saved-filters';
+import SavedFiltersDropdown from './saved-filters-dropdown';
 
 interface FilterPopoverProps {
   setIsFiltersApplied: (isUsed: boolean) => void;
   isFiltersApplied: boolean;
+  initialFilters: UserFilterSet[];
 }
 
 export default function FiltersDialogButton({
   setIsFiltersApplied,
-  isFiltersApplied
+  isFiltersApplied,
+  initialFilters
 }: FilterPopoverProps) {
   const { filters, setFilters } = useBloggersQuery();
+  const [appliedFiltersSetName, setAppliedFiltersSetName] = useState('none');
+  const appliedFiltersRef = useRef<string | null>(null);
 
   const [isApplied, setIsApplied] = useState(isFiltersApplied);
   const [localFilters, setLocalFilters] = useState(filters);
+
+  useEffect(() => {
+    if (appliedFiltersSetName === 'none') return;
+    if (appliedFiltersRef.current === appliedFiltersSetName) return;
+    appliedFiltersRef.current = appliedFiltersSetName;
+    const filterSet = initialFilters.find(
+      f => f.name === appliedFiltersSetName
+    );
+
+    if (!filterSet) return;
+
+    const newFilters = filters.map(filter => {
+      const filterValue = filterSet.filters.find(
+        f => f.id === filter.id
+      )?.value;
+      if (filterValue) {
+        return { ...filter, value: filterValue };
+      }
+      return { ...filter };
+    });
+
+    setLocalFilters(newFilters);
+    setFilters(newFilters);
+    setIsApplied(true);
+    setIsFiltersApplied(true);
+  }, [
+    appliedFiltersSetName,
+    initialFilters,
+    localFilters,
+    filters,
+    setFilters,
+    setIsFiltersApplied
+  ]);
 
   const handleFiltersApply = () => {
     setIsApplied(true);
@@ -61,10 +99,24 @@ export default function FiltersDialogButton({
             <div className="flex flex-col gap-2">
               <DialogTitle>Фильтры</DialogTitle>
               <DialogDescription>Настройте параметры поиска</DialogDescription>
+              <div className="text-sm text-gray-400">
+                {appliedFiltersSetName !== 'none' && (
+                  <span>
+                    Применен фильтр:{' '}
+                    <strong className="text-foreground text-base">
+                      {appliedFiltersSetName}
+                    </strong>
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex flex-row gap-2">
               <FilterSavingDialogButton filters={filters} />
-              <SavedFiltersDropdown />
+              <SavedFiltersDropdown
+                initialFilters={initialFilters}
+                appliedFiltersSetName={appliedFiltersSetName}
+                setAppliedFiltersSetName={setAppliedFiltersSetName}
+              />
             </div>
           </DialogHeader>
           <div className="p-3 space-y-3">
@@ -73,6 +125,7 @@ export default function FiltersDialogButton({
                 key={idx}
                 filterName={value.name}
                 defaultValue={[value.value[0], value.value[1]]}
+                value={[value.value[0], value.value[1]]}
                 min={value.min}
                 max={value.max}
                 step={value.stepSize}
@@ -115,6 +168,7 @@ export default function FiltersDialogButton({
               key={idx}
               filterName={value.name}
               defaultValue={[value.value[0], value.value[1]]}
+              value={[value.value[0], value.value[1]]}
               min={value.min}
               max={value.max}
               step={value.stepSize}

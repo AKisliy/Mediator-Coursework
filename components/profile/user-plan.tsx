@@ -1,7 +1,9 @@
-import { getUserPlanWithPurchaseDate } from '@/data/plan';
-import { formatDate } from '@/lib/utils';
 import { ChevronRight, Crown } from 'lucide-react';
 import Link from 'next/link';
+
+import { getUserPlanWithPurchaseDate } from '@/app/actions/data/plan';
+import { formatDate } from '@/lib/utils';
+
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 

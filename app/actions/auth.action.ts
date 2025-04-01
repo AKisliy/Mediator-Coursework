@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 
+import { getPasswordResetTokenByToken } from '@/app/actions/data/reset-token';
+import { getVerificationTokenByToken } from '@/app/actions/data/token';
+import { getUserByEmail } from '@/app/actions/data/user';
 import { signIn } from '@/auth';
-import { getPasswordResetTokenByToken } from '@/data/reset-token';
-import { getVerificationTokenByToken } from '@/data/token';
-import { getUserByEmail } from '@/data/user';
 import { prisma } from '@/lib/db/prisma';
 import { sendResetPasswordEmail, sendVerificationEmail } from '@/lib/mail';
 import { nodemailerConfig } from '@/lib/providers/email-provider';

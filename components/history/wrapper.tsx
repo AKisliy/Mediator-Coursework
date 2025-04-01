@@ -1,4 +1,5 @@
-import { loadMoreSearchEntries } from '@/data/history';
+import { loadMoreSearchEntries } from '@/app/actions/data/history';
+
 import HistoryEntries from './history-entries';
 
 export default async function HistoryEntriesWrapper() {

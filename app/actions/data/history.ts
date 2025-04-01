@@ -1,11 +1,12 @@
 'use server';
 
+import { UserSearch } from '@prisma/client';
+
 import { verifySessionAndGetId } from '@/app/api/auth/utils';
 import { prisma } from '@/lib/db/prisma';
 import { delay } from '@/lib/utils';
 import { transformBloggersFromDb } from '@/models/blogger-mappings';
 import { Blogger } from '@/types/blogger';
-import { UserSearch } from '@prisma/client';
 
 export async function getUserHistory(
   offset: number = 0,

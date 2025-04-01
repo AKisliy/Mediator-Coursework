@@ -1,7 +1,9 @@
-import { getUserByEmail } from '@/data/user';
-import { LoginSchema } from '@/schemas';
 import bcrypt from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';
+
+import { LoginSchema } from '@/schemas';
+
+import { prisma } from '../db/prisma';
 
 export const credentialsProvider = Credentials({
   id: 'credentials',
@@ -15,7 +17,12 @@ export const credentialsProvider = Credentials({
 
     const { email, password } = validatedCredentials.data;
 
-    const user = await getUserByEmail(email);
+    const user = await prisma.user.findFirst({
+      where: {
+        email
+      }
+    });
+
     if (!user || !user.password) {
       return null;
     }

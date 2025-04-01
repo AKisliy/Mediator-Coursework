@@ -1,6 +1,8 @@
-import { getUserLastSearch } from '@/data/history';
-import { formatTimestampToNow } from '@/lib/utils';
 import Link from 'next/link';
+
+import { getUserLastSearch } from '@/app/actions/data/history';
+import { formatTimestampToNow } from '@/lib/utils';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export default async function UserLastSearch() {

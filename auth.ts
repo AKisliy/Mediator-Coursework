@@ -2,7 +2,6 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
 
 import { authOptions } from './auth.config';
-import { getUserById } from './data/user';
 import { prisma } from './lib/db/prisma';
 
 export const {
@@ -17,7 +16,11 @@ export const {
         return true;
       }
 
-      const existingUser = await getUserById(user.id ?? '');
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          id: user.id
+        }
+      });
 
       if (!existingUser?.emailVerified) {
         return false;
@@ -38,7 +41,11 @@ export const {
     },
     async jwt({ token }) {
       if (!token.sub) return token;
-      const existingUser = await getUserById(token.sub);
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          id: token.sub
+        }
+      });
 
       if (!existingUser) return token;
       token.name = existingUser.name;

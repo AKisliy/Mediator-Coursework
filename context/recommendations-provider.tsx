@@ -1,8 +1,9 @@
 'use client';
 
-import { getUserPlan } from '@/data/plan';
-import { getUserReccomendationsCount } from '@/data/recommendations';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import { getUserPlan } from '@/app/actions/data/plan';
+import { getUserReccomendationsCount } from '@/app/actions/data/recommendations';
 
 type RecommendationContextType = {
   recommendationCount: number;

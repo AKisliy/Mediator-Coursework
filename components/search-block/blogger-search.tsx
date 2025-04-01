@@ -1,16 +1,11 @@
-import { useBloggersQuery } from '@/context/bloggers-query-provider';
-import BloggersGrid from '../bloggers-grid/bloggers-grid';
-import SearchBar from './search-bar';
-import ActionsToolBar from './actions-tool-bar';
+import ResultBloggerGrid from './result-bloggers-grid';
+import SearchBarUtils from './search-bar';
 
 export default function BloggerSearch() {
-  const { bloggers } = useBloggersQuery();
   return (
     <>
-      <SearchBar />
-      {bloggers?.length > 0 && (
-        <BloggersGrid bloggers={bloggers} upperChild={<ActionsToolBar />} />
-      )}
+      <SearchBarUtils />
+      <ResultBloggerGrid />
     </>
   );
 }

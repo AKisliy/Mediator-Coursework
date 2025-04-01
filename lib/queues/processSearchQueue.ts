@@ -1,4 +1,6 @@
-import { addSearchToHistory } from '@/data/history';
+import { Job, Queue, Worker } from 'bullmq';
+
+import { addSearchToHistory } from '@/app/actions/data/history';
 import { redisConnection } from '@/lib/redis';
 import { transformRecommendations } from '@/models/blogger-mappings';
 import {
@@ -6,7 +8,7 @@ import {
   SearchResponseDTO
 } from '@/models/response/search-response';
 import { FilterValue } from '@/types/search-filters';
-import { Job, Queue, Worker } from 'bullmq';
+
 import { generateMockBloggers } from '../mock/bloggers';
 import { enrichQueryWithFilters } from '../utils';
 import { defaultQueueConfig } from './config';

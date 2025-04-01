@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { updateUserProfileInformation } from '@/data/user';
+import { updateUserProfileInformation } from '@/app/actions/data/user';
 import { toast } from '@/hooks/use-toast';
 import { uploadAvatar } from '@/lib/db/supabase';
 import { ProfileSettingsSchemaValues } from '@/schemas';

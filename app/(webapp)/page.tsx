@@ -1,5 +1,3 @@
-'use client';
-
 import PageWithGridContainer from '@/components/container/page-with-grid-container';
 import MainBlockHeadline from '@/components/main-block-headline';
 import BloggerSearch from '@/components/search-block/blogger-search';
