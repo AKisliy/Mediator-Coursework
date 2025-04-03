@@ -42,7 +42,7 @@ export const searchWorker = new Worker<QueueInterface, SearchResponse>(
           uuid: response.uuid,
           recommendations: bloggers
         };
-        await addSearchToHistory(result.uuid, query, result.recommendations);
+        // await addSearchToHistory(result.uuid, query, result.recommendations);
         return result;
       }
 

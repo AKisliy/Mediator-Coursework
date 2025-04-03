@@ -1,5 +1,14 @@
 import * as z from 'zod';
 
+import {
+  BLOGGER_FIELDS,
+  BloggerField,
+  INST_BLOGGER_FIELDS,
+  InstBloggerField,
+  TELEGRAM_BLOGGER_FIELDS,
+  TelegramBloggerField
+} from '@/types/blogger';
+
 export const RegisterSchema = z
   .object({
     email: z.string().email({
@@ -92,3 +101,32 @@ export const SettingsFormSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']),
   language: z.enum(['ru', 'en'])
 });
+
+export const csvFieldsSchema = z.object({
+  social_media: z
+    .array(z.enum(['Telegram', 'Instagram']))
+    .nonempty('Выберите минимум одну соц. сеть')
+    .default(['Telegram']),
+  ...(Object.keys(BLOGGER_FIELDS).reduce(
+    (schema, key) => ({
+      ...schema,
+      [key]: z.boolean().default(false)
+    }),
+    {}
+  ) as { [K in BloggerField]: z.ZodBoolean }),
+  ...(Object.keys(INST_BLOGGER_FIELDS).reduce(
+    (schema, key) => ({
+      ...schema,
+      [key]: z.boolean().default(false)
+    }),
+    {}
+  ) as { [K in InstBloggerField]: z.ZodBoolean }),
+  ...(Object.keys(TELEGRAM_BLOGGER_FIELDS).reduce(
+    (schema, key) => ({
+      ...schema,
+      [key]: z.boolean().default(false)
+    }),
+    {}
+  ) as { [K in TelegramBloggerField]: z.ZodBoolean })
+});
+export type CsvFieldsSchemaValues = z.infer<typeof csvFieldsSchema>;

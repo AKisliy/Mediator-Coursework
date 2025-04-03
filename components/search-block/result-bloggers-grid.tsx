@@ -5,7 +5,7 @@ import React from 'react';
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 
 import BloggersGrid from '../bloggers-grid/bloggers-grid';
-import ActionsToolBar from './actions-tool-bar';
+import ActionsToolBar from './toolbar/actions-tool-bar';
 
 export default function ResultBloggerGrid() {
   const { bloggers } = useBloggersQuery();
