@@ -40,14 +40,16 @@ model Session {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  username       String?
-  email          String?   @unique
-  password       String?
-  searches_count Int       @default(0)
-  emailVerified  DateTime? @map("email_verified")
-  image          String?
+  id                  String    @id @default(cuid())
+  name                String?
+  username            String?
+  email               String?   @unique
+  password            String?
+  searches_count      Int       @default(0)
+  emailVerified       DateTime? @map("email_verified")
+  image               String?
+  refreshToken        String?   @map("refresh_token")
+  refreshTokenExpires DateTime? @map("refresh_token_expires")
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

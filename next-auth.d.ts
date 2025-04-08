@@ -12,3 +12,12 @@ declare module 'next-auth' {
     } & DefaultSession['user'];
   }
 }
+
+declare module '@auth/core/jwt' {
+  interface JWT {
+    access_token: string;
+    expires_at: Date;
+    refresh_token?: string;
+    error?: 'RefreshTokenError';
+  }
+}

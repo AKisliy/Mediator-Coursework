@@ -2,6 +2,7 @@
 
 import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 import { z } from 'zod';
 
 import { getPasswordResetTokenByToken } from '@/app/actions/data/reset-token';
@@ -22,6 +23,8 @@ import {
   RegisterSchema,
   ResetSchema
 } from '@/schemas';
+
+import { getRefreshToken } from './data/refresh-token';
 
 export async function authenticate(prevState: any, formData: FormData) {
   try {
@@ -249,4 +252,26 @@ export const setNewPassword = async (
   });
 
   return { success: 'Пароль успешно обновлен' };
+};
+
+export const refreshAccessToken = async (token: JWT) => {
+  const tokenInDb = await getRefreshToken(token.sub);
+
+  if (!tokenInDb) throw new Error('Refresh токен пользователя не найден');
+
+  if (tokenInDb.refreshToken !== token.refresh_token)
+    throw new Error('Refresh токены не совпадают');
+
+  if (
+    !tokenInDb.refreshTokenExpires ||
+    tokenInDb.refreshTokenExpires < new Date()
+  )
+    throw new Error('Действие Refresh токена истекло');
+
+  const newAccessToken = {
+    ...token,
+    expiresAt: new Date(Date.now() + process.env.ACCESS_TOKEN_TTL_SEC * 1000)
+  };
+
+  return newAccessToken;
 };

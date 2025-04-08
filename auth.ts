@@ -1,8 +1,32 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
 
+import { refreshAccessToken } from './app/actions/auth.action';
+import { createRefreshToken } from './app/actions/data/refresh-token';
 import { authOptions } from './auth.config';
 import { prisma } from './lib/db/prisma';
+
+// async function refreshAccessToken(token) {
+//   console.log('UPDATE')
+//   const refresh = await axios
+//     .post('/token/refresh/', {
+//       refresh: token.refreshToken
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//     })
+//   if (refresh && refresh.status === 200 && refresh.data.access) {
+//     return {
+//       ...token,
+//       accessToken: refresh.data.access,
+//       expiresAt: Date.now() + 10 * 1000
+//     }
+//   }
+//   return {
+//     ...token,
+//     error: 'RefreshAccessTokenError'
+//   }
+// }
 
 export const {
   handlers: { GET, POST },
@@ -39,21 +63,25 @@ export const {
         }
       };
     },
-    async jwt({ token }) {
+    async jwt({ token, user }) {
       if (!token.sub) return token;
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          id: token.sub
-        }
-      });
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.refresh_token = await createRefreshToken(token.sub);
+        token.expires_at = new Date(
+          Date.now() + process.env.ACCESS_TOKEN_TTL_SEC * 1000
+        );
+      }
 
-      if (!existingUser) return token;
-      token.name = existingUser.name;
-      token.email = existingUser.email;
-      // Note, that `session` can be any arbitrary object, remember to validate it!
-      token.picture = existingUser.image;
+      const expires = token.expires_at;
 
-      return token;
+      if (expires > new Date()) {
+        return token;
+      }
+
+      return refreshAccessToken(token);
     }
   },
   session: {

@@ -16,5 +16,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
     NEXT_PUBLIC_SUPABASE_URL: string;
     SUPABASE_SERVICE_ROLE_KEY: string;
+    REFRESH_TOKEN_TTL_DAYS: number;
+    ACCESS_TOKEN_TTL_SEC: number;
   }
 }
