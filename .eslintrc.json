@@ -29,13 +29,28 @@
   },
   "overrides": [
     {
-      "files": ["**/*.dev.ts", "**/*.dev.js"],
+      "files": ["**/*.dev.ts", "**/*.dev.js", "**/*.setup.ts"],
       "rules": {
         "import/no-extraneous-dependencies": [
           "error",
           { "devDependencies": true }
         ]
-      }
+      },
+      "env": {
+        "jest": true
+      },
+      "overrides": [
+        {
+          "files": [
+            "**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)"
+          ],
+          "extends": [
+            "plugin:testing-library/react",
+            "plugin:jest-dom/recommended",
+            "plugin:jest/recommended"
+          ]
+        }
+      ]
     }
   ],
   "globals": {
@@ -43,6 +58,7 @@
   },
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   }
 }
