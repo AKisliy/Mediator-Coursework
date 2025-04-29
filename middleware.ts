@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
+
 import { authOptions } from './auth.config';
 import { privateRoutes } from './routes';
 
@@ -8,6 +9,9 @@ const { auth } = NextAuth(authOptions);
 export default auth(async req => {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
+
+  if (process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true')
+    return NextResponse.next();
 
   const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
   const isApiRoute = nextUrl.pathname.startsWith('/api');

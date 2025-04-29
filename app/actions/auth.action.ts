@@ -114,7 +114,7 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
     });
   } catch (error: any) {
     if (error instanceof AuthError) {
-      switch (error.type) {
+      switch (error.name) {
         case 'CredentialsSignin':
           return { error: 'Указаны неверные данные' };
         default:
