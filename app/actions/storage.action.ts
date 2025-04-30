@@ -29,23 +29,18 @@ export const deleteCurrentAvatar = async (userId: string) => {
   const actualUserId = await verifySessionAndGetId();
   if (actualUserId !== userId)
     throw new Error("User can't delete from foreign bucket");
-  try {
-    const { data: list, error: listError } = await adminSupabase.storage
-      .from('avatar')
-      .list(`${userId}`);
-    const filesToRemove = list?.map(x => `${userId}/${x.name}`);
+  const { data: list, error: listError } = await adminSupabase.storage
+    .from('avatar')
+    .list(`${userId}`);
+  if (listError)
+    throw new Error(`Error while deleting files: ${listError.message}`);
+  const filesToRemove = list?.map(x => `${userId}/${x.name}`);
+  if (!filesToRemove) return;
 
-    if (!filesToRemove) return;
-    if (listError)
-      throw new Error(`Error while deleting your files: ${listError.message}`);
+  const { error } = await adminSupabase.storage
+    .from('avatar')
+    .remove(filesToRemove);
 
-    const { error } = await adminSupabase.storage
-      .from('avatar')
-      .remove(filesToRemove);
-
-    if (error)
-      throw new Error(`Error while deleting your files: ${error.message}`);
-  } catch (e: any) {
-    console.log(`Error occured while deleting: ${e.message}`);
-  }
+  if (error)
+    throw new Error(`Error while deleting your files: ${error.message}`);
 };
