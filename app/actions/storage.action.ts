@@ -9,14 +9,15 @@ const adminSupabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export const getAvatarUploadUrl = async (uid: string, fileName: string) => {
-  const userId = await verifySessionAndGetId();
-  if (userId !== uid) {
+export const getAvatarUploadUrl = async (userId: string, fileName: string) => {
+  const actualUserId = await verifySessionAndGetId();
+  if (actualUserId !== userId) {
     throw new Error('User is not authorized to upload to this bucket');
   }
+  if (!fileName) throw new Error("fileName can't be empty");
   const { data, error } = await adminSupabase.storage
     .from('avatar')
-    .createSignedUploadUrl(`${uid}/${fileName}`, { upsert: true });
+    .createSignedUploadUrl(`${userId}/${fileName}`, { upsert: true });
   if (error) {
     throw error;
   }
@@ -24,12 +25,15 @@ export const getAvatarUploadUrl = async (uid: string, fileName: string) => {
   return data;
 };
 
-export const deleteCurrentAvatar = async (uid: string) => {
+export const deleteCurrentAvatar = async (userId: string) => {
+  const actualUserId = await verifySessionAndGetId();
+  if (actualUserId !== userId)
+    throw new Error("User can't delete from foreign bucket");
   try {
     const { data: list, error: listError } = await adminSupabase.storage
       .from('avatar')
-      .list(`${uid}`);
-    const filesToRemove = list?.map(x => `${uid}/${x.name}`);
+      .list(`${userId}`);
+    const filesToRemove = list?.map(x => `${userId}/${x.name}`);
 
     if (!filesToRemove) return;
     if (listError)

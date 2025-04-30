@@ -1,24 +1,30 @@
 'use client';
 
-import { Upload } from 'lucide-react';
+import { Loader, Trash2, Upload } from 'lucide-react';
 import React, { useState } from 'react';
 
+import { DEFAULT_AVATAR_FILENAME } from '@/lib/constants';
+import { generateAvatar } from '@/lib/utils';
+
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
 export default function AvatarComponent({
-  uid,
-  url,
+  username,
+  avatarUrl,
+  setAvatarUrl,
   fallback,
   onPreviewUpload
 }: {
-  uid?: string;
+  username?: string;
+  avatarUrl?: string;
+  setAvatarUrl: (s: string) => void;
   url?: string;
   fallback?: string;
   onPreviewUpload: (f: File) => void;
 }) {
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(url);
   const [uploading, setUploading] = useState(false);
 
   const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async e => {
@@ -49,13 +55,24 @@ export default function AvatarComponent({
     }
   };
 
+  const deleteUserAvatar = async () => {
+    const avatartUri = generateAvatar(username ?? 'Default user');
+    setAvatarUrl(avatartUri);
+    onPreviewUpload(new File([], DEFAULT_AVATAR_FILENAME));
+  };
+
   return (
     <div className="flex items-center gap-4">
-      <Avatar className="h-16 w-16">
-        <AvatarImage src={avatarUrl} key={avatarUrl} />
-        <AvatarFallback>{fallback?.slice(0, 2).toUpperCase()}</AvatarFallback>
-      </Avatar>
-      <div>
+      {uploading ? (
+        <Loader />
+      ) : (
+        <Avatar className="h-16 w-16">
+          <AvatarImage src={avatarUrl} key={avatarUrl} />
+          <AvatarFallback>{fallback?.slice(0, 2).toUpperCase()}</AvatarFallback>
+        </Avatar>
+      )}
+
+      <div className="flex flex-row gap-1">
         <Label
           htmlFor="avatar-upload"
           className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md"
@@ -70,6 +87,9 @@ export default function AvatarComponent({
           className="hidden"
           onChange={uploadAvatar}
         />
+        <Button variant="ghost" type="button" onClick={deleteUserAvatar}>
+          <Trash2 color="red" />
+        </Button>
       </div>
     </div>
   );

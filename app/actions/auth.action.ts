@@ -91,13 +91,13 @@ export const proceedVerification = async (token: string) => {
 };
 
 export const login = async (data: z.infer<typeof LoginSchema>) => {
-  const validatedData = LoginSchema.parse(data);
+  const validatedData = LoginSchema.safeParse(data);
 
-  if (!validatedData) {
+  if (!validatedData.success) {
     return { error: 'Введены некорректные данные' };
   }
 
-  const { email, password } = validatedData;
+  const { email, password } = validatedData.data;
 
   const userExists = await getUserByEmail(email);
 
@@ -129,13 +129,13 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
 
 export const register = async (data: z.infer<typeof RegisterSchema>) => {
   try {
-    const validatedData = RegisterSchema.parse(data);
+    const validatedData = RegisterSchema.safeParse(data);
 
-    if (!validatedData) {
+    if (!validatedData.success) {
       return { error: 'Неверный формат входных данных' };
     }
 
-    const { email, name, password } = validatedData;
+    const { email, name, password } = validatedData.data;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 

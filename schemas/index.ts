@@ -89,7 +89,7 @@ export const profileSettingsSchema = z.object({
     message: 'Никнейм должен содержать не менее 3 символов'
   }),
   image: z.string(),
-  preivewImage: z.instanceof(File).optional()
+  previewImage: z.instanceof(File).optional()
 });
 export type ProfileSettingsSchemaValues = z.infer<typeof profileSettingsSchema>;
 

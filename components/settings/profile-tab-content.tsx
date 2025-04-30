@@ -1,9 +1,13 @@
+'use client';
+
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { updateUserProfileInformation } from '@/app/actions/data/user';
 import { toast } from '@/hooks/use-toast';
-import { uploadAvatar } from '@/lib/db/supabase';
+import { DEFAULT_AVATAR_FILENAME } from '@/lib/constants';
+import { deleteAvatar, uploadAvatar } from '@/lib/db/supabase';
 import { ProfileSettingsSchemaValues } from '@/schemas';
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
@@ -19,6 +23,9 @@ export default function ProfileTabContent({
   form: UseFormReturn<ProfileSettingsSchemaValues>;
 }) {
   const { data: session, update } = useSession();
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
+    session?.user.image
+  );
 
   const {
     control,
@@ -29,11 +36,17 @@ export default function ProfileTabContent({
   const onSubmit = async (data: ProfileSettingsSchemaValues) => {
     if (!session || !session.user)
       throw Error('Пользователь не вошел в систему');
-    if (form.formState.dirtyFields.preivewImage) {
-      const newImageUrl = await uploadAvatar(
-        session.user.id,
-        form.getValues('preivewImage')
-      );
+    if (form.formState.dirtyFields.previewImage) {
+      const imageFile = form.getValues('previewImage');
+      let newImageUrl: string | undefined = avatarUrl;
+      console.log(imageFile?.name);
+      if (imageFile?.name === DEFAULT_AVATAR_FILENAME) {
+        await deleteAvatar(session.user.id);
+      } else
+        newImageUrl = await uploadAvatar(
+          session.user.id,
+          form.getValues('previewImage')
+        );
       if (!newImageUrl) throw Error('Не удалось сохранить фото в БД');
       data.image = newImageUrl;
     }
@@ -45,7 +58,7 @@ export default function ProfileTabContent({
         description: 'Изменения успешно сохранены'
       });
       form.reset(data);
-      update();
+      await update({ image: updatedData.image, name: updatedData.name });
     } catch (e: any) {
       toast({
         title: 'Ошибка ⛔️',
@@ -76,11 +89,13 @@ export default function ProfileTabContent({
           <div className="space-y-2">
             <Label>Фотография профиля</Label>
             <AvatarComponent
-              uid={session?.user.id}
+              username={session?.user.username}
+              avatarUrl={avatarUrl}
+              setAvatarUrl={setAvatarUrl}
               url={session?.user.image}
               fallback={session?.user.name}
               onPreviewUpload={(file: File) => {
-                form.setValue('preivewImage', file, {
+                form.setValue('previewImage', file, {
                   shouldDirty: true,
                   shouldValidate: true
                 });

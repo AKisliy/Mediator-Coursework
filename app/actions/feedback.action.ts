@@ -19,7 +19,7 @@ export async function sendFeedback(requestId: string, givenScore: number) {
   });
 
   if (!response || !response.ok) {
-    throw new Error(`Ошибка отправки фидбека: ${response.statusText}`);
+    throw new Error(`Ошибка отправки фидбека: ${response?.statusText}`);
   }
 
   const data = await response.json();

@@ -49,7 +49,6 @@ export default function SettingsDialog({
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
 
   const { data: session } = useSession();
-  const user = session?.user;
 
   const profileForm = useForm<ProfileSettingsSchemaValues>({
     resolver: zodResolver(profileSettingsSchema),
@@ -67,7 +66,7 @@ export default function SettingsDialog({
     // }
   });
 
-  const handleOpenChange = (open: boolean) => {
+  const handleOpenChange: (o: boolean) => void = (open: boolean) => {
     if (!open && profileForm.formState.isDirty) {
       setShowUnsavedWarning(true);
     } else {

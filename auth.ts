@@ -6,28 +6,6 @@ import { createRefreshToken } from './app/actions/data/refresh-token';
 import { authOptions } from './auth.config';
 import { prisma } from './lib/db/prisma';
 
-// async function refreshAccessToken(token) {
-//   console.log('UPDATE')
-//   const refresh = await axios
-//     .post('/token/refresh/', {
-//       refresh: token.refreshToken
-//     })
-//     .catch((error) => {
-//       console.log(error)
-//     })
-//   if (refresh && refresh.status === 200 && refresh.data.access) {
-//     return {
-//       ...token,
-//       accessToken: refresh.data.access,
-//       expiresAt: Date.now() + 10 * 1000
-//     }
-//   }
-//   return {
-//     ...token,
-//     error: 'RefreshAccessTokenError'
-//   }
-// }
-
 export const {
   handlers: { GET, POST },
   auth,
@@ -59,16 +37,22 @@ export const {
         ...session,
         user: {
           ...session.user,
-          id: token.sub
+          id: token.sub,
+          image: token.picture
         }
       };
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (!token.sub) return token;
+      if (trigger === 'update') {
+        if (session?.name) token.name = session.name;
+        if (session?.image) token.picture = session.image;
+      }
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.picture = user.image;
         token.refresh_token = await createRefreshToken(token.sub);
         token.expires_at = new Date(
           Date.now() + process.env.ACCESS_TOKEN_TTL_SEC * 1000
