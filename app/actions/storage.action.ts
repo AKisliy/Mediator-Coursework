@@ -35,7 +35,7 @@ export const deleteCurrentAvatar = async (userId: string) => {
   if (listError)
     throw new Error(`Error while deleting files: ${listError.message}`);
   const filesToRemove = list?.map(x => `${userId}/${x.name}`);
-  if (!filesToRemove) return;
+  if (!filesToRemove || filesToRemove.length === 0) return;
 
   const { error } = await adminSupabase.storage
     .from('avatar')

@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react';
 export default function TelegramLoginButton() {
   const handleSignIn = async (data: TelegramAuthData) => {
     try {
-      await signIn('telegram-login', { callbackUrl: '/' }, data as any);
+      await signIn('telegram-login', { redirectTo: '/' }, data as any);
     } catch (e: any) {
       console.log(`Something went wrong: ${e.message}`);
     }
