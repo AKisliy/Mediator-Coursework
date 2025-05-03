@@ -48,7 +48,6 @@ export const {
         if (session?.name) token.name = session.name;
         if (session?.image) token.picture = session.image;
       }
-      console.log('JWT Callback - Account:', account);
       if (account?.provider === 'yandex') {
         token.access_token = account.access_token || '';
         token.id = account.cid;

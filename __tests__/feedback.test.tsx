@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 import { sendFeedback } from '@/app/actions/feedback.action';
+import { auth } from '@/auth';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
@@ -10,10 +11,18 @@ jest.mock('@/lib/mock/config', () => ({
   MOCK_USERNAME: 'test-user'
 }));
 
+jest.mock('@/auth', () => ({
+  auth: jest.fn()
+}));
+
 describe('sendFeedback', () => {
   const mockRequestId = '12345';
   const mockScore = 5;
   const mockServerApi = 'https://api.example.com';
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   beforeAll(() => {
     // Mock environment variable
@@ -22,6 +31,15 @@ describe('sendFeedback', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    (auth as jest.Mock).mockImplementation(async () => ({
+      user: {
+        id: 'mock-user-id',
+        name: 'Mock User',
+        email: 'mock@example.com'
+      },
+      expires: new Date().toISOString()
+    }));
   });
 
   afterAll(() => {

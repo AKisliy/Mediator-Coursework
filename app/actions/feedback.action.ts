@@ -1,8 +1,10 @@
 'use server';
 
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { MOCK_USERNAME } from '@/lib/mock/config';
 
-export async function sendFeedback(requestId: string, givenScore: number) {
+async function sendFeedbackAction(requestId: string, givenScore: number) {
+  const userId = getContextUserId();
   const url = `${process.env.SERVER_API}/feedback`;
 
   const response = await fetch(url, {
@@ -25,3 +27,5 @@ export async function sendFeedback(requestId: string, givenScore: number) {
   const data = await response.json();
   return data;
 }
+
+export const sendFeedback = withAuth(sendFeedbackAction);

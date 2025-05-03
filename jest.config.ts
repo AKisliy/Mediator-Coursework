@@ -20,7 +20,7 @@ const config: Config = {
     '^@/app/(.*)$': '<rootDir>/app/$1'
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!next-auth|@auth|@panva/hkdf|jose)'
+    '/node_modules/(?!next-auth|@auth|@panva/hkdf|jose|@auth/prisma-adapter|oauth4webapi/build|@dicebear)'
   ]
 };
 
