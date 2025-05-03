@@ -2,11 +2,11 @@
 
 import { Plan } from '@prisma/client';
 
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
 
-export async function getUserPlan(): Promise<Plan | undefined> {
-  const userId = await verifySessionAndGetId();
+async function getUserPlanAction(): Promise<Plan | undefined> {
+  const userId = getContextUserId();
   const response = await prisma.user.findUnique({
     where: {
       id: userId
@@ -18,8 +18,8 @@ export async function getUserPlan(): Promise<Plan | undefined> {
   return response?.plan;
 }
 
-export async function getUserPlanWithPurchaseDate() {
-  const userId = await verifySessionAndGetId();
+async function getUserPlanWithPurchaseDateAction() {
+  const userId = getContextUserId();
   const response = await prisma.user.findUnique({
     where: {
       id: userId
@@ -31,3 +31,8 @@ export async function getUserPlanWithPurchaseDate() {
   });
   return response;
 }
+
+export const getUserPlan = withAuth(getUserPlanAction);
+export const getUserPlanWithPurchaseDate = withAuth(
+  getUserPlanWithPurchaseDateAction
+);

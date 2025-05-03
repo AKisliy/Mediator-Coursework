@@ -9,18 +9,15 @@ const { auth } = NextAuth(authOptions);
 export default auth(async req => {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
-  console.log('PATH:', nextUrl.pathname, 'isLoggedIn:', isLoggedIn);
 
   if (process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true')
     return NextResponse.next();
 
   const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
-  console.log(`isPrivateRoute:${isPrivateRoute}`);
   const isApiRoute = nextUrl.pathname.startsWith('/api');
   const isAuthRoute =
     nextUrl.pathname.startsWith('/auth') &&
     nextUrl.pathname !== '/auth/signout';
-  console.log(`isApiRoute:${isApiRoute}`);
 
   if (isApiRoute) return NextResponse.next();
 

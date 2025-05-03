@@ -3,18 +3,16 @@
 import { UserSearch } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
-import { delay } from '@/lib/utils';
 import { transformBloggersFromDb } from '@/models/blogger-mappings';
 import { Blogger } from '@/types/blogger';
 
-export async function getUserHistory(
+async function getUserHistoryAction(
   offset: number = 0,
   count: number = 20
 ): Promise<UserSearch[] | undefined> {
-  const userId = await verifySessionAndGetId();
-  await delay(5000);
+  const userId = getContextUserId();
 
   const response = await prisma.userSearch.findMany({
     where: {
@@ -29,16 +27,12 @@ export async function getUserHistory(
   return response;
 }
 
-export async function addSearchToHistory(
+async function addSearchToHistoryAction(
   id: string,
   query: string,
   bloggers: Blogger[]
 ): Promise<UserSearch> {
-  const userId = await verifySessionAndGetId();
-  if (!userId) {
-    throw new Error('User not authenticated');
-  }
-  await delay(5000);
+  const userId = getContextUserId();
 
   const newSearch = prisma.userSearch.create({
     data: {
@@ -67,7 +61,7 @@ export async function addSearchToHistory(
   return newSearch;
 }
 
-export async function getSearchWithBloggers(searchId: string): Promise<{
+async function getSearchWithBloggersAction(searchId: string): Promise<{
   query?: string;
   createdAt?: Date;
   bloggers?: Blogger[];
@@ -89,12 +83,12 @@ export async function getSearchWithBloggers(searchId: string): Promise<{
   return result;
 }
 
-export async function loadMoreSearchEntries(offset: number) {
+async function loadMoreSearchEntriesAction(offset: number) {
   return getUserHistory(offset, 10);
 }
 
-export async function getUserLastSearch(): Promise<UserSearch | null> {
-  const userId = await verifySessionAndGetId();
+async function getUserLastSearchAction(): Promise<UserSearch | null> {
+  const userId = getContextUserId();
   const lastSearch = await prisma.userSearch.findFirst({
     where: {
       userId
@@ -105,3 +99,9 @@ export async function getUserLastSearch(): Promise<UserSearch | null> {
   });
   return lastSearch;
 }
+
+export const getUserHistory = withAuth(getUserHistoryAction);
+export const addSearchToHistory = withAuth(addSearchToHistoryAction);
+export const getUserLastSearch = withAuth(getUserLastSearchAction);
+export const getSearchWithBloggers = withAuth(getSearchWithBloggersAction);
+export const loadMoreSearchEntries = withAuth(loadMoreSearchEntriesAction);
