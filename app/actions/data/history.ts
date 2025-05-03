@@ -35,6 +35,9 @@ export async function addSearchToHistory(
   bloggers: Blogger[]
 ): Promise<UserSearch> {
   const userId = await verifySessionAndGetId();
+  if (!userId) {
+    throw new Error('User not authenticated');
+  }
   await delay(5000);
 
   const newSearch = prisma.userSearch.create({

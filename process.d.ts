@@ -18,5 +18,7 @@ declare namespace NodeJS {
     SUPABASE_SERVICE_ROLE_KEY: string;
     REFRESH_TOKEN_TTL_DAYS: number;
     ACCESS_TOKEN_TTL_SEC: number;
+    NEXT_PUBLIC_YANDEX_CLIENT_ID: string;
+    YANDEX_CLIENT_SECRET: string;
   }
 }

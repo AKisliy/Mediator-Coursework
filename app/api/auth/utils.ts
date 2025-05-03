@@ -22,11 +22,6 @@ export function withAuth(
 
 export async function verifySessionAndGetId() {
   const userId = await getCurrentUserId();
-
-  if (!userId) {
-    throw new Error('Пользователь не авторизован');
-  }
-
   return userId;
 }
 
