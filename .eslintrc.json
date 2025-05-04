@@ -1,3 +1,64 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "airbnb-base", "prettier"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "import/extensions": "off",
+    "global-require": "off",
+    "import/prefer-default-export": "off",
+    "no-console": "warn",
+    "no-constructor-return": "warn",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-param-reassign": "off",
+    "import/no-cycle": "warn",
+    "no-debugger": "error",
+    "react/react-in-jsx-scope": "off",
+    "no-use-before-define": "off",
+    "consistent-return": "off",
+    "camelcase": "off",
+    "import/order": ["warn"]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.dev.ts", "**/*.dev.js", "**/*.setup.ts"],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          { "devDependencies": true }
+        ]
+      },
+      "env": {
+        "jest": true
+      },
+      "overrides": [
+        {
+          "files": [
+            "**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)"
+          ],
+          "extends": [
+            "plugin:testing-library/react",
+            "plugin:jest-dom/recommended",
+            "plugin:jest/recommended"
+          ]
+        }
+      ]
+    }
+  ],
+  "globals": {
+    "React": "readonly"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  }
 }
