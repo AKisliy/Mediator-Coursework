@@ -1,16 +1,15 @@
 'use server';
 
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { processSearchQueue } from '@/lib/queues/processSearchQueue';
 import { FilterValue } from '@/types/search-filters';
 
-import { verifySessionAndGetId } from '../api/auth/utils';
-
-export async function startSearchTask(
+async function startSearchTaskAction(
   query: string,
   filters: FilterValue[],
   k: number
 ): Promise<{ jobId: string | undefined }> {
-  const userId = await verifySessionAndGetId();
+  const userId = getContextUserId();
   if (!userId) {
     throw new Error('User not authenticated');
   }
@@ -23,3 +22,5 @@ export async function startSearchTask(
 
   return { jobId: job.id };
 }
+
+export const startSearchTask = withAuth(startSearchTaskAction);

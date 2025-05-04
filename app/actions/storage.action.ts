@@ -2,15 +2,18 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-import { verifySessionAndGetId } from '../api/auth/utils';
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 
 const adminSupabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export const getAvatarUploadUrl = async (userId: string, fileName: string) => {
-  const actualUserId = await verifySessionAndGetId();
+export const getAvatarUploadUrlAction = async (
+  userId: string,
+  fileName: string
+) => {
+  const actualUserId = getContextUserId();
   if (actualUserId !== userId) {
     throw new Error('User is not authorized to upload to this bucket');
   }
@@ -25,8 +28,8 @@ export const getAvatarUploadUrl = async (userId: string, fileName: string) => {
   return data;
 };
 
-export const deleteCurrentAvatar = async (userId: string) => {
-  const actualUserId = await verifySessionAndGetId();
+export const deleteCurrentAvatarAction = async (userId: string) => {
+  const actualUserId = getContextUserId();
   if (actualUserId !== userId)
     throw new Error("User can't delete from foreign bucket");
   const { data: list, error: listError } = await adminSupabase.storage
@@ -44,3 +47,6 @@ export const deleteCurrentAvatar = async (userId: string) => {
   if (error)
     throw new Error(`Error while deleting your files: ${error.message}`);
 };
+
+export const getAvatarUploadUrl = withAuth(getAvatarUploadUrlAction);
+export const deleteCurrentAvatar = withAuth(deleteCurrentAvatarAction);

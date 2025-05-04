@@ -7,10 +7,10 @@ import {
   deleteCurrentAvatar,
   getAvatarUploadUrl
 } from '@/app/actions/storage.action';
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getContextUserId } from '@/lib/auth-wrapper';
 
 jest.mock('@/app/api/auth/utils', () => ({
-  verifySessionAndGetId: jest.fn()
+  getCurrentUserId: jest.fn()
 }));
 
 jest.mock('@supabase/supabase-js', () => ({
@@ -25,6 +25,11 @@ jest.mock('@supabase/supabase-js', () => ({
   })
 }));
 
+jest.mock('@/lib/auth-wrapper', () => ({
+  withAuth: jest.fn(fn => fn),
+  getContextUserId: jest.fn()
+}));
+
 describe('getAvatarUploadUrl', () => {
   const mockUserId = '11223344';
   const mockFileName = 'test.png';
@@ -35,20 +40,8 @@ describe('getAvatarUploadUrl', () => {
     jest.clearAllMocks();
   });
 
-  it('should verify users session', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
-    (mockCreateSignedUploadUrl as jest.Mock).mockResolvedValue({
-      data: 'url.com',
-      error: ''
-    });
-
-    await getAvatarUploadUrl(mockUserId, mockFileName);
-
-    expect(verifySessionAndGetId).toHaveBeenCalled();
-  });
-
   it('should throw error if tries to upload to foreign bucket', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue('1122');
+    (getContextUserId as jest.Mock).mockReturnValue('1122');
 
     await expect(getAvatarUploadUrl(mockUserId, mockFileName)).rejects.toThrow(
       'User is not authorized to upload to this bucket'
@@ -57,20 +50,8 @@ describe('getAvatarUploadUrl', () => {
     expect(mockCreateSignedUploadUrl).not.toHaveBeenCalled();
   });
 
-  it('should throw error if user is not authorized', async () => {
-    (verifySessionAndGetId as jest.Mock).mockImplementation(() => {
-      throw new Error('Пользователь не авторизован');
-    });
-
-    await expect(getAvatarUploadUrl(mockUserId, mockFileName)).rejects.toThrow(
-      'Пользователь не авторизован'
-    );
-
-    expect(mockCreateSignedUploadUrl).not.toHaveBeenCalled();
-  });
-
   it('should throw error if file name is empty', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
 
     await expect(getAvatarUploadUrl(mockUserId, '')).rejects.toThrow(
       "fileName can't be empty"
@@ -80,7 +61,7 @@ describe('getAvatarUploadUrl', () => {
   });
 
   it('should throw error if storage returned error', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockCreateSignedUploadUrl as jest.Mock).mockResolvedValue({
       data: '',
       error: new Error('Some error occurred')
@@ -97,7 +78,7 @@ describe('getAvatarUploadUrl', () => {
   });
 
   it('should return url when storage returns url', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockCreateSignedUploadUrl as jest.Mock).mockResolvedValue({
       data: 'someurl.com/upload',
       error: ''
@@ -125,36 +106,8 @@ describe('deleteCurrentAvatar', () => {
     jest.clearAllMocks();
   });
 
-  it('should verify users session', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
-    (mockListStorageItems as jest.Mock).mockResolvedValue({
-      data: [],
-      error: ''
-    });
-    (mockRemoveStorageItems as jest.Mock).mockResolvedValue({
-      error: ''
-    });
-
-    await deleteCurrentAvatar(mockUserId);
-
-    expect(verifySessionAndGetId).toHaveBeenCalled();
-  });
-
-  it('should throw exception when user is not authenticated', async () => {
-    (verifySessionAndGetId as jest.Mock).mockImplementation(() => {
-      throw new Error('Пользователь не авторизован');
-    });
-
-    await expect(deleteCurrentAvatar(mockUserId)).rejects.toThrow(
-      'Пользователь не авторизован'
-    );
-
-    expect(mockListStorageItems).not.toHaveBeenCalled();
-    expect(mockRemoveStorageItems).not.toHaveBeenCalled();
-  });
-
   it('should throw error when try to delete from foreign bucket', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue('1122');
+    (getContextUserId as jest.Mock).mockReturnValue('1122');
 
     await expect(deleteCurrentAvatar(mockUserId)).rejects.toThrow(
       "User can't delete from foreign bucket"
@@ -165,7 +118,7 @@ describe('deleteCurrentAvatar', () => {
   });
 
   it('should handle undefined data response from list call', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockListStorageItems as jest.Mock).mockResolvedValue({
       data: undefined,
       error: ''
@@ -178,7 +131,7 @@ describe('deleteCurrentAvatar', () => {
   });
 
   it("should throw error when storage returns list's error", async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockListStorageItems as jest.Mock).mockResolvedValue({
       data: ['some data'],
       error: new Error('Some error')
@@ -191,7 +144,7 @@ describe('deleteCurrentAvatar', () => {
   });
 
   it("should throw error when storage returns remove's error", async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockListStorageItems as jest.Mock).mockResolvedValue({
       data: ['some data'],
       error: ''
@@ -206,7 +159,7 @@ describe('deleteCurrentAvatar', () => {
   });
 
   it('should delete file if input is correct', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
     (mockListStorageItems as jest.Mock).mockResolvedValue({
       data: [{ name: 'fileName' }],
       error: ''

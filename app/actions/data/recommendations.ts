@@ -1,12 +1,12 @@
 'use server';
 
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
 
-export async function getUserReccomendationsCount(): Promise<
+export async function getUserReccomendationsCountAction(): Promise<
   number | undefined
 > {
-  const userId = await verifySessionAndGetId();
+  const userId = getContextUserId();
   const response = await prisma.user.findUnique({
     where: {
       id: userId
@@ -17,3 +17,7 @@ export async function getUserReccomendationsCount(): Promise<
   });
   return response?.searches_count;
 }
+
+export const getUserReccomendationsCount = withAuth(
+  getUserReccomendationsCountAction
+);

@@ -20,11 +20,6 @@ export function withAuth(
   };
 }
 
-export async function verifySessionAndGetId() {
-  const userId = await getCurrentUserId();
-  return userId;
-}
-
 export async function getCurrentUserId(): Promise<string | undefined> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_USER === 'true') return MOCK_USER_ID;
 

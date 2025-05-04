@@ -25,7 +25,6 @@ describe('sendFeedback', () => {
   });
 
   beforeAll(() => {
-    // Mock environment variable
     process.env.SERVER_API = mockServerApi;
   });
 
@@ -43,7 +42,6 @@ describe('sendFeedback', () => {
   });
 
   afterAll(() => {
-    // Restore original environment
     delete process.env.SERVER_API;
   });
 

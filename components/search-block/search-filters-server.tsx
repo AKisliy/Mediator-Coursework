@@ -1,4 +1,4 @@
-import { getUserSavedFilters } from '@/app/actions/user.actions';
+import { getUserSavedFilters } from '@/app/actions/data/user';
 
 import SearchFilters from './search-filter';
 

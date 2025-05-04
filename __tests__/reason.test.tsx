@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 import { getReason } from '@/app/actions/reason.action';
+import { getCurrentUserId } from '@/app/api/auth/utils';
 import { MOCK_REASON_TEXT } from '@/lib/mock/config';
 import { getReasonMock } from '@/lib/mock/reason';
 
@@ -12,9 +13,23 @@ jest.mock('@/lib/mock/reason', () => ({
   getReasonMock: jest.fn()
 }));
 
+jest.mock('@/auth', () => ({
+  auth: jest.fn()
+}));
+
+jest.mock('@/lib/auth-wrapper', () => ({
+  withAuth: jest.fn(fn => fn),
+  getContextUserId: jest.fn()
+}));
+
+jest.mock('@/app/api/auth/utils', () => ({
+  getCurrentUserId: jest.fn()
+}));
+
 describe('getReason', () => {
   const mockId = '12345';
-  const mockQuestion = 'Why did this blogger?';
+  const mockUserId = '11123';
+  const mockQuestion = 'Why this blogger?';
   const mockServerApi = 'https://api.example.com';
 
   beforeAll(() => {
@@ -23,6 +38,7 @@ describe('getReason', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (getCurrentUserId as jest.Mock).mockReturnValue(mockUserId);
   });
 
   afterAll(() => {
