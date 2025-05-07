@@ -20,5 +20,9 @@ declare namespace NodeJS {
     ACCESS_TOKEN_TTL_SEC: number;
     NEXT_PUBLIC_YANDEX_CLIENT_ID: string;
     YANDEX_CLIENT_SECRET: string;
+    DEV_PLAN_ID: number;
+    NEXT_PUBLIC_SUPPORT_TG: string;
+    NEXT_PUBLIC_OWNER_TG: string;
+    NEXT_PUBLIC_POPULAR_PLAN_ID: string;
   }
 }

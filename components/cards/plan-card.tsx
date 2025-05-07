@@ -1,29 +1,44 @@
 import { Check } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
+
+import { Plan } from '@/types/plan';
 
 import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
+  CardHeader,
   CardTitle
 } from '../ui/card';
 
-export default function PlanCard() {
-  const points = [
-    'Первая неделя бесплатно',
-    'Профессиональная озвучка и ИИ аватары',
-    '50+ готовых видео в месяц для Instagram, TikTok, YouTube в формате 9:16',
-    '10-90 секунд продолжительность видео'
-  ];
+export default function PlanCard({ plan }: { plan: Plan }) {
+  const isPopluarPlan =
+    plan.id === Number(process.env.NEXT_PUBLIC_POPULAR_PLAN_ID);
   return (
-    <Card>
-      <CardTitle className="p-4">Лучший план</CardTitle>
-      <CardDescription className="px-4 py-1">Крутое описание.</CardDescription>
-      <CardContent>
+    <Card
+      className={`flex flex-col min-h-full ${isPopluarPlan && 'border-green-700 bg-green-300 bg-opacity-10 md:scale-110'}`}
+    >
+      <CardHeader className="gap-3">
+        <CardTitle className="flex flex-row items-center gap-2">
+          {plan.name}
+          {isPopluarPlan && (
+            <div className="text-xs text-green-700 font-semibold ml-2 border-solid border-2 border-green-700 rounded-md px-2 py-1">
+              Популярный
+            </div>
+          )}
+        </CardTitle>
+        <CardDescription className="text-base text-foreground">
+          {plan.description}
+        </CardDescription>
+        <Button asChild>
+          <Link href={process.env.NEXT_PUBLIC_OWNER_TG}>Приобрести</Link>
+        </Button>
+      </CardHeader>
+      <CardContent className="flex-grow">
         <div className="flex flex-col gap-1 mb-8 text-sm">
-          {points.map((point, idx) => (
+          {plan?.planFeatures.map((point, idx) => (
             <div key={idx} className="flex flex-row gap-2 items-start">
               <Check size={16} className="mt-1" />
               <span className="w-fit leading-7">{point}</span>
@@ -31,9 +46,6 @@ export default function PlanCard() {
           ))}
         </div>
       </CardContent>
-      <CardFooter>
-        <Button>Приобрести</Button>
-      </CardFooter>
     </Card>
   );
 }
