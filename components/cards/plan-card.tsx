@@ -13,7 +13,14 @@ import {
   CardTitle
 } from '../ui/card';
 
-export default function PlanCard({ plan }: { plan: Plan }) {
+export default function PlanCard({
+  plan,
+  currentPlanId
+}: {
+  plan: Plan;
+  currentPlanId?: number;
+}) {
+  const isCurrentPlan = currentPlanId === plan.id;
   const isPopluarPlan =
     plan.id === Number(process.env.NEXT_PUBLIC_POPULAR_PLAN_ID);
   return (
@@ -32,9 +39,13 @@ export default function PlanCard({ plan }: { plan: Plan }) {
         <CardDescription className="text-base text-foreground">
           {plan.description}
         </CardDescription>
-        <Button asChild>
-          <Link href={process.env.NEXT_PUBLIC_OWNER_TG}>Приобрести</Link>
-        </Button>
+        {isCurrentPlan ? (
+          <Button disabled>Ваш текущий план</Button>
+        ) : (
+          <Button asChild>
+            <Link href={process.env.NEXT_PUBLIC_OWNER_TG}>Приобрести</Link>
+          </Button>
+        )}
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="flex flex-col gap-1 mb-8 text-sm">
