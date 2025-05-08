@@ -8,7 +8,7 @@ import UserPlanFallback from '@/components/profile/user-plan-fallback';
 
 export default function ProfilePage() {
   return (
-    <div className="text-white p-4">
+    <div className="text-white p-4 mt-20">
       <div className="max-w-3xl mx-auto space-y-6">
         <ProfileSection />
         <Suspense fallback={<UserProfileSearchFallback />}>

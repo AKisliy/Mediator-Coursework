@@ -17,11 +17,14 @@ import { getRefreshToken } from '@/app/actions/data/refresh-token';
 import * as resetTokenUtils from '@/app/actions/data/reset-token';
 import * as verificationTokenUtils from '@/app/actions/data/token';
 import * as userUtils from '@/app/actions/data/user';
+import { getCurrentUserId } from '@/app/api/auth/utils';
 import { signIn } from '@/auth';
+import { withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
 import * as mailUtils from '@/lib/mail';
 import * as tokenUtils from '@/lib/tokens';
 import * as utils from '@/lib/utils';
+import { AuthWrapperError } from '@/types/errors/auth-wrapper-error';
 
 jest.mock('@auth/core', () => ({
   Auth: jest.fn(),
@@ -79,6 +82,9 @@ jest.mock('@/lib/utils', () => ({
   generateAvatar: jest.fn()
 }));
 jest.mock('next-auth');
+jest.mock('@/app/api/auth/utils', () => ({
+  getCurrentUserId: jest.fn()
+}));
 
 describe('Auth Functions', () => {
   beforeEach(() => {
@@ -652,5 +658,29 @@ describe('Auth Functions', () => {
         'Действие Refresh токена истекло'
       );
     });
+  });
+});
+
+describe('withAuth wrapper', () => {
+  it('calls inner function if user is authenticated', async () => {
+    const mockFn = jest.fn(async () => 'ok');
+    (getCurrentUserId as jest.Mock).mockResolvedValue('some-user-id');
+
+    const wrapped = withAuth(mockFn);
+    await wrapped();
+
+    expect(mockFn).toHaveBeenCalled();
+  });
+
+  it('throws AuthWrapperError if user is not authenticated', async () => {
+    (getCurrentUserId as jest.Mock).mockResolvedValue(null);
+
+    const wrapped = withAuth(
+      async () =>
+        // внутренняя логика тут не важна
+        'some result'
+    );
+
+    await expect(wrapped()).rejects.toThrow(AuthWrapperError);
   });
 });

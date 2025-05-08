@@ -12,7 +12,7 @@ declare namespace NodeJS {
     EMAIL_SERVER_USER: string;
     EMAIL_SERVER_PASSWORD: string;
     EMAIL_SERVER_PORT: number;
-    HIGHEST_TIER_PLAN_ID: number;
+    HIGHEST_TIER_PLAN_ID: string;
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
     NEXT_PUBLIC_SUPABASE_URL: string;
     SUPABASE_SERVICE_ROLE_KEY: string;
@@ -20,5 +20,9 @@ declare namespace NodeJS {
     ACCESS_TOKEN_TTL_SEC: number;
     NEXT_PUBLIC_YANDEX_CLIENT_ID: string;
     YANDEX_CLIENT_SECRET: string;
+    DEV_PLAN_ID: number;
+    NEXT_PUBLIC_SUPPORT_TG: string;
+    NEXT_PUBLIC_OWNER_TG: string;
+    NEXT_PUBLIC_POPULAR_PLAN_ID: string;
   }
 }

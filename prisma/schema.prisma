@@ -84,9 +84,12 @@ model PasswordResetToken {
 }
 
 model Plan {
-  id            Int    @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   name          String
   monthly_limit Int
+  plan_features String?
+  description   String?
+  price         Int     @default(0)
   users         User[]
 
   @@map("plans")

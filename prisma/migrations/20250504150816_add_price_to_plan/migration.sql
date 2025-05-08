@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "plans" ADD COLUMN     "price" INTEGER NOT NULL DEFAULT 0;

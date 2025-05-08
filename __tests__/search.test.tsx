@@ -2,18 +2,29 @@
  * @jest-environment node
  */
 import { startSearchTask } from '@/app/actions/search.action';
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getCurrentUserId } from '@/app/api/auth/utils';
+import { auth } from '@/auth';
+import { getContextUserId } from '@/lib/auth-wrapper';
 import { processSearchQueue } from '@/lib/queues/processSearchQueue';
 import { FilterValue } from '@/types/search-filters';
 
 jest.mock('@/app/api/auth/utils', () => ({
-  verifySessionAndGetId: jest.fn()
+  getCurrentUserId: jest.fn()
 }));
 
 jest.mock('@/lib/queues/processSearchQueue', () => ({
   processSearchQueue: {
     add: jest.fn()
   }
+}));
+
+jest.mock('@/auth', () => ({
+  auth: jest.fn()
+}));
+
+jest.mock('@/lib/auth-wrapper', () => ({
+  withAuth: jest.fn(fn => fn),
+  getContextUserId: jest.fn()
 }));
 
 describe('startSearchTask', () => {
@@ -30,19 +41,32 @@ describe('startSearchTask', () => {
   ];
   const mockK = 10;
   const mockUserId = '11123';
+  const mockUserName = 'test-user';
+  const mockUserEmail = 'some-email@my.com';
   const mockJobId = '4165a350-e657-4e70-a9e5-1fec6ee29a58';
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (auth as jest.Mock).mockImplementation(async () => ({
+      user: {
+        id: mockUserId,
+        name: mockUserName,
+        email: mockUserEmail
+      },
+      expires: new Date().toISOString()
+    }));
+    (getContextUserId as jest.Mock).mockReturnValue(mockUserId);
+    (getCurrentUserId as jest.Mock).mockReturnValue(mockUserId);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should create a search task and return jobId for authenticated user', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
     (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
-
     const result = await startSearchTask(mockQuery, mockFilters, mockK);
 
-    expect(verifySessionAndGetId).toHaveBeenCalled();
     expect(processSearchQueue.add).toHaveBeenCalledWith(
       'process-recommendation',
       {
@@ -55,34 +79,7 @@ describe('startSearchTask', () => {
     expect(result).toEqual({ jobId: mockJobId });
   });
 
-  it('should throw exception if user is not authenticated', async () => {
-    (verifySessionAndGetId as jest.Mock).mockImplementation(() => {
-      throw new Error('Пользователь не авторизован');
-    });
-
-    await expect(
-      startSearchTask(mockQuery, mockFilters, mockK)
-    ).rejects.toThrow('Пользователь не авторизован');
-
-    expect(verifySessionAndGetId).toHaveBeenCalled();
-    expect(processSearchQueue.add).not.toHaveBeenCalled();
-  });
-
-  it('should handle error from verifySessionAndGetId', async () => {
-    (verifySessionAndGetId as jest.Mock).mockRejectedValue(
-      new Error('Session error')
-    );
-
-    await expect(
-      startSearchTask(mockQuery, mockFilters, mockK)
-    ).rejects.toThrow('Session error');
-
-    expect(verifySessionAndGetId).toHaveBeenCalled();
-    expect(processSearchQueue.add).not.toHaveBeenCalled();
-  });
-
   it('should handle error from processSearchQueue.add', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
     (processSearchQueue.add as jest.Mock).mockRejectedValue(
       new Error('Queue error')
     );
@@ -91,7 +88,6 @@ describe('startSearchTask', () => {
       startSearchTask(mockQuery, mockFilters, mockK)
     ).rejects.toThrow('Queue error');
 
-    expect(verifySessionAndGetId).toHaveBeenCalled();
     expect(processSearchQueue.add).toHaveBeenCalledWith(
       'process-recommendation',
       {
@@ -104,12 +100,10 @@ describe('startSearchTask', () => {
   });
 
   it('should handle empty query', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
     (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask('', mockFilters, mockK);
 
-    expect(verifySessionAndGetId).toHaveBeenCalled();
     expect(processSearchQueue.add).toHaveBeenCalledWith(
       'process-recommendation',
       {
@@ -123,12 +117,10 @@ describe('startSearchTask', () => {
   });
 
   it('should handle empty filters array', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
     (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask(mockQuery, [], mockK);
 
-    expect(verifySessionAndGetId).toHaveBeenCalled();
     expect(processSearchQueue.add).toHaveBeenCalledWith(
       'process-recommendation',
       {
@@ -142,12 +134,10 @@ describe('startSearchTask', () => {
   });
 
   it('should handle negative k', async () => {
-    (verifySessionAndGetId as jest.Mock).mockResolvedValue(mockUserId);
     (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask(mockQuery, mockFilters, -1);
 
-    expect(verifySessionAndGetId).toHaveBeenCalled();
     expect(processSearchQueue.add).toHaveBeenCalledWith(
       'process-recommendation',
       {

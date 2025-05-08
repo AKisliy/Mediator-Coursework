@@ -1,8 +1,9 @@
 'use server';
 
+import { withAuth } from '@/lib/auth-wrapper';
 import { getReasonMock } from '@/lib/mock/reason';
 
-export async function getReason(id: string, question: string) {
+async function getReasonAction(id: string, question: string) {
   if (!id) throw new Error('Id не может быть пустым');
   if (!question) throw new Error('Question не может быть пустым');
   if (process.env.USE_MOCK_API === 'true') return getReasonMock();
@@ -25,3 +26,5 @@ export async function getReason(id: string, question: string) {
 
   return data?.result;
 }
+
+export const getReason = withAuth(getReasonAction);

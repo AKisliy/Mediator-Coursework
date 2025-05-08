@@ -2,7 +2,7 @@
 
 import { Prisma, User } from '@prisma/client';
 
-import { verifySessionAndGetId } from '@/app/api/auth/utils';
+import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
 import { UserFilterSet, UserFilterValue } from '@/types/search-filters';
 
@@ -53,8 +53,8 @@ export async function saveUserFilter(
   });
 }
 
-export async function getUserSavedFilters(): Promise<UserFilterSet[]> {
-  const id = await verifySessionAndGetId();
+async function getUserSavedFiltersAction(): Promise<UserFilterSet[]> {
+  const id = getContextUserId();
   const filterSets = await prisma.userFilter.findMany({
     where: {
       userId: id
@@ -75,3 +75,5 @@ export async function getUserSavedFilters(): Promise<UserFilterSet[]> {
 
   return mappedSets;
 }
+
+export const getUserSavedFilters = withAuth(getUserSavedFiltersAction);

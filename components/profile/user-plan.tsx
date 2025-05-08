@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export default async function UserPlan() {
   const planWithPurchaseDate = await getUserPlanWithPurchaseDate();
+  const isHighestPlan =
+    planWithPurchaseDate?.plan.id === Number(process.env.HIGHEST_TIER_PLAN_ID);
   return (
     <Card className="bg-zinc-900 border-zinc-800 w-full">
       <CardHeader>
@@ -17,22 +19,22 @@ export default async function UserPlan() {
             <Crown className="h-5 w-5 text-purple-500" />
             Текущий тариф
           </CardTitle>
-          {planWithPurchaseDate?.plan.id !==
-            process.env.HIGHEST_TIER_PLAN_ID && (
+          <Button asChild>
             <Link href="/plans">
-              <Button>
-                Улучшить
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
+              {isHighestPlan ? 'Тарифы' : 'Улучшить'}
+              <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
-          )}
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
           <p className="font-medium">{planWithPurchaseDate?.plan.name}</p>
           <p className="text-sm text-gray-400">
-            Дата приобретения: {formatDate(planWithPurchaseDate?.planPurchase)}
+            Дата приобретения:{' '}
+            {planWithPurchaseDate
+              ? formatDate(planWithPurchaseDate.planPurchase)
+              : 'Неизвестно'}
           </p>
         </div>
       </CardContent>
