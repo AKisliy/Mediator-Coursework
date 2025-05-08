@@ -9,11 +9,11 @@ import { useRecommendation } from '@/context/recommendations-provider';
 import { Button } from '../ui/button';
 
 export default function SearchButton() {
-  const { handleSearch, loading, bloggersCount } = useBloggersQuery();
+  const { handleSearch, loading, bloggersCount, query } = useBloggersQuery();
   const { recommendationCount } = useRecommendation();
   return (
     <Button
-      onClick={handleSearch}
+      onClick={query ? () => handleSearch() : () => {}}
       disabled={
         loading ||
         recommendationCount <= 0 ||

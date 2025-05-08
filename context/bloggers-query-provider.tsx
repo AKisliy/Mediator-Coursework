@@ -1,13 +1,15 @@
 'use client';
 
+import React, { createContext, useContext, useState } from 'react';
+
+import { startSearchTask } from '@/app/actions/search.action';
 import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
-import React, { createContext, useContext, useState } from 'react';
-import { Blogger } from '@/types/blogger';
-import { getReasonLocalStorageKey } from '@/lib/utils';
-import { startSearchTask } from '@/app/actions/search.action';
-import { FilterValue } from '@/types/search-filters';
 import { defaultFilters } from '@/lib/filters';
+import { getReasonLocalStorageKey } from '@/lib/utils';
+import { Blogger } from '@/types/blogger';
+import { FilterValue } from '@/types/search-filters';
+
 import { SearchResponse } from '../models/response/search-response';
 
 type BloggerQueryContextType = {
@@ -73,6 +75,7 @@ export const BloggerQueryProvider = ({
         description: 'Осталось немного подождать...'
       });
     } catch {
+      setLoading(false);
       toast({
         title: 'Ошибка ☠️',
         description: 'Произошла ошибка, пожалуйста, попробуйте снова',
