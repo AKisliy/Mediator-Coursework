@@ -1,3 +1,5 @@
+import { TgStats } from '@/models/statistics/tg-stats';
+
 export type SocialMedia = 'Telegram' | 'Instagram';
 
 export type Blogger = {
@@ -19,6 +21,7 @@ export type InstBlogger = Blogger & {
 export type TelegramBlogger = Blogger & {
   avg_post_reach: number;
   channel_title: string;
+  statistics: TgStats;
 };
 
 export const BLOGGER_FIELDS = {

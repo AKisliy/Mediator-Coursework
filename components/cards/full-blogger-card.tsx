@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { BloggersGridConfig } from '@/types/bloggers-grid-config';
 import { Blogger } from '@/types/blogger';
+import { BloggersGridConfig } from '@/types/bloggers-grid-config';
 import { isInstBlogger, isTelegramBlogger } from '@/types/type-guards';
 
 import ReasonButton from '../buttons/reason-button';
@@ -21,6 +22,7 @@ export default function FullBloggerCard({
   onClose: () => void;
   config?: BloggersGridConfig;
 }) {
+  const t = useTranslations('search.bloggerCard');
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -74,7 +76,7 @@ export default function FullBloggerCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Перейти к профилю
+                {t('goToProfile')}
               </a>
             </Button>
           </CardFooter>

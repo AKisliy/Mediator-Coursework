@@ -1,5 +1,6 @@
-import { SearchResponseDTO } from '@/models/response/search-response';
 import { v4 as uuidv4 } from 'uuid';
+
+import { SearchResponseDTO } from '@/models/response/search-response';
 
 export const generateMockBloggers = (
   query: string,
@@ -11,7 +12,7 @@ export const generateMockBloggers = (
     .map(() => ({
       id: uuidv4(),
       metadata: {
-        username: `devilsolicitor`,
+        username: `verylongnickname${Math.floor(Math.random() * 1000)}`,
         image_link:
           'https://t.me/i/userpic/320/Jjxlg-GQwkJFAYLcihFpzW1LA0HzKQ_oONIFaH5l4io.jpg',
         category: 'Мотивация',

@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader, Trash2, Upload } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { DEFAULT_AVATAR_FILENAME } from '@/lib/constants';
@@ -25,6 +26,7 @@ export default function AvatarComponent({
   fallback?: string;
   onPreviewUpload: (f: File) => void;
 }) {
+  const t = useTranslations('settings.avatar');
   const [uploading, setUploading] = useState(false);
 
   const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async e => {
@@ -32,7 +34,7 @@ export default function AvatarComponent({
       setUploading(true);
 
       if (!e.target.files || e.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
+        throw new Error(t('error.noFile'));
       }
 
       const file = e.target.files?.[0];
@@ -48,7 +50,7 @@ export default function AvatarComponent({
         reader.readAsDataURL(file);
       }
     } catch (error) {
-      alert('Error uploading avatar!');
+      alert(t('error.uploadingError'));
       console.log(error);
     } finally {
       setUploading(false);
@@ -75,10 +77,10 @@ export default function AvatarComponent({
       <div className="flex flex-row gap-1">
         <Label
           htmlFor="avatar-upload"
-          className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md"
+          className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-primary rounded-md"
         >
           <Upload className="h-4 w-4" />
-          Загрузить фото
+          {t('uploadButton')}
         </Label>
         <Input
           id="avatar-upload"

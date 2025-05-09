@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@supabase/supabase-js';
+import { getTranslations } from 'next-intl/server';
 
 import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 
@@ -13,11 +14,12 @@ export const getAvatarUploadUrlAction = async (
   userId: string,
   fileName: string
 ) => {
+  const t = await getTranslations('storage.errors');
   const actualUserId = getContextUserId();
   if (actualUserId !== userId) {
-    throw new Error('User is not authorized to upload to this bucket');
+    throw new Error(t('cannotUseForeignBucket'));
   }
-  if (!fileName) throw new Error("fileName can't be empty");
+  if (!fileName) throw new Error(t('emptyFileName'));
   const { data, error } = await adminSupabase.storage
     .from('avatar')
     .createSignedUploadUrl(`${userId}/${fileName}`, { upsert: true });
@@ -29,9 +31,9 @@ export const getAvatarUploadUrlAction = async (
 };
 
 export const deleteCurrentAvatarAction = async (userId: string) => {
+  const t = await getTranslations('storage.errors');
   const actualUserId = getContextUserId();
-  if (actualUserId !== userId)
-    throw new Error("User can't delete from foreign bucket");
+  if (actualUserId !== userId) throw new Error(t('cannotUseForeignBucket'));
   const { data: list, error: listError } = await adminSupabase.storage
     .from('avatar')
     .list(`${userId}`);

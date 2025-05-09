@@ -1,4 +1,17 @@
-import { PersonStandingIcon } from 'lucide-react';
+'use client';
+
+import {
+  Command,
+  DoorOpen,
+  History,
+  PersonStandingIcon,
+  Search,
+  SparklesIcon
+} from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   Sidebar,
@@ -13,30 +26,67 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 
-const links = [
+import { dropDownLinks } from '../navigation/user-profile-dropdown';
+import { NavUser } from './nav-user';
+
+const sidebarLinks = [
   {
-    title: 'Some stuff',
-    url: '/profile',
-    icon: PersonStandingIcon
+    titleKey: 'search',
+    icon: Search,
+    href: '/'
+  },
+  {
+    titleKey: 'history',
+    icon: History,
+    href: '/history'
+  },
+  {
+    titleKey: 'plans',
+    icon: SparklesIcon,
+    href: '/plans'
   }
 ];
 
 export function AppSidebar() {
+  const t = useTranslations('navigation.sidebar');
+
+  const { data: session } = useSession();
+
   return (
     <Sidebar side="right">
-      <SidebarHeader />
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#">
+                <div className="bg-sidebar-primary-foreground border border-solid border-sidebar-border text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <Image
+                    src="/logo.png"
+                    alt="Mediator Logo"
+                    width={14}
+                    height={14}
+                  />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Mediator</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Amplify</SidebarGroupLabel>
+          <SidebarGroupLabel>Mediator</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {links.map(item => (
-                <SidebarMenuItem key={item.title}>
+              {sidebarLinks.map(item => (
+                <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.href}>
                       {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </a>
+                      <span>{t(item.titleKey)}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -45,7 +95,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="text-sm text-gray-400 p-4">© 2025 Amplify</div>
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

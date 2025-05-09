@@ -3,14 +3,15 @@
 import React, { createContext, useContext, useState } from 'react';
 
 import { startSearchTask } from '@/app/actions/search.action';
+import { useDefaultFilters } from '@/hooks/use-default-filters';
 import { useTaskPolling } from '@/hooks/use-task-polling';
 import { toast } from '@/hooks/use-toast';
-import { defaultFilters } from '@/lib/filters';
 import { getReasonLocalStorageKey } from '@/lib/utils';
 import { Blogger } from '@/types/blogger';
 import { FilterValue } from '@/types/search-filters';
 
 import { SearchResponse } from '../models/response/search-response';
+import { useRecommendation } from './recommendations-provider';
 
 type BloggerQueryContextType = {
   query: string;
@@ -37,16 +38,21 @@ export const BloggerQueryProvider = ({
   children: React.ReactNode;
 }) => {
   const [query, setQuery] = useState('');
+  const { decreaseReccomendations } = useRecommendation();
   const [bloggers, setBloggers] = useState<Blogger[]>([]);
   const [loading, setLoading] = useState(false);
   const [bloggersCount, setBloggersCount] = useState(20);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FilterValue[]>(defaultFilters);
+  const tranlsatedDefaultFilters = useDefaultFilters();
+  const [filters, setFilters] = useState<FilterValue[]>(
+    tranlsatedDefaultFilters
+  );
 
   useTaskPolling<SearchResponse>({
     taskId,
     onSuccess: (data: SearchResponse) => {
+      decreaseReccomendations(data.recommendations.length);
       setBloggers(data.recommendations);
       setRequestId(data.uuid);
     },
@@ -67,6 +73,10 @@ export const BloggerQueryProvider = ({
     try {
       handleGridClearing();
       setLoading(true);
+      filters.map(filter => {
+        filter.valueFormatter = undefined;
+        return filter;
+      });
       const searchJob = await startSearchTask(query, filters, bloggersCount);
       if (!searchJob.jobId) throw new Error('Не удалось отправить запрос');
       setTaskId(searchJob.jobId);
@@ -74,7 +84,8 @@ export const BloggerQueryProvider = ({
         title: 'Запрос успешно отправлен ✨',
         description: 'Осталось немного подождать...'
       });
-    } catch {
+    } catch (error) {
+      console.error('Ошибка при отправке запроса:', error);
       setLoading(false);
       toast({
         title: 'Ошибка ☠️',

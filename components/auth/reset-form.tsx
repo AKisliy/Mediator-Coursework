@@ -1,16 +1,18 @@
 'use client';
 
-import { authenticate, resetPassword } from '@/app/actions/auth.action';
-import { toast } from '@/hooks/use-toast';
-import { ResetSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import { TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { resetPassword } from '@/app/actions/auth.action';
+import { toast } from '@/hooks/use-toast';
+import { ResetSchema } from '@/schemas';
+
 import { Button } from '../ui/button';
 import {
   Form,
@@ -26,7 +28,7 @@ import CardWrapper from './card-wrapper';
 import PrivacyPolicy from './privacy-policy';
 
 export function ResetForm() {
-  const [state, formAction] = useFormState(authenticate, null);
+  const t = useTranslations('auth.reset');
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof ResetSchema>>({
@@ -41,26 +43,23 @@ export function ResetForm() {
 
     try {
       const res = await resetPassword(data);
-      console.log(res);
 
       if (res?.error) {
         toast({
-          title: 'Ошибка ☠️',
+          title: t('toast.error.title'),
           description: res.error,
           variant: 'destructive'
         });
       } else if (res?.success) {
-        console.log('Got success');
         toast({
-          title: 'Успех!✨',
-          description: 'Ссылка отправлена на вашу почту'
+          title: t('toast.success.title'),
+          description: t('toast.success.description')
         });
       }
-    } catch (error) {
-      console.error('Ошибка при сбросе пароля:', error);
+    } catch {
       toast({
-        title: 'Ошибка ☠️',
-        description: 'Произошла непредвиденная ошибка',
+        title: t('toast.error.title'),
+        description: t('toast.error.description'),
         variant: 'destructive'
       });
     } finally {
@@ -71,9 +70,10 @@ export function ResetForm() {
   return (
     <>
       <CardWrapper
-        title={'Забыли пароль?'}
-        description={'Не переживайте, мы поможем 👨‍💻'}
+        title={t('title')}
+        description={t('description')}
         className="mb-4"
+        includeBackButton
       >
         <Form {...form}>
           <form className="p-4 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -87,14 +87,14 @@ export function ResetForm() {
                       <FormLabel>
                         <Tooltip>
                           <div className="flex flex-row items-center">
-                            Ваш Email
+                            {t('email.label')}
                             <TooltipTrigger asChild>
                               <Button variant="link" className="p-1">
                                 <QuestionMarkCircledIcon />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Введите email, указанный при регистрации</p>
+                              <p>{t('email.tooltip')}</p>
                             </TooltipContent>
                           </div>
                         </Tooltip>
@@ -113,10 +113,10 @@ export function ResetForm() {
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {!isLoading ? (
-                  'Получить ссылку для восстановления'
+                  t('getLinkButton')
                 ) : (
                   <div className="flex flex-row gap-2">
-                    Момент... <Loader2 className="animate-spin" />
+                    {t('loading')} <Loader2 className="animate-spin" />
                   </div>
                 )}
               </Button>

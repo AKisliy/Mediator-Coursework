@@ -1,9 +1,12 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { BloggersGridConfig } from '@/types/bloggers-grid-config';
+
 import { Blogger } from '@/types/blogger';
+import { BloggersGridConfig } from '@/types/bloggers-grid-config';
+
 import FullBloggerCard from '../cards/full-blogger-card';
 import SmallBloggerCard from '../cards/small-blogger-card';
 
@@ -17,6 +20,7 @@ export default function BloggersGrid({
   config?: BloggersGridConfig;
 }) {
   const [selectedBlogger, setSelectedBlogger] = useState<Blogger | null>(null);
+  const t = useTranslations('search');
 
   return (
     <>
@@ -39,8 +43,8 @@ export default function BloggersGrid({
           ))}
         </AnimatePresence>
       </motion.div>
-      <p className="text-center mt-7 text-muted-foreground">
-        Нажмите на карточку, чтобы открыть 👆
+      <p className="text-center mt-7 text-muted-foreground text-sm md:text-base">
+        {t('openCardTip')}
       </p>
       <AnimatePresence>
         {selectedBlogger && (

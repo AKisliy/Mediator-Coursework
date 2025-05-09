@@ -1,5 +1,9 @@
 'use client';
 
+import { Laptop, Moon, Sun } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,13 +12,12 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Laptop, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useCookieSettings } from '@/hooks/use-cookie-settings';
 
 const ThemeSwitcher = () => {
+  const t = useTranslations('settings.preferenceTab');
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { changeTheme, theme } = useCookieSettings();
 
   useEffect(() => {
     setMounted(true);
@@ -54,18 +57,21 @@ const ThemeSwitcher = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-content" align="start">
-        <DropdownMenuRadioGroup value={theme} onValueChange={e => setTheme(e)}>
+        <DropdownMenuRadioGroup
+          value={theme}
+          onValueChange={e => changeTheme(e)}
+        >
           <DropdownMenuRadioItem className="flex gap-2" value="light">
             <Sun size={ICON_SIZE} className="text-muted-foreground" />{' '}
-            <span>Light</span>
+            <span>{t('themeLight')}</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="dark">
             <Moon size={ICON_SIZE} className="text-muted-foreground" />{' '}
-            <span>Dark</span>
+            <span>{t('themeDark')}</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="system">
             <Laptop size={ICON_SIZE} className="text-muted-foreground" />{' '}
-            <span>System</span>
+            <span>{t('themeSystem')}</span>
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

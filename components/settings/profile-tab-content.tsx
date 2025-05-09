@@ -1,14 +1,15 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 import { updateUserProfileInformation } from '@/app/actions/data/user';
 import { toast } from '@/hooks/use-toast';
 import { DEFAULT_AVATAR_FILENAME } from '@/lib/constants';
 import { deleteAvatar, uploadAvatar } from '@/lib/db/supabase';
-import { ProfileSettingsSchemaValues } from '@/schemas';
+import type { ProfileSettingsSchemaValues } from '@/schemas';
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
 import { Input } from '../ui/input';
@@ -23,6 +24,7 @@ export default function ProfileTabContent({
   form: UseFormReturn<ProfileSettingsSchemaValues>;
 }) {
   const { data: session, update } = useSession();
+  const t = useTranslations('settings.profileTab');
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
     session?.user.image
   );
@@ -34,36 +36,40 @@ export default function ProfileTabContent({
   } = form;
 
   const onSubmit = async (data: ProfileSettingsSchemaValues) => {
-    if (!session || !session.user)
-      throw Error('Пользователь не вошел в систему');
+    if (!session || !session.user) throw Error(t('userNotLoggedIn'));
+
     if (form.formState.dirtyFields.previewImage) {
       const imageFile = form.getValues('previewImage');
       let newImageUrl: string | undefined = avatarUrl;
       console.log(imageFile?.name);
+
       if (imageFile?.name === DEFAULT_AVATAR_FILENAME) {
         await deleteAvatar(session.user.id);
-      } else
+      } else {
         newImageUrl = await uploadAvatar(
           session.user.id,
           form.getValues('previewImage')
         );
-      if (!newImageUrl) throw Error('Не удалось сохранить фото в БД');
+      }
+
+      if (!newImageUrl) throw Error(t('failedToSavePhoto'));
       data.image = newImageUrl;
     }
+
     const updatedData = { name: data.name, image: data.image };
+
     try {
       await updateUserProfileInformation(session?.user?.id ?? '', updatedData);
       toast({
-        title: 'Готово ✅',
-        description: 'Изменения успешно сохранены'
+        title: t('successTitle'),
+        description: t('successDescription')
       });
       form.reset(data);
       await update({ image: updatedData.image, name: updatedData.name });
     } catch (e: any) {
       toast({
-        title: 'Ошибка ⛔️',
-        description:
-          'Во время сохранения произошла неизвестная ошибка. Повторите попытку позже',
+        title: t('errorTitle'),
+        description: t('errorDescription'),
         variant: 'destructive'
       });
     }
@@ -78,16 +84,16 @@ export default function ProfileTabContent({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="name">Имя</FormLabel>
+                <FormLabel htmlFor="name">{t('name')}</FormLabel>
                 <FormControl>
-                  <Input {...field} className="bg-zinc-800 border-zinc-700" />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
 
           <div className="space-y-2">
-            <Label>Фотография профиля</Label>
+            <Label>{t('profilePhoto')}</Label>
             <AvatarComponent
               username={session?.user.username}
               avatarUrl={avatarUrl}

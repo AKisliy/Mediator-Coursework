@@ -12,7 +12,10 @@ export default function ResultBloggerGrid() {
   return (
     <>
       {bloggers?.length > 0 && (
-        <BloggersGrid bloggers={bloggers} upperChild={<ActionsToolBar />} />
+        <BloggersGrid
+          bloggers={bloggers}
+          upperChild={<ActionsToolBar includeFeedback />}
+        />
       )}
     </>
   );

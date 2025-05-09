@@ -16,6 +16,25 @@ export async function handleMiddlewareLogic(req: NextAuthRequest) {
     nextUrl.pathname.startsWith('/auth') &&
     nextUrl.pathname !== '/auth/signout';
 
+  const { searchParams } = nextUrl;
+  const sessionExpired = req.cookies.get('sessionExpired');
+
+  if (
+    nextUrl.pathname === '/auth/login' &&
+    sessionExpired &&
+    !searchParams.has('sessionExpired')
+  ) {
+    console.log(
+      'Session expired, redirecting to login with sessionExpired param'
+    );
+    const url = req.nextUrl.clone();
+    url.searchParams.set('sessionExpired', 'true');
+
+    const response = NextResponse.redirect(url);
+    response.cookies.delete('sessionExpired');
+    return response;
+  }
+
   if (isApiRoute) return NextResponse.next();
 
   if (isLoggedIn && isAuthRoute) {

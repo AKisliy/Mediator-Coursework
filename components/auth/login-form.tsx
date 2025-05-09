@@ -1,22 +1,22 @@
 'use client';
 
-import { authenticate, login } from '@/app/actions/auth.action';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
 
+import { login } from '@/app/actions/auth.action';
 import { toast } from '@/hooks/use-toast';
 import { LoginSchema } from '@/schemas';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+
 import { Form } from '../ui/form';
 import CardWrapper from './card-wrapper';
 import EmailLoginForm from './email-login-form';
-import PrivacyPolicy from './privacy-policy';
 import ProvidersSection from './providers-section';
 
 export function LoginForm() {
-  const [state, formAction] = useFormState(authenticate, null);
+  const t = useTranslations('auth.login');
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -32,7 +32,7 @@ export function LoginForm() {
     login(data).then(res => {
       if (res && res.error) {
         toast({
-          title: 'Ошибка ☠️',
+          title: t('toast.error.title'),
           description: res.error,
           variant: 'destructive'
         });
@@ -40,8 +40,8 @@ export function LoginForm() {
       }
       if (res && res.success) {
         toast({
-          title: 'Успех!✨',
-          description: 'Вы успешно зашли в приложение'
+          title: t('toast.success.title'),
+          description: t('toast.success.description')
         });
         setIsLoading(false);
       }
@@ -50,8 +50,8 @@ export function LoginForm() {
   return (
     <>
       <CardWrapper
-        title={'С возвращением'}
-        description={'Войдите в свой аккаунт Mediator'}
+        title={t('title')}
+        description={t('description')}
         className="mb-4"
       >
         <Form {...form}>
@@ -60,9 +60,9 @@ export function LoginForm() {
               <EmailLoginForm form={form} loading={isLoading} />
               <ProvidersSection />
               <div className="text-center text-sm">
-                Еще не аккаунта?{' '}
+                {t('noAccount')}{' '}
                 <a href="/auth/signup" className="underline underline-offset-4">
-                  Создать
+                  {t('createAccount')}
                 </a>
               </div>
             </div>
@@ -70,7 +70,7 @@ export function LoginForm() {
         </Form>
       </CardWrapper>
 
-      <PrivacyPolicy />
+      {/* <PrivacyPolicy /> */}
     </>
   );
 }

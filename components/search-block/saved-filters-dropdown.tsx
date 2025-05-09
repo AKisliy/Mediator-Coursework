@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Filter } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,7 @@ export default function SavedFiltersDropdown({
   appliedFiltersSetName: string;
   setAppliedFiltersSetName: (value: string) => void;
 }) {
+  const t = useTranslations('search.filters');
   const showAppliedCheckMark = appliedFiltersSetName !== 'none';
   return (
     <DropdownMenu>
@@ -38,15 +40,13 @@ export default function SavedFiltersDropdown({
         className="w-56"
         onCloseAutoFocus={e => e.preventDefault()}
       >
-        <DropdownMenuLabel>Мои фильтры</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('myFilters')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {/* <ScrollArea className="h-40"> */}
         <FilterSetEntriesDropdownGroup
           filters={initialFilters}
           position={appliedFiltersSetName}
           setPosition={setAppliedFiltersSetName}
         />
-        {/* </ScrollArea> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

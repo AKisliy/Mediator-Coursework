@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,6 +13,7 @@ import RecommendationsUsage from './recommendation-usage';
 import UserProfileDropdown from './user-profile-dropdown';
 
 export default function Header() {
+  const t = useTranslations('plans');
   const pathName = usePathname();
 
   const isAuthPath = pathName.startsWith('/auth');
@@ -31,13 +33,9 @@ export default function Header() {
         <div className="md:flex gap-5 items-center hidden">
           {!isAuthPath && <UserProfileDropdown />}
           <Button variant="outline" asChild>
-            <a
-              href="https://t.me/collabguru"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Связаться
-            </a>
+            <Link href="/plans" target="_blank" rel="noopener noreferrer">
+              {t('headerButton')}
+            </Link>
           </Button>
           <ThemeSwitcher />
         </div>

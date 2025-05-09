@@ -1,5 +1,11 @@
 'use client';
 
+import { Eye, EyeOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
@@ -9,22 +15,21 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
 
 interface PasswordFieldProps {
   form: UseFormReturn<any>;
   includeForgotPassword?: boolean;
   passwordFieldName?: string;
+  translationsPath?: string;
 }
 
 export default function PasswordField({
   form,
   includeForgotPassword,
-  passwordFieldName = 'password'
+  passwordFieldName = 'password',
+  translationsPath = 'auth.passwordField'
 }: PasswordFieldProps) {
+  const t = useTranslations(translationsPath);
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => setIsVisible(prevState => !prevState);
@@ -35,13 +40,13 @@ export default function PasswordField({
       render={({ field }) => (
         <FormItem className="relative">
           <div className="flex items-center">
-            <FormLabel>Пароль</FormLabel>
+            <FormLabel>{t(passwordFieldName)}</FormLabel>
             {includeForgotPassword && (
               <Link
                 href="/auth/reset-password"
                 className="ml-auto text-sm text-gray-500 underline-offset-2 hover:underline"
               >
-                Забыли пароль?
+                {t('forgot')}
               </Link>
             )}
           </div>
@@ -56,7 +61,7 @@ export default function PasswordField({
                 className="absolute inset-y-0 end-0 z-20"
                 type="button"
                 onClick={toggleVisibility}
-                aria-label={isVisible ? 'Hide password' : 'Show password'}
+                aria-label={isVisible ? t('hide') : t('show')}
                 aria-pressed={isVisible}
                 aria-controls={passwordFieldName}
                 variant="link"

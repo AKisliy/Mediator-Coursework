@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,25 +22,23 @@ export default function UnsavedAlertDialog({
   setShowUnsavedWarning,
   onAction
 }: UnsavedAlertDialogProps) {
+  const t = useTranslations('settings.unsavedAlert');
   return (
     <AlertDialog open={showUnsavedWarning} onOpenChange={setShowUnsavedWarning}>
       <AlertDialogContent className="bg-zinc-900 border-zinc-800">
         <AlertDialogHeader>
-          <AlertDialogTitle>Несохраненные изменения</AlertDialogTitle>
-          <AlertDialogDescription>
-            У вас есть несохраненные изменения. Вы уверены, что хотите закрыть
-            окно настроек?
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t('title')}</AlertDialogTitle>
+          <AlertDialogDescription>{t('description')}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
             className="bg-zinc-800 hover:bg-zinc-700"
             onClick={() => setShowUnsavedWarning(false)}
           >
-            Вернуться к настройкам
+            {t('cancelButton')}
           </AlertDialogCancel>
           <AlertDialogAction onClick={onAction}>
-            Закрыть без сохранения
+            {t('leaveButton')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

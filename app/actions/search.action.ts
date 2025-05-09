@@ -1,7 +1,9 @@
 'use server';
 
 import { Job } from 'bullmq';
+import { getTranslations } from 'next-intl/server';
 
+import { setContextUserId } from '@/lib/auth-context';
 import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { generateMockBloggers } from '@/lib/mock/bloggers';
 import { searchQueue } from '@/lib/queues/search-queue';
@@ -14,16 +16,17 @@ import {
 import { FilterValue } from '@/types/search-filters';
 import { SearchQueueInterface } from '@/types/search-queue';
 
-import { addSearchToHistory } from './data/history';
+import { addSearchToHistoryAction } from './data/history';
 
 async function startSearchTaskAction(
   query: string,
   filters: FilterValue[],
   k: number
 ): Promise<{ jobId: string | undefined }> {
+  const t = await getTranslations('auth.errors');
   const userId = getContextUserId();
   if (!userId) {
-    throw new Error('User not authenticated');
+    throw new Error(t('notAuthorized'));
   }
   const job = await searchQueue.add('process-recommendation', {
     user_id: userId,
@@ -38,6 +41,8 @@ async function startSearchTaskAction(
 export async function processSearchTask(
   job: Job<SearchQueueInterface, SearchResponse, string>
 ) {
+  console.log(`Обработка задачи ${job.id}...`);
+  console.log('IN SERVER ACTION');
   const { query, k, filters, user_id } = job.data;
   const url = `${process.env.SERVER_API}/search`;
 
@@ -49,6 +54,7 @@ export async function processSearchTask(
         uuid: response.uuid,
         recommendations: bloggers
       };
+      console.log(`Задача ${job.id} обработана успешно (mock)`);
       // await addSearchToHistory(result.uuid, query, result.recommendations);
       return result;
     }
@@ -67,14 +73,20 @@ export async function processSearchTask(
       body: JSON.stringify(body)
     });
 
+    console.log('Got response');
+
     if (!response.ok) {
       throw new Error(response.statusText);
     }
 
     const res = (await response.json()) as SearchResponseDTO;
+    console.log('Got response from server:', res);
     const parsedBloggers = transformRecommendations(res.recommendations);
-    await addSearchToHistory(res.uuid, query, parsedBloggers);
 
+    setContextUserId(user_id);
+    await addSearchToHistoryAction(res.uuid, query, parsedBloggers);
+    console.log(`Задача ${job.id} обработана успешно`);
+    console.log('Parsed bloggers:', parsedBloggers);
     return { uuid: res.uuid, recommendations: parsedBloggers };
   } catch (e: any) {
     console.error(`Ошибка при обработке задачи ${job.id}: ${e.message}`);

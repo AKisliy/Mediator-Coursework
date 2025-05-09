@@ -1,5 +1,6 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
+import { cookies } from 'next/headers';
 
 import { refreshAccessToken } from './app/actions/auth.action';
 import { createRefreshToken } from './app/actions/data/refresh-token';
@@ -31,8 +32,6 @@ export const {
       return true;
     },
     async session({ session, token }) {
-      // if (session && session.user) session.user.id = session?.user?.email;
-      // console.log(session);
       return {
         ...session,
         user: {
@@ -47,6 +46,12 @@ export const {
       if (trigger === 'update') {
         if (session?.name) token.name = session.name;
         if (session?.image) token.picture = session.image;
+        if (session?.refreshToken) {
+          token.refresh_token = session.refreshToken;
+          token.expires_at = new Date(
+            Date.now() + process.env.ACCESS_TOKEN_TTL_SEC * 1000
+          );
+        }
       }
       if (account?.provider === 'yandex') {
         token.access_token = account.access_token || '';
@@ -69,7 +74,17 @@ export const {
         return token;
       }
 
-      return refreshAccessToken(token);
+      const refreshedToken = await refreshAccessToken(token);
+
+      if (!refreshedToken) {
+        cookies().set('sessionExpired', 'true', {
+          maxAge: 60,
+          httpOnly: false
+        });
+        return null;
+      }
+
+      return refreshedToken;
     }
   },
   session: {

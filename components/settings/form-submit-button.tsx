@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import SubmitButton from '../auth/submit-button';
@@ -9,14 +10,15 @@ export default function FormSubmitButton({
   isDirty: boolean;
   isLoading: boolean;
 }) {
+  const t = useTranslations('settings');
   return (
     <SubmitButton
       isLoading={isLoading}
       variant="outline"
-      className="w-fit float-right"
+      className="w-full md:w-fit float-right"
       isDisabled={!isDirty || isLoading}
-      buttonText="Сохранить изменения"
-      loadingText="Сохраняем"
+      buttonText={t('submitButton')}
+      loadingText={t('loadingButton')}
     />
   );
 }

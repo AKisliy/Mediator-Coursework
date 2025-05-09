@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Control } from 'react-hook-form';
 
@@ -22,10 +23,11 @@ export default function TelegramCsvFields({
 }: {
   control: Control<CsvFieldsSchemaValues>;
 }) {
+  const t = useTranslations('search.toolbar.csv.telegram');
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger>Информация Telegram блогеров</AccordionTrigger>
+        <AccordionTrigger>{t('accordionTrigger')}</AccordionTrigger>
         <AccordionContent>
           {Object.entries(TELEGRAM_BLOGGER_FIELDS).map(([field, label]) => (
             <FormField

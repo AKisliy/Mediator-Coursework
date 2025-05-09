@@ -1,11 +1,14 @@
+'use client';
+
 import { Save } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { v4 } from 'uuid';
 
 import { saveUserFilter } from '@/app/actions/data/user';
 import { toast } from '@/hooks/use-toast';
-import { FilterValue, UserFilterValue } from '@/types/search-filters';
+import type { FilterValue, UserFilterValue } from '@/types/search-filters';
 
 import { Button } from '../ui/button';
 import {
@@ -27,6 +30,7 @@ export default function FilterSavingDialogButton({
   filters
 }: FilterSavingDialogButtonProps) {
   const { data: session } = useSession();
+  const t = useTranslations('search.filters');
 
   const [nameInput, setNameInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -45,12 +49,13 @@ export default function FilterSavingDialogButton({
     setIsSaving(false);
 
     toast({
-      title: `Фильтр ${nameInput}  успешно сохранен ✨`,
-      description: 'Теперь вы можете использовать его в будущем',
+      title: t('saveSuccess', { name: nameInput }),
+      description: t('saveSuccessDescription'),
       variant: 'default'
     });
     setIsDialogOpen(false);
   };
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -60,14 +65,12 @@ export default function FilterSavingDialogButton({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="p-3">
-          <DialogTitle>Сохранить фильтр</DialogTitle>
-          <DialogDescription>
-            Сохраните свои фильтры для последующего использования
-          </DialogDescription>
+          <DialogTitle>{t('saveFilter')}</DialogTitle>
+          <DialogDescription>{t('saveFilterDescription')}</DialogDescription>
         </DialogHeader>
         <div className="p-3 space-y-3">
           <Input
-            placeholder="Введите название фильтра"
+            placeholder={t('filterNamePlaceholder')}
             value={nameInput}
             onChange={e => setNameInput(e.target.value)}
             className="w-full"
@@ -80,7 +83,7 @@ export default function FilterSavingDialogButton({
             className="w-1/3"
             disabled={!nameInput || isSaving}
           >
-            {isSaving ? 'Сохранение...' : 'Сохранить'}
+            {isSaving ? t('saving') : t('save')}
           </Button>
         </DialogFooter>
       </DialogContent>

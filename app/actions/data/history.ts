@@ -27,7 +27,7 @@ async function getUserHistoryAction(
   return response;
 }
 
-async function addSearchToHistoryAction(
+export async function addSearchToHistoryAction(
   id: string,
   query: string,
   bloggers: Blogger[]
