@@ -7,7 +7,7 @@ import { StatEntity } from './stat-entity';
 import { StoryMetrics } from './story-metrics';
 import { TgStats } from './tg-stats';
 
-export default function MapStatistics(metadata: any): TgStats {
+export default function mapStatistics(metadata: any): TgStats {
   const result = {} as TgStats;
   result.performanceMetrics = new StatEntity(
     'Perfomance',

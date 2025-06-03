@@ -18,6 +18,23 @@ export async function getUserReccomendationsCountAction(): Promise<
   return response?.searches_count;
 }
 
+async function updateUserReccomendationsCountAction(
+  count: number
+): Promise<void> {
+  const userId = getContextUserId();
+  await prisma.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      searches_count: count
+    }
+  });
+}
+
+export const updateUserReccomendationsCount = withAuth(
+  updateUserReccomendationsCountAction
+);
 export const getUserReccomendationsCount = withAuth(
   getUserReccomendationsCountAction
 );

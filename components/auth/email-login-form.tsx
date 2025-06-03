@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -23,6 +24,7 @@ export default function EmailLoginForm({
   form: UseFormReturn<z.infer<typeof LoginSchema>>;
   loading: boolean;
 }) {
+  const t = useTranslations('auth.login');
   return (
     <>
       <FormField
@@ -40,7 +42,7 @@ export default function EmailLoginForm({
       />
       <PasswordField form={form} includeForgotPassword />
       <SubmitButton
-        buttonText="Войти"
+        buttonText={t('submitButton')}
         isLoading={loading}
         isDisabled={loading}
       />

@@ -2,13 +2,16 @@
 
 import bcrypt from 'bcryptjs';
 import { AuthError } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
-import { z } from 'zod';
+import type { JWT } from 'next-auth/jwt';
+import { getTranslations } from 'next-intl/server';
+import type { z } from 'zod';
 
 import { getPasswordResetTokenByToken } from '@/app/actions/data/reset-token';
 import { getVerificationTokenByToken } from '@/app/actions/data/token';
 import { getUserByEmail } from '@/app/actions/data/user';
 import { signIn } from '@/auth';
+import { getContextUserId } from '@/lib/auth-context';
+import { withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
 import { sendResetPasswordEmail, sendVerificationEmail } from '@/lib/mail';
 import { nodemailerConfig } from '@/lib/providers/email-provider';
@@ -24,15 +27,17 @@ import {
   ResetSchema
 } from '@/schemas';
 
-import { getRefreshToken } from './data/refresh-token';
+import { generateRefreshToken, getRefreshToken } from './data/refresh-token';
 
 export async function authenticate(prevState: any, formData: FormData) {
+  const t = await getTranslations('auth.errors');
+
   try {
     const email = formData.get('email') as string;
 
     if (!email || !email.includes('@')) {
       return {
-        error: 'Пожалуйста, введите корректный email адрес'
+        error: t('invalidEmail')
       };
     }
 
@@ -43,29 +48,30 @@ export async function authenticate(prevState: any, formData: FormData) {
     };
   } catch (error) {
     return {
-      error:
-        'Произошла ошибка при отправке ссылки. Пожалуйста, попробуйте снова.'
+      error: t('emailLinkError')
     };
   }
 }
 
 export const proceedVerification = async (token: string) => {
+  const t = await getTranslations('auth.errors');
+
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
-    return { error: 'Токен не найден.' };
+    return { error: t('tokenNotFound') };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Недействительный токен' };
+    return { error: t('invalidToken') };
   }
 
   const existingUser = await getUserByEmail(existingToken.identifier);
 
   if (!existingUser) {
-    return { error: 'Пользователь с вашим email не найден' };
+    return { error: t('userNotFound') };
   }
 
   await prisma.user.update({
@@ -87,14 +93,16 @@ export const proceedVerification = async (token: string) => {
     }
   });
 
-  return { success: 'Почта подтверждена ✅' };
+  return { success: t('emailVerified') };
 };
 
 export const login = async (data: z.infer<typeof LoginSchema>) => {
+  const t = await getTranslations('auth.errors');
+
   const validatedData = LoginSchema.safeParse(data);
 
   if (!validatedData.success) {
-    return { error: 'Введены некорректные данные' };
+    return { error: t('invalidData') };
   }
 
   const { email, password } = validatedData.data;
@@ -103,7 +111,7 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
 
   // If the user does not exist, return an error
   if (!userExists || !userExists.email || !userExists.password) {
-    return { error: 'Пользователя с таким аккаунтом не существует' };
+    return { error: t('userDoesNotExist') };
   }
 
   try {
@@ -116,23 +124,25 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
     if (error instanceof AuthError) {
       switch (error.name) {
         case 'CredentialsSignin':
-          return { error: 'Указаны неверные данные' };
+          return { error: t('invalidCredentials') };
         default:
-          return { error: 'Пожалуйста, подтвердите свой email' };
+          return { error: t('confirmEmail') };
       }
     }
     throw error;
   }
 
-  return { success: 'Успешный вход' };
+  return { success: t('loginSuccess') };
 };
 
 export const register = async (data: z.infer<typeof RegisterSchema>) => {
+  const t = await getTranslations('auth.errors');
+
   try {
     const validatedData = RegisterSchema.safeParse(data);
 
     if (!validatedData.success) {
-      return { error: 'Неверный формат входных данных' };
+      return { error: t('invalidInputFormat') };
     }
 
     const { email, name, password } = validatedData.data;
@@ -142,7 +152,7 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
     const userExists = await getUserByEmail(email);
 
     if (userExists) {
-      return { error: 'Пользователь с таким email уже существует' };
+      return { error: t('emailAlreadyExists') };
     }
 
     const lowerCaseEmail = email.toLowerCase();
@@ -168,36 +178,38 @@ export const register = async (data: z.infer<typeof RegisterSchema>) => {
       nodemailerConfig
     );
 
-    return { success: 'Письмо для подтверждения отправлено на почту' };
+    return { success: t('verificationEmailSent') };
   } catch (error) {
     console.error('Database error:', error);
 
     if ((error as { code: string }).code === 'ETIMEDOUT') {
       return {
-        error: 'Не удается подключиться к базе данных. Повторите позже'
+        error: t('databaseConnectionError')
       };
     }
     if ((error as { code: string }).code === '503') {
       return {
-        error: 'Сервис временно недоступен. Повторите попытку позже.'
+        error: t('serviceUnavailable')
       };
     }
-    return { error: 'Произошла непредвиденная ошибка. Попробуйте позднее.' };
+    return { error: t('unexpectedError') };
   }
 };
 
 export const resetPassword = async (data: z.infer<typeof ResetSchema>) => {
+  const t = await getTranslations('auth.errors');
+
   const validatedData = ResetSchema.safeParse(data);
 
   if (!validatedData.success) {
-    return { error: 'Неверный email' };
+    return { error: t('invalidEmail') };
   }
 
   const { email } = validatedData.data;
 
   const existingUser = await getUserByEmail(email);
 
-  if (!existingUser) return { success: 'Ссылка отправлена на почту' };
+  if (!existingUser) return { success: t('resetLinkSent') };
 
   const token = await generatePasswordResetToken(email);
   await sendResetPasswordEmail(
@@ -207,28 +219,30 @@ export const resetPassword = async (data: z.infer<typeof ResetSchema>) => {
     nodemailerConfig
   );
 
-  return { success: 'Ссылка отправлена на почту' };
+  return { success: t('resetLinkSent') };
 };
 
 export const setNewPassword = async (
   data: z.infer<typeof NewPasswordSchema>,
   token: string | null
 ) => {
-  if (!token) return { error: 'Токен не найден' };
+  const t = await getTranslations('auth.errors');
+
+  if (!token) return { error: t('tokenNotFound') };
   console.log(token);
 
   const validatedData = NewPasswordSchema.safeParse(data);
-  if (!validatedData.success) return { error: 'Некорректно заполнены поля' };
+  if (!validatedData.success) return { error: t('invalidFields') };
 
   const existingToken = await getPasswordResetTokenByToken(token);
-  if (!existingToken) return { error: 'Токен не существует' };
+  if (!existingToken) return { error: t('tokenDoesNotExist') };
 
   const hasExpired = new Date(existingToken.expires) < new Date();
-  if (hasExpired) return { error: 'Действие токена закончилось' };
+  if (hasExpired) return { error: t('tokenExpired') };
 
   const userEmail = existingToken.identifier;
   const existingUser = await getUserByEmail(userEmail);
-  if (!existingUser) return { error: 'Пользователь с email не найден' };
+  if (!existingUser) return { error: t('userNotFound') };
 
   const { password } = validatedData.data;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -251,22 +265,21 @@ export const setNewPassword = async (
     }
   });
 
-  return { success: 'Пароль успешно обновлен' };
+  return { success: t('passwordUpdated') };
 };
 
 export const refreshAccessToken = async (token: JWT) => {
   const tokenInDb = await getRefreshToken(token.sub);
 
-  if (!tokenInDb) throw new Error('Refresh токен пользователя не найден');
+  if (!tokenInDb) return null;
 
-  if (tokenInDb.refreshToken !== token.refresh_token)
-    throw new Error('Refresh токены не совпадают');
+  if (tokenInDb.refreshToken !== token.refresh_token) return null;
 
   if (
     !tokenInDb.refreshTokenExpires ||
     tokenInDb.refreshTokenExpires < new Date()
   )
-    throw new Error('Действие Refresh токена истекло');
+    return null;
 
   const newAccessToken = {
     ...token,
@@ -275,3 +288,40 @@ export const refreshAccessToken = async (token: JWT) => {
 
   return newAccessToken;
 };
+
+const checkPasswordAction = async (password: string): Promise<boolean> => {
+  const userId = getContextUserId();
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { password: true }
+  });
+
+  const hashedPassword = user?.password;
+
+  return bcrypt.compare(password, hashedPassword || '');
+};
+
+const changePasswordAction = async (
+  newPassword: string
+): Promise<{ newRefreshToken: string }> => {
+  const userId = getContextUserId();
+
+  const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const { token, expires } = generateRefreshToken();
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      password: newHashedPassword,
+      refreshToken: token,
+      refreshTokenExpires: expires
+    }
+  });
+
+  return { newRefreshToken: token };
+};
+
+export const checkPassword = withAuth(checkPasswordAction);
+export const changePassword = withAuth(changePasswordAction);

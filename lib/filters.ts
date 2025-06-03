@@ -9,7 +9,7 @@ export const defaultFilters: FilterValue[] = [
     value: [0, 10_000_000],
     minStepsBetweenThumbs: 1,
     stepSize: 1000,
-    measure: 'подписчиков',
+    measure: 'подп.',
     stringTemplate: 'от %s до %s'
   },
   {
@@ -40,7 +40,7 @@ export const defaultFilters: FilterValue[] = [
     value: [0, 1_000_000],
     minStepsBetweenThumbs: 1,
     stepSize: 1000,
-    measure: 'подписчиков'
+    measure: 'подп.'
   },
   {
     id: 'avg_post_likes',
@@ -50,7 +50,7 @@ export const defaultFilters: FilterValue[] = [
     value: [0, 1_000_000],
     minStepsBetweenThumbs: 1,
     stepSize: 1000,
-    measure: 'подписчиков'
+    measure: 'подп.'
   },
   {
     id: 'avg_post_comments',
@@ -60,6 +60,6 @@ export const defaultFilters: FilterValue[] = [
     value: [0, 1_000_000],
     minStepsBetweenThumbs: 1,
     stepSize: 1000,
-    measure: 'подписчиков'
+    measure: 'подп.'
   }
 ];

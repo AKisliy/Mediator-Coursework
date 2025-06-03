@@ -26,13 +26,15 @@ export default function ProfileSection() {
           <AvatarFallback>{username?.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="text-2xl font-bold">{username}</h1>
+          <h1 className="text-2xl font-bold text-card-foreground">
+            {username}
+          </h1>
         </div>
       </div>
       <div className="flex gap-2">
         <Link href="/history">
           <Button variant="outline" size="icon">
-            <History className="h-5 w-5" />
+            <History className="h-5 w-5 text-card-foreground" />
             <span className="sr-only">История</span>
           </Button>
         </Link>
@@ -41,7 +43,7 @@ export default function ProfileSection() {
           size="icon"
           onClick={() => setIsSettingsOpen(true)}
         >
-          <Settings className="h-5 w-5" />
+          <Settings className="h-5 w-5 text-card-foreground" />
           <span className="sr-only">Настройки</span>
         </Button>
         <SettingsDialog

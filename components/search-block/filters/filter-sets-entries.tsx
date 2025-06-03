@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import {
@@ -20,19 +21,20 @@ export default function FilterSetEntriesDropdownGroup({
   position,
   setPosition
 }: FilterSetEntriesDropdownGroupProps) {
+  const t = useTranslations('search.filters');
   return (
     <>
       <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
         {(!filters || filters.length === 0) && (
           <DropdownMenuItem>
-            <span className="text-muted-foreground">
-              У вас нет сохраненных фильтров
-            </span>
+            <span className="text-muted-foreground">{t('noSavedFilters')}</span>
           </DropdownMenuItem>
         )}
         {filters && (
           <>
-            <DropdownMenuRadioItem value="none">None</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="none" className="text-red-500">
+              {t('disableFilter')}
+            </DropdownMenuRadioItem>
             {filters.map(filter => (
               <DropdownMenuRadioItem key={filter.name} value={filter.name}>
                 {filter.name}

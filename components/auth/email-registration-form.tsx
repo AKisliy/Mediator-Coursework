@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -23,6 +24,7 @@ export default function EmailRegistrationForm({
   form: UseFormReturn<z.infer<typeof RegisterSchema>>;
   isLoading: boolean;
 }) {
+  const t = useTranslations('auth.register');
   return (
     <>
       <FormField
@@ -30,7 +32,7 @@ export default function EmailRegistrationForm({
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Email</FormLabel>
+            <FormLabel>{t('labels.email')}</FormLabel>
             <FormControl>
               <Input {...field} placeholder="ilove@mediator.ru" type="email" />
             </FormControl>
@@ -43,7 +45,7 @@ export default function EmailRegistrationForm({
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Имя</FormLabel>
+            <FormLabel>{t('labels.name')}</FormLabel>
             <FormControl>
               <Input {...field} placeholder="John Doe" />
             </FormControl>
@@ -54,7 +56,7 @@ export default function EmailRegistrationForm({
       <PasswordField form={form} />
       <PasswordField form={form} passwordFieldName="passwordConfirmation" />
       <SubmitButton
-        buttonText="Зарегистрироваться"
+        buttonText={t('submitButton')}
         isLoading={isLoading}
         isDisabled={isLoading}
       />

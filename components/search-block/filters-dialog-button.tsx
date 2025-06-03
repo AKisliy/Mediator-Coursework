@@ -1,11 +1,14 @@
+'use client';
+
 import { Check, SlidersHorizontal } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { UserFilterSet } from '@/types/search-filters';
+import type { UserFilterSet } from '@/types/search-filters';
 
-import { Button, ButtonProps } from '../ui/button';
+import { Button, type ButtonProps } from '../ui/button';
 import {
   Dialog,
   DialogContent,
@@ -41,6 +44,7 @@ export default function FiltersDialogButton({
   initialFilters
 }: FilterPopoverProps) {
   const { filters, setFilters } = useBloggersQuery();
+  const t = useTranslations('search.filters');
   const [appliedFiltersSetName, setAppliedFiltersSetName] = useState('none');
   const appliedFiltersRef = useRef<string | null>(null);
 
@@ -97,12 +101,12 @@ export default function FiltersDialogButton({
         <DialogContent className="h-3/5 overflow-y-scroll">
           <DialogHeader className="p-3 flex flex-row justify-between">
             <div className="flex flex-col gap-2">
-              <DialogTitle>Фильтры</DialogTitle>
-              <DialogDescription>Настройте параметры поиска</DialogDescription>
+              <DialogTitle>{t('title')}</DialogTitle>
+              <DialogDescription>{t('description')}</DialogDescription>
               <div className="text-sm text-gray-400">
                 {appliedFiltersSetName !== 'none' && (
                   <span>
-                    Применен фильтр:{' '}
+                    {t('appliedFilter')}:{' '}
                     <strong className="text-foreground text-base">
                       {appliedFiltersSetName}
                     </strong>
@@ -143,9 +147,9 @@ export default function FiltersDialogButton({
               />
             ))}
           </div>
-          <DialogFooter className="sticky -bottom-6 w-full h-full backdrop-blur-sm bg-black/80 p-4">
+          <DialogFooter className="sticky -bottom-6 w-full h-full backdrop-blur-sm bg-card/80 p-4">
             <Button onClick={handleFiltersApply} className="w-1/3">
-              {isApplied ? 'Применено ✅' : 'Применить'}
+              {isApplied ? t('applied') : t('apply')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -159,8 +163,8 @@ export default function FiltersDialogButton({
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Фильтры</DrawerTitle>
-          <DrawerDescription>Настройте параметры поиска</DrawerDescription>
+          <DrawerTitle>{t('title')}</DrawerTitle>
+          <DrawerDescription>{t('description')}</DrawerDescription>
         </DrawerHeader>
         <div className="p-3 space-y-3">
           {filters.map((value, idx) => (
@@ -188,7 +192,7 @@ export default function FiltersDialogButton({
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">{t('cancel')}</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

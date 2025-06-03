@@ -1,0 +1,369 @@
+{
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "description": "Log in to your Mediator account",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create",
+      "toast": {
+        "error": {
+          "title": "Error ☠️"
+        },
+        "success": {
+          "title": "Success!✨",
+          "description": "You've successfully logged in"
+        }
+      },
+      "submitButton": "Log In"
+    },
+    "register": {
+      "title": "Welcome",
+      "description": "Create your Mediator account",
+      "haveAccount": "Already have an account?",
+      "login": "Log In",
+      "toast": {
+        "error": {
+          "title": "Error ☠️"
+        },
+        "success": {
+          "title": "Success! 📩",
+          "description": "A confirmation link has been sent to your email"
+        }
+      },
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password"
+      },
+      "submitButton": "Register"
+    },
+    "reset": {
+      "title": "Forgot password?",
+      "description": "Don't worry, we got you 👨‍💻",
+      "email": {
+        "label": "Your Email",
+        "toolTip": "Enter the email you used to register"
+      },
+      "getLinkButton": "Get reset link",
+      "loading": "One moment...",
+      "toast": {
+        "error": {
+          "title": "Error ☠️"
+        },
+        "success": {
+          "title": "Success! ✨",
+          "description": "Link has been sent to your email"
+        }
+      }
+    },
+    "signout": {
+      "title": "Signing out of Mediator",
+      "description": "Are you sure you want to sign out?",
+      "goBack": "Go back",
+      "signOut": "Sign out"
+    },
+    "newPassword": {
+      "title": "Change password",
+      "description": "Enter your new account password",
+      "submitButton": "Change password",
+      "toast": {
+        "error": {
+          "title": "Error ☠️",
+          "unexpected": "An unexpected error occurred"
+        },
+        "success": {
+          "title": "Success! ✨",
+          "description": "Password changed successfully"
+        }
+      }
+    },
+    "providers": {
+      "or": "Or use",
+      "telegram": {
+        "title": "Login with Telegram",
+        "description": "Grant our bot access to proceed"
+      }
+    },
+    "passwordField": {
+      "password": "Password",
+      "passwordConfirmation": "Confirm password",
+      "forgot": "Forgot password?",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "We're verifying your email address now...",
+      "loginButton": "Log in to Amplify",
+      "error": {
+        "noToken": "Error: token not found",
+        "invalidToken": "Error: invalid token",
+        "unexpected": "Error: an unexpected error occurred"
+      }
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "emailLinkError": "There was an error sending the link. Please try again.",
+      "tokenNotFound": "Token not found.",
+      "invalidToken": "Invalid token",
+      "userNotFound": "User with your email was not found",
+      "emailVerified": "Email verified ✅",
+      "invalidData": "Invalid data entered",
+      "userDoesNotExist": "User with this account does not exist",
+      "invalidCredentials": "Invalid login credentials",
+      "confirmEmail": "Please confirm your email",
+      "loginSuccess": "Login successful",
+      "invalidInputFormat": "Invalid input format",
+      "emailAlreadyExists": "A user with this email already exists",
+      "verificationEmailSent": "Verification email sent",
+      "databaseConnectionError": "Failed to connect to the database. Try again later",
+      "serviceUnavailable": "Service temporarily unavailable. Please try again later.",
+      "unexpectedError": "An unexpected error occurred. Please try again later.",
+      "resetLinkSent": "Link sent to your email",
+      "invalidFields": "Fields filled incorrectly",
+      "tokenDoesNotExist": "Token does not exist",
+      "tokenExpired": "Token has expired",
+      "passwordUpdated": "Password updated successfully",
+      "refreshTokenNotFound": "User refresh token not found",
+      "refreshTokenMismatch": "Refresh tokens do not match",
+      "refreshTokenExpired": "Refresh token expired",
+      "notAuthorized": "User not authorized",
+      "page": {
+        "title": "An error occurred during authentication ☹️",
+        "retryButton": "Try again"
+      }
+    },
+    "accountDeleted": {
+      "title": "Account Deleted Successfully",
+      "description": "Your account has been permanently deleted. All your data has been removed from our servers.",
+      "okButton": "OK"
+    },
+    "sessionExpired": {
+      "title": "Session Expired",
+      "description": "Your session has expired. Please log in again to continue.",
+      "loginButton": "Log In"
+    }
+  },
+  "storage": {
+    "errors": {
+      "cannotUseForeignBucket": "Cannot use another user's bucket",
+      "emptyFileName": "File name cannot be empty"
+    }
+  },
+  "common": {
+    "privacyPolicy": {
+      "agreement": "By clicking continue, you agree to our {termsLink} and {privacyLink}.",
+      "termsLink": "Terms of Service",
+      "privacyLink": "Privacy Policy"
+    },
+    "loading": "One moment...",
+    "translating": "Translating...",
+    "translatingDescription": "Applying new interface language",
+    "error": {
+      "incorrectPassword": "Incorrect password"
+    }
+  },
+  "search": {
+    "title": "Who are you looking to collaborate with?",
+    "suptitle": "Enter a detailed request. Mediator will use it to search for channels.",
+    "searchbar": {
+      "placeholder": "Looking for bloggers in the esotericism niche with 3k+ followers."
+    },
+    "button": {
+      "search": "Search",
+      "searching": "Searching..."
+    },
+    "toolbar": {
+      "downloadCsv": "Download CSV",
+      "goodRecommendations": "Good recommendations 😃",
+      "badRecommendations": "Bad recommendations ☹️",
+      "errors": {
+        "noRequestId": "Unable to send feedback without current request ID"
+      },
+      "csv": {
+        "dialogTitle": "CSV Export",
+        "dialogDescription": "Select fields to create a CSV file.",
+        "dialogButton": "Download",
+        "socialMedia": "Social media",
+        "instagram": {
+          "accordionTrigger": "Instagram bloggers' info"
+        },
+        "telegram": {
+          "accordionTrigger": "Telegram bloggers' info"
+        }
+      }
+    },
+    "filters": {
+      "saveFilter": "Save filter",
+      "saveFilterDescription": "Save your filters for later use",
+      "filterNamePlaceholder": "Enter filter name",
+      "save": "Save",
+      "saving": "Saving...",
+      "saveSuccess": "Filter {name} saved successfully ✨",
+      "saveSuccessDescription": "You can now reuse it later",
+      "title": "Filters",
+      "description": "Set up search parameters",
+      "appliedFilter": "Filter applied",
+      "apply": "Apply",
+      "applied": "Applied ✅",
+      "cancel": "Cancel",
+      "myFilters": "My filters",
+      "noSavedFilters": "You don't have any saved filters",
+      "disableFilter": "Disable filter",
+      "subscribers": {
+        "name": "Subscribers Count",
+        "measure": "subs",
+        "stringTemplate": "from %s to %s"
+      },
+      "err": {
+        "name": "ERR",
+        "measure": "%",
+        "stringTemplate": "from %s to %s"
+      },
+      "er": {
+        "name": "ER",
+        "measure": "%",
+        "stringTemplate": "from %s to %s"
+      },
+      "avg_post_coverage": {
+        "name": "Average Post Reach",
+        "measure": "subs",
+        "stringTemplate": "from %s to %s"
+      },
+      "avg_post_likes": {
+        "name": "Average Monthly Subscriber Growth",
+        "measure": "subs",
+        "stringTemplate": "from %s to %s"
+      },
+      "avg_post_comments": {
+        "name": "Average Ad Post Reach",
+        "measure": "subs",
+        "stringTemplate": "from %s to %s"
+      }
+    },
+    "openCardTip": "Tap the card to open 👆",
+    "bloggerCard": {
+      "goToProfile": "Go to profile"
+    }
+  },
+  "navigation": {
+    "dropdown": {
+      "profile": "Profile",
+      "history": "History",
+      "logout": "Log out"
+    },
+    "footer": {
+      "support": "Support"
+    }
+  },
+  "recommendations": {
+    "recommendations": "Recommendations",
+    "usage": "recommendations used."
+  },
+  "plans": {
+    "yourPlan": "Your plan",
+    "headerButton": "Plans"
+  },
+  "bloggers": {
+    "subscribers": "Subscribers",
+    "noDescriptionFallback": "No description",
+    "unknownAmount": "Unknown"
+  },
+  "settings": {
+    "avatar": {
+      "uploadButton": "Upload photo",
+      "error": {
+        "noFile": "Please select a file",
+        "uploadingError": "Error uploading avatar!"
+      }
+    },
+    "deleteAccount": {
+      "button": "Delete account",
+      "alert": {
+        "title": "Are you sure?",
+        "description": "This action is irreversible. Your account and all associated data will be permanently deleted.",
+        "confirmLabel": "Enter your password to confirm",
+        "cancelButton": "Cancel",
+        "deleteButton": "Delete"
+      },
+      "errors": {
+        "incorrectPassword": "Provided password is incorrect",
+        "noUserId": "Seems like you are not logged in"
+      }
+    },
+    "submitButton": "Save changes",
+    "loadingButton": "Saving...",
+    "preferenceTab": {
+      "theme": "Theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "System",
+      "language": "Language",
+      "languageRussian": "Русский",
+      "languageEnglish": "English"
+    },
+    "profileTab": {
+      "name": "Name",
+      "profilePhoto": "Profile photo",
+      "userNotLoggedIn": "User not logged in",
+      "failedToSavePhoto": "Failed to save photo to DB",
+      "successTitle": "Done ✅",
+      "successDescription": "Changes saved successfully",
+      "errorTitle": "Error ⛔️",
+      "errorDescription": "An unknown error occurred while saving. Please try again later"
+    },
+    "securityTab": {
+      "changePasswordTitle": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "changePasswordButton": "Update password",
+      "changingPasswordButton": "Updating password...",
+      "toast": {
+        "success": {
+          "title": "Password updated ✅",
+          "description": "Your password has been successfully updated"
+        },
+        "error": {
+          "title": "Error ⛔️",
+          "description": "An error occurred while updating the password. Please try again later"
+        }
+      },
+      "tooltip": {
+        "description": "To change your password, enter your current password and the new one. Be aware, that changing password will log you out from all devices."
+      }
+    },
+    "unsavedAlert": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes. Are you sure you want to close the settings?",
+      "cancelButton": "Return to settings",
+      "leaveButton": "Close without saving"
+    },
+    "dialog": {
+      "title": "Settings",
+      "profileTab": "Profile",
+      "securityTab": "Security",
+      "preferencesTab": "Preferences",
+      "cancel": "Cancel"
+    }
+  },
+  "profile": {
+    "lastSearch": "Last search",
+    "currentPlan": "Current plan",
+    "purchaseDate": "Purchase date",
+    "unknownPurchaseDate": "Unknown",
+    "upgradePlanButton": "Upgrade",
+    "plansButton": "Plans"
+  },
+  "history": {
+    "entry": {
+      "yourRequest": "Your query:",
+      "result": "🚀 Result:"
+    },
+    "yourHistory": "Your history",
+    "searchPlaceholder": "Search for queries...",
+    "noQueriesFound": "No queries found",
+    "noQueriesFoundDescription": "Try to change your search."
+  }
+}

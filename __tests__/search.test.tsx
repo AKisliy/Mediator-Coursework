@@ -5,7 +5,7 @@ import { startSearchTask } from '@/app/actions/search.action';
 import { getCurrentUserId } from '@/app/api/auth/utils';
 import { auth } from '@/auth';
 import { getContextUserId } from '@/lib/auth-wrapper';
-import { processSearchQueue } from '@/lib/queues/processSearchQueue';
+import { searchQueue } from '@/lib/queues/search-queue';
 import { FilterValue } from '@/types/search-filters';
 
 jest.mock('@/app/api/auth/utils', () => ({
@@ -64,89 +64,72 @@ describe('startSearchTask', () => {
   });
 
   it('should create a search task and return jobId for authenticated user', async () => {
-    (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
+    (searchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
     const result = await startSearchTask(mockQuery, mockFilters, mockK);
 
-    expect(processSearchQueue.add).toHaveBeenCalledWith(
-      'process-recommendation',
-      {
-        user_id: mockUserId,
-        filters: mockFilters,
-        query: mockQuery,
-        k: mockK
-      }
-    );
+    expect(searchQueue.add).toHaveBeenCalledWith('process-recommendation', {
+      user_id: mockUserId,
+      filters: mockFilters,
+      query: mockQuery,
+      k: mockK
+    });
     expect(result).toEqual({ jobId: mockJobId });
   });
 
   it('should handle error from processSearchQueue.add', async () => {
-    (processSearchQueue.add as jest.Mock).mockRejectedValue(
-      new Error('Queue error')
-    );
+    (searchQueue.add as jest.Mock).mockRejectedValue(new Error('Queue error'));
 
     await expect(
       startSearchTask(mockQuery, mockFilters, mockK)
     ).rejects.toThrow('Queue error');
 
-    expect(processSearchQueue.add).toHaveBeenCalledWith(
-      'process-recommendation',
-      {
-        user_id: mockUserId,
-        filters: mockFilters,
-        query: mockQuery,
-        k: mockK
-      }
-    );
+    expect(searchQueue.add).toHaveBeenCalledWith('process-recommendation', {
+      user_id: mockUserId,
+      filters: mockFilters,
+      query: mockQuery,
+      k: mockK
+    });
   });
 
   it('should handle empty query', async () => {
-    (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
+    (searchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask('', mockFilters, mockK);
 
-    expect(processSearchQueue.add).toHaveBeenCalledWith(
-      'process-recommendation',
-      {
-        user_id: mockUserId,
-        filters: mockFilters,
-        query: '',
-        k: mockK
-      }
-    );
+    expect(searchQueue.add).toHaveBeenCalledWith('process-recommendation', {
+      user_id: mockUserId,
+      filters: mockFilters,
+      query: '',
+      k: mockK
+    });
     expect(result).toEqual({ jobId: mockJobId });
   });
 
   it('should handle empty filters array', async () => {
-    (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
+    (searchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask(mockQuery, [], mockK);
 
-    expect(processSearchQueue.add).toHaveBeenCalledWith(
-      'process-recommendation',
-      {
-        user_id: mockUserId,
-        filters: [],
-        query: mockQuery,
-        k: mockK
-      }
-    );
+    expect(searchQueue.add).toHaveBeenCalledWith('process-recommendation', {
+      user_id: mockUserId,
+      filters: [],
+      query: mockQuery,
+      k: mockK
+    });
     expect(result).toEqual({ jobId: mockJobId });
   });
 
   it('should handle negative k', async () => {
-    (processSearchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
+    (searchQueue.add as jest.Mock).mockResolvedValue({ id: mockJobId });
 
     const result = await startSearchTask(mockQuery, mockFilters, -1);
 
-    expect(processSearchQueue.add).toHaveBeenCalledWith(
-      'process-recommendation',
-      {
-        user_id: mockUserId,
-        filters: mockFilters,
-        query: mockQuery,
-        k: -1
-      }
-    );
+    expect(searchQueue.add).toHaveBeenCalledWith('process-recommendation', {
+      user_id: mockUserId,
+      filters: mockFilters,
+      query: mockQuery,
+      k: -1
+    });
     expect(result).toEqual({ jobId: mockJobId });
   });
 });

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Control } from 'react-hook-form';
 
@@ -22,12 +23,11 @@ export default function InstagramCsvFields({
 }: {
   control: Control<CsvFieldsSchemaValues>;
 }) {
+  const t = useTranslations('search.toolbar.csv.instagram');
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger className="text-base">
-          Информация Instagram блогеров
-        </AccordionTrigger>
+        <AccordionTrigger>{t('accordionTrigger')}</AccordionTrigger>
         <AccordionContent>
           {Object.entries(INST_BLOGGER_FIELDS).map(([field, label]) => (
             <FormField

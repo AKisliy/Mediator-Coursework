@@ -1,9 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import { register } from '@/app/actions/auth.action';
 import { toast } from '@/hooks/use-toast';
@@ -12,10 +13,10 @@ import { RegisterSchema } from '@/schemas';
 import { Form } from '../ui/form';
 import CardWrapper from './card-wrapper';
 import EmailRegistrationForm from './email-registration-form';
-import PrivacyPolicy from './privacy-policy';
 import ProvidersSection from './providers-section';
 
 export default function RegisterForm() {
+  const t = useTranslations('auth.register');
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -29,12 +30,11 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (data: z.infer<typeof RegisterSchema>) => {
-    console.log('Registering');
     setLoading(true);
     register(data).then(res => {
       if (res.error) {
         toast({
-          title: 'Ошибка ☠️',
+          title: t('toast.error.title'),
           description: res.error,
           variant: 'destructive'
         });
@@ -42,8 +42,8 @@ export default function RegisterForm() {
       }
       if (res.success) {
         toast({
-          title: 'Успех! 📩',
-          description: 'Ссылка с подтверждением отправлена на почту'
+          title: t('toast.success.title'),
+          description: t('toast.success.description')
         });
         setLoading(false);
       }
@@ -53,8 +53,8 @@ export default function RegisterForm() {
   return (
     <>
       <CardWrapper
-        title={'Добро пожаловать'}
-        description={'Создайте свой аккаунт Mediator'}
+        title={t('title')}
+        description={t('description')}
         className="mb-4"
       >
         <Form {...form}>
@@ -63,16 +63,16 @@ export default function RegisterForm() {
               <EmailRegistrationForm form={form} isLoading={loading} />
               <ProvidersSection />
               <div className="text-center text-sm">
-                Уже есть аккаунт?{' '}
+                {t('haveAccount')}{' '}
                 <a href="/auth/login" className="underline underline-offset-4">
-                  Войти
+                  {t('login')}
                 </a>
               </div>
             </div>
           </form>
         </Form>
       </CardWrapper>
-      <PrivacyPolicy />
+      {/* <PrivacyPolicy /> */}
     </>
   );
 }

@@ -56,11 +56,13 @@ export const ProfileSchema = z.object({
   })
 });
 
-export const DeleteAccountSchema = z.object({
-  deleteAccountPassword: z.string().min(1, {
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, {
     message: 'Введите пароль для подтверждения'
   })
 });
+
+export type DeleteAccountSchemaValues = z.infer<typeof deleteAccountSchema>;
 
 export const passwordFormSchema = z
   .object({
@@ -130,3 +132,10 @@ export const csvFieldsSchema = z.object({
   ) as { [K in TelegramBloggerField]: z.ZodBoolean })
 });
 export type CsvFieldsSchemaValues = z.infer<typeof csvFieldsSchema>;
+
+export const UserSettingsSchema = z.object({
+  theme: z.enum(['light', 'dark', 'system']).default('system'),
+  language: z.enum(['ru', 'en']).default('ru')
+});
+
+export type UserSettings = z.infer<typeof UserSettingsSchema>;

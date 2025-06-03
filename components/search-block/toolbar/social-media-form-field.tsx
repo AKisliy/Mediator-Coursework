@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Control } from 'react-hook-form';
 
@@ -18,13 +19,14 @@ export default function SocialMediaFormField({
 }: {
   control: Control<CsvFieldsSchemaValues>;
 }) {
+  const t = useTranslations('search.toolbar.csv');
   return (
     <FormField
       control={control}
       name="social_media"
       render={({ field }) => (
         <FormItem className="space-y-3 rounded-md border p-4">
-          <FormLabel>Социальные сети</FormLabel>
+          <FormLabel>{t('socialMedia')}</FormLabel>
           <div className="flex flex-row gap-4">
             {SOCIAL_MEDIA_OPTIONS.map(option => (
               <FormControl key={option}>

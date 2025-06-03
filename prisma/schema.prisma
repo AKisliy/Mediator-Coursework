@@ -50,6 +50,7 @@ model User {
   image               String?
   refreshToken        String?   @map("refresh_token")
   refreshTokenExpires DateTime? @map("refresh_token_expires")
+  settings            Json      @default("{ \"theme\": \"system\", \"language\": \"ru\"}")
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -100,7 +101,7 @@ model UserSearch {
   createdAt DateTime  @default(now())
   query     String
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   bloggers  Blogger[]
 
   @@map("user_searches")
@@ -108,9 +109,9 @@ model UserSearch {
 
 model Blogger {
   id              String       @id
-  username        String
+  username        String?
   image_link      String?
-  followers_count Int
+  followers_count Int?
   description     String?
   category        String?
   social_media    SocialMedia
@@ -126,7 +127,7 @@ model UserFilter {
   name      String
   filters   Json
   userId    String
-  User      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_filters")
 }

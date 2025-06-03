@@ -1,7 +1,10 @@
+import { useTranslations } from 'next-intl';
 import { FaTelegram } from 'react-icons/fa';
+
 import { Button } from '../ui/button';
 
 export default function Footer() {
+  const t = useTranslations('navigation.footer');
   return (
     <footer className="py-6  w-full mt-auto border-t">
       <div className="container w-full mx-auto px-4 flex justify-between items-center max-w-6xl">
@@ -17,7 +20,7 @@ export default function Footer() {
             rel="noopener noreferrer"
           >
             <FaTelegram size={20} />
-            Поддержка
+            {t('support')}
           </a>
         </Button>
       </div>

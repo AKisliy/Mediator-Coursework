@@ -4,6 +4,7 @@ import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { DoorOpen, History, Settings } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -21,25 +22,26 @@ import {
 import SettingsDialog from '../profile/settings-dialog';
 import { Button } from '../ui/button';
 
-const dropDownLinks = [
+export const dropDownLinks = [
   {
-    title: 'Профиль',
+    titleKey: 'profile',
     icon: IoPerson,
     href: '/profile'
   },
   {
-    title: 'История запросов',
+    titleKey: 'history',
     icon: History,
     href: '/history'
   },
   {
-    title: 'Выйти',
+    titleKey: 'logout',
     icon: DoorOpen,
     href: '/auth/signout'
   }
 ];
 
 export default function UserProfileDropdown() {
+  const t = useTranslations('navigation.dropdown');
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -98,7 +100,7 @@ export default function UserProfileDropdown() {
                 >
                   <Link href={value.href}>
                     <value.icon size={20} className="hvr-icon" />
-                    {value.title}
+                    {t(value.titleKey)}
                   </Link>
                 </Button>
               </DropdownMenuItem>

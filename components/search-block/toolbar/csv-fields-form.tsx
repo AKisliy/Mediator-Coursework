@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Download } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -13,16 +14,16 @@ import {
   FormItem,
   FormLabel
 } from '@/components/ui/form';
-import { useBloggersQuery } from '@/context/bloggers-query-provider';
 import { exportBloggersToCSV } from '@/lib/csv/export-util';
 import { CsvFieldsSchemaValues, csvFieldsSchema } from '@/schemas';
-import { BLOGGER_FIELDS } from '@/types/blogger';
+import { BLOGGER_FIELDS, Blogger } from '@/types/blogger';
 
 import InstagramCsvFields from './instagram-csv-fields';
 import SocialMediaFormField from './social-media-form-field';
 import TelegramCsvFields from './telegram-csv-fields';
 
-export function CsvFieldsForm() {
+export function CsvFieldsForm({ bloggers }: { bloggers: Blogger[] }) {
+  const t = useTranslations('search.toolbar.csv');
   const form = useForm<CsvFieldsSchemaValues>({
     resolver: zodResolver(csvFieldsSchema),
     defaultValues: {
@@ -30,8 +31,6 @@ export function CsvFieldsForm() {
       social_media: ['Telegram']
     }
   });
-
-  const { bloggers } = useBloggersQuery();
 
   function onSubmit(data: CsvFieldsSchemaValues) {
     exportBloggersToCSV(bloggers, data);
@@ -69,7 +68,7 @@ export function CsvFieldsForm() {
         )}
         <Button type="submit">
           <Download />
-          Загрузить
+          {t('dialogButton')}
         </Button>
       </form>
     </Form>

@@ -1,7 +1,11 @@
+import { Blogger as PrismaBlogger } from '@prisma/client';
+
+import { parseAbbreviatedNumber } from '@/lib/number-parser';
 import { Blogger } from '@/types/blogger';
 import { isInstBlogger, isTelegramBlogger } from '@/types/type-guards';
-import { Blogger as PrismaBlogger } from '@prisma/client';
+
 import { BloggerResponseDTO } from './response/blogger-dto';
+import mapStatistics from './statistics/tg-statistics-mapper';
 
 export const FIELD_MAPPINGS = {
   blogger: {
@@ -9,6 +13,7 @@ export const FIELD_MAPPINGS = {
     pic_url: 'image_link',
     channel_picture: 'image_link',
     followers_count: 'followers_count',
+    subscribers: 'followers_count',
     description: 'description',
     channel_description: 'description',
     account_description: 'description',
@@ -73,13 +78,18 @@ function transformObject<T extends object>(
       // Если это metadata, "поднимаем" его поля на верхний уровень
       Object.entries(value).forEach(([metaKey, metaValue]) => {
         const newKey = mappings[metaKey] || metaKey;
-        transformed[newKey] = transformValue(metaValue, mappings);
+        if (newKey === 'followers_count')
+          transformed[newKey] = parseAbbreviatedNumber(metaValue as string);
+        else transformed[newKey] = transformValue(metaValue, mappings);
       });
     } else {
       const newKey = mappings[key] || key;
       transformed[newKey] = transformValue(value, mappings);
     }
   });
+
+  if (transformed.social_media === 'Telegram')
+    transformed.statistics = mapStatistics((obj as any).metadata);
 
   return transformed;
 }

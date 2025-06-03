@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -14,9 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import {
-  PreferencesFormSchemaValues,
-  ProfileSettingsSchemaValues,
-  preferencesFormSchema,
+  type ProfileSettingsSchemaValues,
   profileSettingsSchema
 } from '@/schemas';
 
@@ -29,7 +28,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle
@@ -47,6 +45,7 @@ export default function SettingsDialog({
   isSettingsOpen
 }: SettingsDialogProps) {
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const t = useTranslations('settings.dialog');
 
   const { data: session } = useSession();
 
@@ -56,14 +55,6 @@ export default function SettingsDialog({
       name: session?.user.name,
       image: session?.user.image
     }
-  });
-
-  const preferencesForm = useForm<PreferencesFormSchemaValues>({
-    resolver: zodResolver(preferencesFormSchema)
-    // defaultValues: {
-    //   theme: user?.theme,
-    //   language: user?.language
-    // }
   });
 
   const handleOpenChange: (o: boolean) => void = (open: boolean) => {
@@ -94,23 +85,26 @@ export default function SettingsDialog({
   };
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
+
   if (isDesktop)
     return (
       <>
         <Dialog open={isSettingsOpen} onOpenChange={handleOpenChange}>
-          <DialogContent className="bg-zinc-900 border-zinc-800 max-w-md">
+          <DialogContent className="bg-card border-card max-w-md">
             <DialogHeader>
-              <DialogTitle>Настройки</DialogTitle>
+              <DialogTitle>{t('title')}</DialogTitle>
             </DialogHeader>
 
             <Tabs defaultValue="profile" className="mt-4">
               <TabsList className="grid grid-cols-3 mb-4">
-                <TabsTrigger value="profile">Профиль</TabsTrigger>
-                <TabsTrigger value="security">Безопасность</TabsTrigger>
-                <TabsTrigger value="preferences">Предпочтения</TabsTrigger>
+                <TabsTrigger value="profile">{t('profileTab')}</TabsTrigger>
+                <TabsTrigger value="security">{t('securityTab')}</TabsTrigger>
+                <TabsTrigger value="preferences">
+                  {t('preferencesTab')}
+                </TabsTrigger>
               </TabsList>
               <ProfileTabContent form={profileForm} />
-              <PreferencesTabContent form={preferencesForm} />
+              <PreferencesTabContent />
               <SecurityTabContent />
             </Tabs>
           </DialogContent>
@@ -125,20 +119,45 @@ export default function SettingsDialog({
     );
 
   return (
-    <Drawer open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you@apos;re done.
-          </DrawerDescription>
-        </DrawerHeader>
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <>
+      <Drawer open={isSettingsOpen} onOpenChange={handleOpenChange}>
+        <DrawerContent className="max-h-[90vh] overflow-y-auto">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{t('title')}</DrawerTitle>
+          </DrawerHeader>
+
+          <div className="px-4 pb-4">
+            <Tabs defaultValue="profile" className="w-full">
+              <TabsList className="grid grid-cols-3 mb-4 w-full">
+                <TabsTrigger value="profile" className="text-xs">
+                  {t('profileTab')}
+                </TabsTrigger>
+                <TabsTrigger value="security" className="text-xs">
+                  {t('securityTab')}
+                </TabsTrigger>
+                <TabsTrigger value="preferences" className="text-xs">
+                  {t('preferencesTab')}
+                </TabsTrigger>
+              </TabsList>
+              <ProfileTabContent form={profileForm} />
+              <PreferencesTabContent />
+              <SecurityTabContent />
+            </Tabs>
+          </div>
+
+          <DrawerFooter className="pt-2">
+            <DrawerClose asChild>
+              <Button variant="outline">{t('cancel')}</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <UnsavedAlertDialog
+        onAction={onAlertAction}
+        showUnsavedWarning={showUnsavedWarning}
+        setShowUnsavedWarning={setShowUnsavedWarning}
+      />
+    </>
   );
 }

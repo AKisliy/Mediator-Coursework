@@ -41,7 +41,6 @@ export default function RecommendationCountInput({
         min="1"
         max={countLimit}
       />
-      {/* <span className="text-sm text-gray-500">блогеров</span> */}
     </div>
   );
 }

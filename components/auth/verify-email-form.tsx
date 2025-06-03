@@ -1,17 +1,21 @@
 'use client';
 
-import { proceedVerification } from '@/app/actions/auth.action';
+import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import BeatLoader from 'react-spinners/BeatLoader';
+
+import { proceedVerification } from '@/app/actions/auth.action';
+
 import { Button } from '../ui/button';
 import CardWrapper from './card-wrapper';
 import { FormError } from './form-error';
 import { FormSuccess } from './form-success';
 
 const VerifyEmailForm = () => {
+  const t = useTranslations('auth.verifyEmail');
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
   const searchParams = useSearchParams();
@@ -28,7 +32,7 @@ const VerifyEmailForm = () => {
     }
 
     if (!token) {
-      setError('No token provided');
+      setError(t('error.noToken'));
       return;
     }
 
@@ -41,9 +45,8 @@ const VerifyEmailForm = () => {
           setError(data.error);
         }
       })
-      .catch(err => {
-        console.error(err);
-        setError('An unexpected error occurred');
+      .catch(_ => {
+        setError(t('error.unexpected'));
       });
   }, [token, success, error]);
 
@@ -53,8 +56,8 @@ const VerifyEmailForm = () => {
 
   return (
     <CardWrapper
-      title="Потверждение вашего email"
-      description="Сейчас мы подтверждаем адрес вашей почты.."
+      title={t('title')}
+      description={t('description')}
       className="justify-center"
     >
       <div className="flex flex-col items-center">
@@ -64,7 +67,7 @@ const VerifyEmailForm = () => {
           {!success && <FormError message={error} />}
         </div>
         <Button asChild disabled={!success && !error} className="self-center">
-          <Link href="/auth/login">Войти в Amplify</Link>
+          <Link href="/auth/login">{t('loginButton')}</Link>
         </Button>
       </div>
     </CardWrapper>

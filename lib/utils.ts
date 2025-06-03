@@ -1,14 +1,15 @@
-import { Blogger } from '@/types/blogger';
-import { FilterValue } from '@/types/search-filters';
 import { botttsNeutral } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 import { format, formatDistanceToNow } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { enUS, ru } from 'date-fns/locale';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import { twMerge } from 'tailwind-merge';
 import { generateUsername } from 'unique-username-generator';
+
+import { Blogger } from '@/types/blogger';
+import { FilterValue } from '@/types/search-filters';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,11 +37,11 @@ export function exportBloggersToCSV(bloggers: Blogger[]) {
   saveAs(blob, 'bloggers.csv');
 }
 
-export const formatTimestampToNow = (date?: Date) => {
+export const formatTimestampToNow = (date?: Date, locale: string = 'ru') => {
   if (!date) return 'Unknown date';
   const formattedTimestamp = formatDistanceToNow(date, {
     addSuffix: true,
-    locale: ru
+    locale: locale === 'ru' ? ru : enUS
   });
 
   return formattedTimestamp;

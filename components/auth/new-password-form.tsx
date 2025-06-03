@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { authenticate, setNewPassword } from '@/app/actions/auth.action';
+import { setNewPassword } from '@/app/actions/auth.action';
 import { toast } from '@/hooks/use-toast';
 import { NewPasswordSchema } from '@/schemas';
 
@@ -18,10 +18,11 @@ import PrivacyPolicy from './privacy-policy';
 import SubmitButton from './submit-button';
 
 export function NewPasswordForm() {
-  const [state, formAction] = useFormState(authenticate, null);
+  const t = useTranslations('auth.newPassword');
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
@@ -38,22 +39,21 @@ export function NewPasswordForm() {
 
       if (res?.error) {
         toast({
-          title: 'Ошибка ☠️',
+          title: t('toast.error.title'),
           description: res.error,
           variant: 'destructive'
         });
       } else if (res?.success) {
-        console.log('Got success');
         toast({
-          title: 'Успех!✨',
-          description: 'Ссылка отправлена на вашу почту'
+          title: t('toast.success.title'),
+          description: t('toast.success.description')
         });
+        router.push('/auth/login');
       }
-    } catch (error) {
-      console.error('Ошибка при сбросе пароля:', error);
+    } catch {
       toast({
-        title: 'Ошибка ☠️',
-        description: 'Произошла непредвиденная ошибка',
+        title: t('toast.error.title'),
+        description: t('toast.error.unexpected'),
         variant: 'destructive'
       });
     } finally {
@@ -64,8 +64,8 @@ export function NewPasswordForm() {
   return (
     <>
       <CardWrapper
-        title={'Смена пароля'}
-        description={'Укажите новый пароль вашего аккаунта'}
+        title={t('title')}
+        description={t('description')}
         className="mb-4"
       >
         <Form {...form}>
@@ -73,7 +73,7 @@ export function NewPasswordForm() {
             <div className="flex flex-col gap-6">
               <PasswordField form={form} />
               <SubmitButton
-                buttonText="Изменить пароль"
+                buttonText={t('submitButton')}
                 isLoading={isLoading}
                 isDisabled={isLoading}
               />

@@ -4,6 +4,7 @@ import { Prisma, User } from '@prisma/client';
 
 import { getContextUserId, withAuth } from '@/lib/auth-wrapper';
 import { prisma } from '@/lib/db/prisma';
+import { UserSettings } from '@/schemas';
 import { UserFilterSet, UserFilterValue } from '@/types/search-filters';
 
 export async function getUserByEmail(email: string): Promise<User | null> {
@@ -24,7 +25,7 @@ export async function getUserById(id: string): Promise<User | null> {
 
 export async function updateUserProfileInformation(
   id: string,
-  profileData: Partial<User>
+  profileData: { name: string; image: string }
 ) {
   return prisma.user.update({
     where: {
@@ -53,6 +54,31 @@ export async function saveUserFilter(
   });
 }
 
+async function saveUserSettingsAction(settings: UserSettings) {
+  const jsonSettings = settings as Prisma.JsonObject;
+  const userId = getContextUserId();
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      settings: jsonSettings
+    }
+  });
+}
+
+async function getUserSettingsAction(): Promise<
+  UserSettings | null | undefined
+> {
+  const userId = getContextUserId();
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      settings: true
+    }
+  });
+  const userSettings = user?.settings as UserSettings | null | undefined;
+  return userSettings;
+}
+
 async function getUserSavedFiltersAction(): Promise<UserFilterSet[]> {
   const id = getContextUserId();
   const filterSets = await prisma.userFilter.findMany({
@@ -76,4 +102,14 @@ async function getUserSavedFiltersAction(): Promise<UserFilterSet[]> {
   return mappedSets;
 }
 
+export async function deleteAccount(userId: string): Promise<void> {
+  await prisma.user.delete({
+    where: {
+      id: userId
+    }
+  });
+}
+
 export const getUserSavedFilters = withAuth(getUserSavedFiltersAction);
+export const saveUserSettings = withAuth(saveUserSettingsAction);
+export const getUserSettings = withAuth(getUserSettingsAction);

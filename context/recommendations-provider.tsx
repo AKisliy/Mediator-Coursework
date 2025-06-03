@@ -3,7 +3,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { getUserPlan } from '@/app/actions/data/plan';
-import { getUserReccomendationsCount } from '@/app/actions/data/recommendations';
+import {
+  getUserReccomendationsCount,
+  updateUserReccomendationsCount
+} from '@/app/actions/data/recommendations';
 
 type RecommendationContextType = {
   recommendationCount: number;
@@ -13,6 +16,7 @@ type RecommendationContextType = {
   recommendationLimit: number;
   planName: string;
   isLoading: boolean;
+  decreaseReccomendations: (count: number) => Promise<void>;
 };
 
 const RecommendationContext = createContext<
@@ -45,6 +49,14 @@ export const RecommendationProvider: React.FC<{
     fetchRecommendationCount();
   }, []);
 
+  const decreaseReccomendations = async (count: number) => {
+    setRecommendationCount(prevCount => {
+      const newCount = Math.max(prevCount - count, 0);
+      updateUserReccomendationsCount(newCount);
+      return newCount;
+    });
+  };
+
   return (
     <RecommendationContext.Provider
       value={{
@@ -54,6 +66,7 @@ export const RecommendationProvider: React.FC<{
         planName,
         setPlanName,
         setRecommendationLimit,
+        decreaseReccomendations,
         isLoading
       }}
     >
